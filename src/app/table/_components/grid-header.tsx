@@ -1,0 +1,106 @@
+'use client'
+import { TableCell, TableRow } from "@/components/ui/table";
+import { CirclePlus, Download, Filter, AlignJustify } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from "@/components/ui/tooltip"
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu"
+export default function GridHeader({colspan, table} : {colspan: number, table: any}) {
+  return (
+    <TableRow className="bg-transparent h-10 hover:bg-transparent">
+      <TableCell colSpan={colspan}>
+        <div className="flex justify-between">
+          <h4 className="font-bold">Ngx Table V3</h4>
+          <div className="flex justify-end gap-4 ">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <AlignJustify className="h-4 w-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {table
+                  .getAllColumns()
+                  .filter((column) => column.getCanHide())
+                  .map((column) => {
+                    return (
+                      <DropdownMenuCheckboxItem
+                        key={column.id}
+                        className="capitalize"
+                        checked={column.getIsVisible()}
+                        onCheckedChange={(value) =>
+                          column.toggleVisibility(!!value)
+                        }
+                      >
+                        {column.id}
+                      </DropdownMenuCheckboxItem>
+                    )
+                  })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  {/* <Button variant="outline">Hover</Button> */}
+                  <Filter
+                    className="h-4 w-4"
+                    onClick={() => {
+                      toast.success("test")
+                    }}
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Filter</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  {/* <Button variant="outline">Hover</Button> */}
+                  <Download
+                    className="h-4 w-4"
+                    onClick={() => {
+                      toast.success("test")
+                    }}
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Download</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  {/* <Button variant="outline">Hover</Button> */}
+                  <CirclePlus
+                    className="h-4 w-4"
+                    onClick={() => {
+                      toast.success("test")
+                    }}
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Add</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        </div>
+      </TableCell>
+    </TableRow>
+  )
+}
