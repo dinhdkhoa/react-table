@@ -45,105 +45,342 @@ import {
 } from "@/components/ui/table"
 import GridHeader from "./_components/grid-header"
 import GridPagination from "./_components/grid-pagination"
+import { toast } from "sonner"
+import { GridDeleteButton } from "./_components/modal"
 
 const data: Payment[] = [
   {
     id: "m5gr84i9",
     amount: 316,
     status: "success",
-    email: "ken99@yahoo.com"
+    email: "ken99@yahoo.com",
+    date: "2024-05-01",
+    currency: "USD",
+    transactionType: "purchase",
+    country: "USA"
   },
   {
     id: "3u1reuv4",
     amount: 242,
     status: "success",
-    email: "Abe45@gmail.com"
+    email: "Abe45@gmail.com",
+    date: "2024-04-20",
+    currency: "EUR",
+    transactionType: "refund",
+    country: "Germany"
   },
   {
     id: "derv1ws0",
     amount: 837,
     status: "processing",
-    email: "Monserrat44@gmail.com"
+    email: "Monserrat44@gmail.com",
+    date: "2024-05-15",
+    currency: "GBP",
+    transactionType: "purchase",
+    country: "UK"
   },
   {
     id: "5kma53ae",
     amount: 874,
     status: "success",
-    email: "Silas22@gmail.com"
+    email: "Silas22@gmail.com",
+    date: "2024-03-30",
+    currency: "USD",
+    transactionType: "purchase",
+    country: "USA"
   },
   {
     id: "bhqecj4p",
     amount: 721,
     status: "failed",
-    email: "carmella@hotmail.com"
+    email: "carmella@hotmail.com",
+    date: "2024-04-10",
+    currency: "CAD",
+    transactionType: "purchase",
+    country: "Canada"
+  },
+  {
+    id: "x9djw8l2",
+    amount: 450,
+    status: "success",
+    email: "johndoe@gmail.com",
+    date: "2024-05-05",
+    currency: "USD",
+    transactionType: "withdrawal",
+    country: "USA"
+  },
+  {
+    id: "plq5k8z7",
+    amount: 125,
+    status: "failed",
+    email: "janedoe@gmail.com",
+    date: "2024-02-25",
+    currency: "AUD",
+    transactionType: "purchase",
+    country: "Australia"
+  },
+  {
+    id: "g7klm9pq",
+    amount: 540,
+    status: "processing",
+    email: "emily88@gmail.com",
+    date: "2024-03-18",
+    currency: "USD",
+    transactionType: "purchase",
+    country: "USA"
+  },
+  {
+    id: "h6w9y8xu",
+    amount: 380,
+    status: "success",
+    email: "michael23@yahoo.com",
+    date: "2024-04-12",
+    currency: "JPY",
+    transactionType: "purchase",
+    country: "Japan"
+  },
+  {
+    id: "s7tj4nm5",
+    amount: 995,
+    status: "success",
+    email: "alice.smith@gmail.com",
+    date: "2024-01-08",
+    currency: "USD",
+    transactionType: "refund",
+    country: "USA"
+  },
+  {
+    id: "u8vkp0rw",
+    amount: 689,
+    status: "failed",
+    email: "robert56@yahoo.com",
+    date: "2024-05-20",
+    currency: "INR",
+    transactionType: "purchase",
+    country: "India"
+  },
+  {
+    id: "t3hr8mv9",
+    amount: 410,
+    status: "processing",
+    email: "linda44@hotmail.com",
+    date: "2024-03-05",
+    currency: "USD",
+    transactionType: "purchase",
+    country: "USA"
+  },
+  {
+    id: "q4pz7kl0",
+    amount: 765,
+    status: "success",
+    email: "david.jones@gmail.com",
+    date: "2024-02-15",
+    currency: "GBP",
+    transactionType: "withdrawal",
+    country: "UK"
+  },
+  {
+    id: "n1tx6zu3",
+    amount: 820,
+    status: "success",
+    email: "susan.miller@yahoo.com",
+    date: "2024-04-22",
+    currency: "USD",
+    transactionType: "purchase",
+    country: "USA"
+  },
+  {
+    id: "z5kmp8lo",
+    amount: 360,
+    status: "failed",
+    email: "kevin.brown@gmail.com",
+    date: "2024-01-18",
+    currency: "EUR",
+    transactionType: "purchase",
+    country: "France"
+  },
+  {
+    id: "r9mj3bvx",
+    amount: 575,
+    status: "success",
+    email: "nancy.wilson@gmail.com",
+    date: "2024-05-28",
+    currency: "USD",
+    transactionType: "refund",
+    country: "USA"
   },
   {
     id: "m5gr84i9",
     amount: 316,
     status: "success",
-    email: "ken99@yahoo.com"
+    email: "ken99@yahoo.com",
+    date: "2024-05-01",
+    currency: "USD",
+    transactionType: "purchase",
+    country: "USA"
   },
   {
     id: "3u1reuv4",
     amount: 242,
     status: "success",
-    email: "Abe45@gmail.com"
+    email: "Abe45@gmail.com",
+    date: "2024-04-20",
+    currency: "EUR",
+    transactionType: "refund",
+    country: "Germany"
   },
   {
     id: "derv1ws0",
     amount: 837,
     status: "processing",
-    email: "Monserrat44@gmail.com"
+    email: "Monserrat44@gmail.com",
+    date: "2024-05-15",
+    currency: "GBP",
+    transactionType: "purchase",
+    country: "UK"
   },
   {
     id: "5kma53ae",
     amount: 874,
     status: "success",
-    email: "Silas22@gmail.com"
+    email: "Silas22@gmail.com",
+    date: "2024-03-30",
+    currency: "USD",
+    transactionType: "purchase",
+    country: "USA"
   },
   {
     id: "bhqecj4p",
     amount: 721,
     status: "failed",
-    email: "carmella@hotmail.com"
+    email: "carmella@hotmail.com",
+    date: "2024-04-10",
+    currency: "CAD",
+    transactionType: "purchase",
+    country: "Canada"
   },
   {
-    id: "m5gr84i9",
-    amount: 316,
+    id: "x9djw8l2",
+    amount: 450,
     status: "success",
-    email: "ken99@yahoo.com"
+    email: "johndoe@gmail.com",
+    date: "2024-05-05",
+    currency: "USD",
+    transactionType: "withdrawal",
+    country: "USA"
   },
   {
-    id: "3u1reuv4",
-    amount: 242,
-    status: "success",
-    email: "Abe45@gmail.com"
+    id: "plq5k8z7",
+    amount: 125,
+    status: "failed",
+    email: "janedoe@gmail.com",
+    date: "2024-02-25",
+    currency: "AUD",
+    transactionType: "purchase",
+    country: "Australia"
   },
   {
-    id: "derv1ws0",
-    amount: 837,
+    id: "g7klm9pq",
+    amount: 540,
     status: "processing",
-    email: "Monserrat44@gmail.com"
+    email: "emily88@gmail.com",
+    date: "2024-03-18",
+    currency: "USD",
+    transactionType: "purchase",
+    country: "USA"
   },
   {
-    id: "5kma53ae",
-    amount: 874,
+    id: "h6w9y8xu",
+    amount: 380,
     status: "success",
-    email: "Silas22@gmail.com"
+    email: "michael23@yahoo.com",
+    date: "2024-04-12",
+    currency: "JPY",
+    transactionType: "purchase",
+    country: "Japan"
   },
   {
-    id: "bhqecj4p",
-    amount: 721,
+    id: "s7tj4nm5",
+    amount: 995,
+    status: "success",
+    email: "alice.smith@gmail.com",
+    date: "2024-01-08",
+    currency: "USD",
+    transactionType: "refund",
+    country: "USA"
+  },
+  {
+    id: "u8vkp0rw",
+    amount: 689,
     status: "failed",
-    email: "carmella@hotmail.com"
+    email: "robert56@yahoo.com",
+    date: "2024-05-20",
+    currency: "INR",
+    transactionType: "purchase",
+    country: "India"
+  },
+  {
+    id: "t3hr8mv9",
+    amount: 410,
+    status: "processing",
+    email: "linda44@hotmail.com",
+    date: "2024-03-05",
+    currency: "USD",
+    transactionType: "purchase",
+    country: "USA"
+  },
+  {
+    id: "q4pz7kl0",
+    amount: 765,
+    status: "success",
+    email: "david.jones@gmail.com",
+    date: "2024-02-15",
+    currency: "GBP",
+    transactionType: "withdrawal",
+    country: "UK"
+  },
+  {
+    id: "n1tx6zu3",
+    amount: 820,
+    status: "success",
+    email: "susan.miller@yahoo.com",
+    date: "2024-04-22",
+    currency: "USD",
+    transactionType: "purchase",
+    country: "USA"
+  },
+  {
+    id: "z5kmp8lo",
+    amount: 360,
+    status: "failed",
+    email: "kevin.brown@gmail.com",
+    date: "2024-01-18",
+    currency: "EUR",
+    transactionType: "purchase",
+    country: "France"
+  },
+  {
+    id: "r9mj3bvx",
+    amount: 575,
+    status: "success",
+    email: "nancy.wilson@gmail.com",
+    date: "2024-05-28",
+    currency: "USD",
+    transactionType: "refund",
+    country: "USA"
   }
 ]
+
 
 export type Payment = {
   id: string
   amount: number
   status: "pending" | "processing" | "success" | "failed"
   email: string
+  date: string
+  currency: string
+  transactionType: string
+  country: string
 }
 
 export const columns: ColumnDef<Payment>[] = [
@@ -193,7 +430,7 @@ export const columns: ColumnDef<Payment>[] = [
   },
   {
     accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
+    header: () => <div className="">Amount</div>,
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amount"))
 
@@ -203,12 +440,33 @@ export const columns: ColumnDef<Payment>[] = [
         currency: "USD"
       }).format(amount)
 
-      return <div className="text-right font-medium">{formatted}</div>
+      return <div className=" font-medium">{formatted}</div>
     }
+  },
+  {
+    accessorKey: "transactionType",
+    header: "Transaction Type",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("transactionType")}</div>
+    )
+  },
+
+  {
+    accessorKey: "country",
+    header: "Country",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("country")}</div>
+    )
+  },
+  {
+    accessorKey: "date",
+    header: "Date",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("date")}</div>
   },
   {
     id: "actions",
     enableHiding: false,
+    maxSize: 50,
     cell: ({ row }) => {
       const payment = row.original
 
@@ -223,12 +481,17 @@ export const columns: ColumnDef<Payment>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => 
+                toast(JSON.stringify(payment))
+                // navigator.clipboard.writeText(payment.id)
+              }
             >
               Copy payment ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
+            <DropdownMenuItem onClick={e => e.preventDefault()}>
+              <GridDeleteButton row={payment}/>
+            </DropdownMenuItem>
             <DropdownMenuItem>View payment details</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -266,7 +529,7 @@ export default function TableDemo() {
   })
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto mb-10">
       <div className="flex items-center ">
         <h1 className="text-lg font-semibold md:text-2xl">Table</h1>
       </div>
@@ -283,7 +546,7 @@ export default function TableDemo() {
       <div className="rounded-md border mb-4">
         <Table className="">
           <TableHeader>
-            <GridHeader colspan={table.getAllColumns().length} table={table} />
+            <GridHeader colspan={columns.length} table={table} />
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -313,7 +576,8 @@ export default function TableDemo() {
                   }
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="border-r">
+                    // cell nhỏ thêm px-2 py-0
+                    <TableCell key={cell.id} className="border-r px-2 py-0">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -333,6 +597,15 @@ export default function TableDemo() {
               </TableRow>
             )}
           </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={2} className="h-12 text-center ">
+                Total
+              </TableCell>
+              <TableCell></TableCell>
+              <TableCell className=" border-r border-l">Sum</TableCell>
+            </TableRow>
+          </TableFooter>
         </Table>
       </div>
       <GridPagination table={table} />

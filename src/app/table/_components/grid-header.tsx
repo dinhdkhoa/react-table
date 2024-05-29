@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/tooltip"
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge"
 
 import {
   DropdownMenu,
@@ -25,9 +26,9 @@ export default function GridHeader({colspan, table} : {colspan: number, table: a
       <TableCell colSpan={colspan}>
         <div className="flex justify-between">
           <h4 className="font-bold">Ngx Table V3</h4>
-          <div className="flex justify-end gap-4 ">
+          <div className="flex justify-end gap-2 ">
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+              <DropdownMenuTrigger className="mt-1" asChild>
                 <AlignJustify className="h-4 w-4" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -52,7 +53,7 @@ export default function GridHeader({colspan, table} : {colspan: number, table: a
             </DropdownMenu>
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger asChild>
+                <TooltipTrigger className="mt-1" asChild>
                   {/* <Button variant="outline">Hover</Button> */}
                   <Filter
                     className="h-4 w-4"
@@ -68,7 +69,7 @@ export default function GridHeader({colspan, table} : {colspan: number, table: a
             </TooltipProvider>
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger asChild>
+                <TooltipTrigger className="mt-1" asChild>
                   {/* <Button variant="outline">Hover</Button> */}
                   <Download
                     className="h-4 w-4"
@@ -85,13 +86,13 @@ export default function GridHeader({colspan, table} : {colspan: number, table: a
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  {/* <Button variant="outline">Hover</Button> */}
-                  <CirclePlus
-                    className="h-4 w-4"
+                  <Badge
                     onClick={() => {
                       toast.success("test")
                     }}
-                  />
+                  >
+                    Add <CirclePlus className=" ml-1 h-4 w-4" />
+                  </Badge>
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>Add</p>
