@@ -32,7 +32,7 @@ export default async function RootLayout({
   }
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="m-0 h-screen	w-screen">
+      <body className={inter.className}>
         <Toaster richColors />
         <ThemeProvider
           attribute="class"
