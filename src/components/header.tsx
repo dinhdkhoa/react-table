@@ -14,6 +14,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { ModeToggle } from "./mode-toggle"
+import Image from "next/image"
 
 
 export default async function Header({ user }: { user: AccountType | null }) {
@@ -28,8 +29,7 @@ export default async function Header({ user }: { user: AccountType | null }) {
           href="#"
           className="flex items-center gap-2 text-lg font-semibold md:text-base"
         >
-          <Shell className="h-6 w-6" />
-          <span className="sr-only">Acme Inc</span>
+          <Image src="/logo.png" width={75} height={75} alt="ITL Logo" />
         </Link>
         <Link
           href="/table"
