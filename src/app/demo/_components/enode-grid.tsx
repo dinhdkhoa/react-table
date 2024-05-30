@@ -27,11 +27,13 @@ import {
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
 import GridActionColumn from './enode-grid-action'
 import { GridFooter, GridHeader, GridRow } from './enode-grid-row'
-import { BaseGridConfig, BaseGridData, RowSelectType } from './types'
+import { BaseGridConfig, BaseGridData, FormatColumnType, RowSelectType } from './types'
 import { Checkbox } from '@/components/ui/checkbox'
 import { TableBody, TableFooter, TableHead, Table as ShadcnTable, TableHeader } from '@/components/ui/table'
 import GridPagination from './enode-grid-pagination'
 import { CheckedState } from '@radix-ui/react-checkbox'
+import { Input } from '@/components/ui/input'
+import GridHeaderActions from './enode-grid-header-action'
 
 const rowActionId = 'rowAction';
 const rowSelectionId = 'rowSelection';
@@ -162,29 +164,35 @@ export function ENodeGrid<T extends BaseGridData>(props: {
           accessorKey: rowSelectionId,
           enableSorting: false,
           enableColumnFilter: false,
-          size: 0,
+          size: 40,
           enableResizing: false,
           header: ({ table }) => (
-            <Checkbox
-              {...
-              (props.gridConfig.isSelectAllPages ? {
-                checked: table.getIsAllRowsSelected() || (table.getIsSomeRowsSelected() && "indeterminate"),
-                onCheckedChange: (value) => handleSelection(value, RowSelectType.AllPages, undefined, table, props),
-              } : {
-                checked: table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate"),
-                onCheckedChange: (value) => handleSelection(value, RowSelectType.OnePage, undefined, table, props),
-              })
-              }
-            />
+            <div className='text-center px-0'>
+              <Checkbox
+                {...
+                (props.gridConfig.isSelectAllPages ? {
+                  checked: table.getIsAllRowsSelected() || (table.getIsSomeRowsSelected() && "indeterminate"),
+                  onCheckedChange: (value) => handleSelection(value, RowSelectType.AllPages, undefined, table, props),
+                } : {
+                  checked: table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate"),
+                  onCheckedChange: (value) => handleSelection(value, RowSelectType.OnePage, undefined, table, props),
+                })
+                }
+              />
+            </div>
+
           ),
           cell: ({ row }) => (
-            <Checkbox
-              {...{
-                checked: row.getIsSelected(),
-                disabled: !row.getCanSelect(),
-                onCheckedChange: (value) => handleSelection(value, RowSelectType.Row, row, undefined, props)
-              }}
-            />
+            <div className='text-center px-0'>
+              <Checkbox
+                {...{
+                  checked: row.getIsSelected(),
+                  disabled: !row.getCanSelect(),
+                  onCheckedChange: (value) => handleSelection(value, RowSelectType.Row, row, undefined, props)
+                }}
+              />
+            </div>
+
           ),
         }
         setColumnPinningState(old => {
@@ -263,19 +271,37 @@ export function ENodeGrid<T extends BaseGridData>(props: {
   })
 
   return (
-    <div className="p-2 block max-w-full overflow-x-scroll overflow-y-hidden">
-      <div>
+    <div className="max-w-7xl mx-auto mb-10 mt-5">
+      <div className="flex items-center ">
+        <h1 className="text-3xl font-bold leading-tight tracking-tighter md:text-4xl lg:leading-[1.1]">
+          Table
+        </h1>
+      </div>
+      <div className="flex items-center py-4">
+        <Input
+          placeholder="Filter emails..."
+          value={(props.gridConfig.table!.getColumn("email")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            props.gridConfig.table!.getColumn("email")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+      </div>
+      <div className="rounded-md border mb-4">
         <ShadcnTable {...{
           style: {
             // width: props.gridConfig.table.getTotalSize(),
           },
         }}>
+
           <TableHeader>
+            <GridHeaderActions colspan={columns.length} table={props.gridConfig.table!} />
             {props.gridConfig.table.getHeaderGroups().map(headerGroup => (
               <GridHeader key={headerGroup.id} headerGroup={headerGroup} gridConfig={props.gridConfig} columnResizeMode={columnResizeMode} />
             ))}
+
           </TableHeader>
-          <TableBody>
+          <TableBody className="border-r-0">
             {props.gridConfig.table.getRowModel().rows.map(row => (
               <GridRow key={row.id} row={row} gridConfig={props.gridConfig} />
             ))}
@@ -288,20 +314,8 @@ export function ENodeGrid<T extends BaseGridData>(props: {
         </ShadcnTable>
         <GridPagination table={props.gridConfig.table}
         ></GridPagination>
-        {/* <TablePagination
-          rowsPerPageOptions={props.gridConfig.rowsPerPageOptionsDefault}
-          component='div'
-          count={props.gridConfig.table!.getRowCount()}
-          rowsPerPage={props.gridConfig.table!.getState().pagination.pageSize}
-          page={props.gridConfig.table!.getState().pagination.pageIndex}
-          onPageChange={handleChangePage(props)}
-          onRowsPerPageChange={handleChangeRowsPerPage(props)}
-          showFirstButton={true}
-          showLastButton={true}>
-        </TablePagination> */}
       </div>
     </div>
-
   )
 }
 

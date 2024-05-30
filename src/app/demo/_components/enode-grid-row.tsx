@@ -51,6 +51,7 @@ export function GridHeader<T extends BaseGridData>(props: {
             return (
                 <TableHead
                     key={header.id}
+                    className="border-r last:border-r-0"
                     style={{ ...getCommonPinningStyles(column) }}
                     colSpan={header.colSpan}
                 >
@@ -121,6 +122,7 @@ export function GridRow<T extends BaseGridData>(props: {
             <TableRow>
                 {props.row.getVisibleCells().map(cell => (
                     <TableCell key={cell.id}
+                        className="border-r  last:border-r-0"
                         style={{ ...getCommonPinningStyles(cell.column) }}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
