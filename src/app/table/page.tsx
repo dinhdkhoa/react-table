@@ -529,9 +529,11 @@ export default function TableDemo() {
   })
 
   return (
-    <div className="max-w-7xl mx-auto mb-10">
+    <div className="max-w-7xl mx-auto mb-10 mt-5">
       <div className="flex items-center ">
-        <h1 className="text-lg font-semibold md:text-2xl">Table</h1>
+        <h1 className="text-3xl font-bold leading-tight tracking-tighter md:text-4xl lg:leading-[1.1]">
+          Table
+        </h1>
       </div>
       <div className="flex items-center py-4">
         <Input
@@ -549,9 +551,12 @@ export default function TableDemo() {
             <GridHeader colspan={columns.length} table={table} />
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
+                {headerGroup.headers.map((header, index) => {
                   return (
-                    <TableHead key={header.id} className="border-r">
+                    <TableHead
+                      key={header.id}
+                      className="border-r last:border-r-0"
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -574,10 +579,16 @@ export default function TableDemo() {
                     // || (row.getValue("status") == "success" && "success") ||
                     // (row.getValue("status") == "failed" && "error")
                   }
+                  data-selected={row.getIsSelected()}
+                  data-success={row.getValue("status") == "success"}
+                  data-error={row.getValue("status") == "failed"}
                 >
                   {row.getVisibleCells().map((cell) => (
                     // cell nhỏ thêm px-2 py-0
-                    <TableCell key={cell.id} className="border-r px-2 py-0">
+                    <TableCell
+                      key={cell.id}
+                      className="border-r  last:border-r-0"
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
