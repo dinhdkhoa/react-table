@@ -89,7 +89,7 @@ export function BooleanCell<TData extends BaseGridData>(
     const value = Value<TData, boolean | null | undefined>(cellContext);
 
     return <div style={{ textAlign: 'center' }} >
-        <Checkbox defaultChecked={value || false} disabled />
+        <Checkbox checked={value || false} disabled />
     </div>
 }
 

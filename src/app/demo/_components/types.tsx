@@ -108,6 +108,7 @@ export class BaseGridConfig<T extends BaseGridData> {
 
     init() {
         this.cols.forEach(col => {
+            col.maxSize = col.maxSize ?? 200 ;
             if (!col.filterFn && col.meta?.formatColumnType) {
                 if ([FormatColumnType.Date, FormatColumnType.DateTime].includes(col.meta!.formatColumnType!)) {
                     col.filterFn = filterOnDate

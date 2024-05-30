@@ -168,24 +168,7 @@ function FilterCheckbox({
                 </Command>
             </PopoverContent>
         </Popover>
-
-
-        // <Select
-        //     defaultValue=''
-        //     displayEmpty
-        //     labelId='controlled-select-label'
-        //     onChange={handleChange}
-        //     size="small"
-        //     placeholder="Filter"
-        //     variant='standard'
-        // >
-        //     <MenuItem value=''>Any</MenuItem>
-        //     <MenuItem value='true'>Checked</MenuItem>
-        //     <MenuItem value='false'>Uncheck</MenuItem>
-        // </Select>
-
     )
-
 }
 
 function FilterDate({
@@ -208,10 +191,6 @@ function FilterDate({
                 <Button
                     variant={"outline"}
                     className="w-full justify-between"
-                    // className={cn(
-                    //     "w-full justify-start text-left font-normal",
-                    //     !date && "text-muted-foreground"
-                    // )}
                 >
                     {date ? date.toLocaleDateString() : <span>Filter</span>}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -227,18 +206,6 @@ function FilterDate({
             </PopoverContent>
         </Popover>
     )
-
-    // return (
-    //     <LocalizationProvider dateAdapter={AdapterDateFns}>
-    //         <DatePicker
-    //             value={value}
-    //             clearable={true}
-    //             onChange={(date) => onChange(date)}
-    //             renderInput={params => <TextField {...params}
-    //                 variant='standard' size='small' placeholder="Filter" />}>
-    //         </DatePicker>
-    //     </LocalizationProvider>
-    // )
 }
 
 function FilterAutocomplete({
@@ -268,13 +235,13 @@ function FilterAutocomplete({
                     aria-expanded={open}
                     className="w-full justify-between"
                 >
-                    {value
+                    <span className="truncate">{value
                         ? values.find((option) => option.value === value)?.label
-                        : "Filter"}
+                        : "Filter"}</span>
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-fit p-0">
+            <PopoverContent className="max-w-sm p-0">
                 <Command>
                     <CommandInput placeholder="Search..." />
                     <CommandEmpty>No data found.</CommandEmpty>
@@ -295,7 +262,7 @@ function FilterAutocomplete({
                                             value === option.value ? "opacity-100" : "opacity-0"
                                         )}
                                     />
-                                    {option.label}
+                                    <span>{option.label}</span>
                                 </CommandItem>
                             ))}
                         </CommandList>

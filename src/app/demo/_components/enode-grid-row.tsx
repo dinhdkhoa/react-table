@@ -123,7 +123,7 @@ export function GridRow<T extends BaseGridData>(props: {
                 {props.row.getVisibleCells().map(cell => (
                     <TableCell key={cell.id}
                         className="border-r  last:border-r-0"
-                        style={{ ...getCommonPinningStyles(cell.column) }}>
+                        style={{ ...getCommonPinningStyles(cell.column)}}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                 ))}

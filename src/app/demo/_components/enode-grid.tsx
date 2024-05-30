@@ -165,6 +165,8 @@ export function ENodeGrid<T extends BaseGridData>(props: {
           enableSorting: false,
           enableColumnFilter: false,
           size: 40,
+          minSize: 40,
+          maxSize: 40,
           enableResizing: false,
           header: ({ table }) => (
             <div className='text-center px-0'>
@@ -211,6 +213,8 @@ export function ENodeGrid<T extends BaseGridData>(props: {
           enableColumnFilter: false,
           enableResizing: false,
           size: 100,
+          minSize: 100,
+          maxSize: 100,
           header: () => 'action',
           cell: ({ row }) => {
             return getActions(row, props)
