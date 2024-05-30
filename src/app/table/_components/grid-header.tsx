@@ -20,18 +20,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
+import { useState } from "react";
 export default function GridHeader({colspan, table} : {colspan: number, table: any}) {
+  const [dropDownOpen, setDropDownOpen] = useState(false)
   return (
     <TableRow className="bg-transparent h-10 hover:bg-transparent">
       <TableCell colSpan={colspan}>
         <div className="flex justify-between">
           <h4 className="font-bold">Ngx Table V3</h4>
           <div className="flex justify-end gap-2 ">
-            <DropdownMenu>
-              <DropdownMenuTrigger className="mt-1" asChild>
+            <DropdownMenu open={dropDownOpen}>
+              <DropdownMenuTrigger onMouseEnter={() => setDropDownOpen(true)} className="mt-1" asChild>
                 <AlignJustify className="h-4 w-4" />
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" onPointerDownOutside={() => setDropDownOpen(false)}>
                 {table
                   .getAllColumns()
                   .filter((column) => column.getCanHide())
