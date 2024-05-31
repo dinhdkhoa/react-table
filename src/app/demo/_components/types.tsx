@@ -1,8 +1,9 @@
 import { ColumnDef, Row, RowData, SortingFn, Table, createColumnHelper } from "@tanstack/react-table"
-import { filterCheckbox, filterOnDate } from "./enode-grid-filter"
+import { filterCheckbox, filterNumber, filterOnDate } from "./enode-grid-filter"
 import { DefaultCell } from "./enode-grid-cell"
-import { ChevronDown, Delete, List, Pencil } from "lucide-react";
+import { Delete, List, Pencil } from "lucide-react";
 import { CheckedState } from "@radix-ui/react-checkbox";
+import { isDateColumn, isNumberColumn } from "./utils";
 
 export const showChildButtonId = '_row_action_show_child';
 
@@ -108,22 +109,16 @@ export class BaseGridConfig<T extends BaseGridData> {
 
     init() {
         this.cols.forEach(col => {
-            if (!col.filterFn && col.meta?.formatColumnType) {
-                if ([FormatColumnType.Date, FormatColumnType.DateTime].includes(col.meta!.formatColumnType!)) {
-                    col.filterFn = filterOnDate
-                }
-                if ([FormatColumnType.Boolean].includes(col.meta!.formatColumnType!)) {
-                    col.filterFn = filterCheckbox
-                }
-            }
-
             if (col.meta?.formatColumnType) {
                 if (!col.filterFn) {
-                    if ([FormatColumnType.Date, FormatColumnType.DateTime].includes(col.meta!.formatColumnType!)) {
+                    if (isDateColumn(col.meta!.formatColumnType!)) {
                         col.filterFn = filterOnDate
                     }
                     if ([FormatColumnType.Boolean].includes(col.meta!.formatColumnType!)) {
                         col.filterFn = filterCheckbox
+                    }
+                    if (isNumberColumn(col.meta!.formatColumnType!)) {
+                        col.filterFn = filterNumber
                     }
                 }
                 if (!col.sortingFn) {

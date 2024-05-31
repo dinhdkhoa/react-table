@@ -51,10 +51,16 @@ export default function ENode() {
         {
             id: 'age',
             accessorKey: 'age',
+            meta: {
+                formatColumnType: FormatColumnType.Decimal
+            }
         },
         {
             id: 'visits',
             accessorKey: 'visits',
+            meta: {
+                formatColumnType: FormatColumnType.Decimal
+            }
         },
         {
             id: 'status',
