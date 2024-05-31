@@ -274,7 +274,7 @@ function FilterAutocomplete({
                                 >
                                     <Check
                                         className={cn(
-                                            "mr-2 h-4 w-4",
+                                            "mr-2 min-h-4 min-w-4 h-4 w-4",
                                             value == option.value ? "opacity-100" : "opacity-0"
                                         )}
                                     />
