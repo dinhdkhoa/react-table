@@ -3,8 +3,6 @@
 import { CellContext } from "@tanstack/react-table";
 import { BaseGridData, FormatColumnType } from "./types";
 import { Checkbox } from "@/components/ui/checkbox";
-// import { CheckboxBlankOutline, CheckboxMarked } from "mdi-material-ui";
-
 
 export function DefaultCell<TData extends BaseGridData>(cellContext: CellContext<TData, any>) {
     const { formatColumnType } = cellContext.column.columnDef.meta ?? {}

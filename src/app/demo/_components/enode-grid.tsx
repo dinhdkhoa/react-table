@@ -23,13 +23,12 @@ import {
   Table,
 } from '@tanstack/react-table'
 
-// import { Checkbox, Table as MuiTable, Paper, TableBody, TableContainer, TableFooter, TableHead, TablePagination } from '@mui/material'
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
 import GridActionColumn from './enode-grid-action'
 import { GridFooter, GridHeader, GridRow } from './enode-grid-row'
-import { BaseGridConfig, BaseGridData, FormatColumnType, RowSelectType } from './types'
+import { BaseGridConfig, BaseGridData, RowSelectType } from './types'
 import { Checkbox } from '@/components/ui/checkbox'
-import { TableBody, TableFooter, TableHead, Table as ShadcnTable, TableHeader } from '@/components/ui/table'
+import { TableBody, TableFooter, Table as ShadcnTable, TableHeader } from '@/components/ui/table'
 import GridPagination from './enode-grid-pagination'
 import { CheckedState } from '@radix-ui/react-checkbox'
 import { Input } from '@/components/ui/input'
@@ -103,7 +102,6 @@ function handleSelection<T extends BaseGridData>(
   table?: Table<T>,
   props?: GridProps<T>
 ) {
-  let originalHandler: any
   switch (rowSelectType) {
     case RowSelectType.Row:
       row?.toggleSelected(!!checked)
@@ -120,23 +118,6 @@ function handleSelection<T extends BaseGridData>(
     props?.gridConfig.onSelect(checked, rowSelectType, row?.original as any, row?.id)
   }
 }
-
-function handleChangePage<T extends BaseGridData>(props: GridProps<T>) {
-  return function (event: unknown, newPage: number) {
-    if (props.gridConfig.table) {
-      props.gridConfig.table.setPageIndex(newPage)
-    }
-  }
-}
-
-function handleChangeRowsPerPage<T extends BaseGridData>(props: GridProps<T>) {
-  return function (event: ChangeEvent<HTMLInputElement>) {
-    if (props.gridConfig.table) {
-      props.gridConfig.table.setPageSize(+event.target.value)
-    }
-  }
-}
-
 
 export function ENodeGrid<T extends BaseGridData>(props: {
   data: Array<T>,
@@ -255,6 +236,8 @@ export function ENodeGrid<T extends BaseGridData>(props: {
     },
     defaultColumn: {
       filterFn: filterFns.equals,
+      maxSize: 200,
+      minSize:100
     },
     columns,
     columnResizeMode,
@@ -298,7 +281,7 @@ export function ENodeGrid<T extends BaseGridData>(props: {
           },
         }}>
 
-          <TableHeader>
+          <TableHeader className='b primary'>
             <GridHeaderActions colspan={columns.length} table={props.gridConfig.table!} />
             {props.gridConfig.table.getHeaderGroups().map(headerGroup => (
               <GridHeader key={headerGroup.id} headerGroup={headerGroup} gridConfig={props.gridConfig} columnResizeMode={columnResizeMode} />

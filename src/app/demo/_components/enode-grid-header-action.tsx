@@ -1,4 +1,5 @@
 'use client'
+
 import { TableCell, TableRow } from "@/components/ui/table";
 import { CirclePlus, Download, Filter, AlignJustify } from "lucide-react";
 import {
@@ -7,7 +8,6 @@ import {
   TooltipProvider,
   TooltipTrigger
 } from "@/components/ui/tooltip"
-import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge"
 
@@ -15,13 +15,10 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { useState } from "react";
-export default function GridHeaderActions({colspan, table} : {colspan: number, table: any}) {
+export default function GridHeaderActions({ colspan, table }: { colspan: number, table: any }) {
   const [dropDownOpen, setDropDownOpen] = useState(false)
   return (
     <TableRow className="bg-transparent h-10 hover:bg-transparent">

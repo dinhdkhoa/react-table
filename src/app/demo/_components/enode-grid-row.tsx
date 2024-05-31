@@ -1,14 +1,10 @@
 'use client'
 
-// import { TableSortLabel } from "@mui/material";
 import { ColumnResizeMode, HeaderGroup, Row, SortDirection, flexRender } from "@tanstack/react-table";
-// import { Box } from "mdi-material-ui";
-// import { visuallyHidden } from '@mui/utils'
-// import { TableRow, TableCell, getCommonPinningStyles } from "./styles";
 import { BaseGridConfig, BaseGridData } from "./types";
 import { Filter } from "./enode-grid-filter";
 import { TableCell, TableHead, TableRow } from "@/components/ui/table";
-import React, { ReactNode } from "react";
+import React from "react";
 import { ArrowDownNarrowWide, ArrowUpDown, ArrowUpNarrowWide } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getCommonPinningStyles } from "./styles";
@@ -26,7 +22,6 @@ function TableSortLabel(props: {
     }
 
     if (props.direction == 'asc') {
-
         return (
             <ArrowDownNarrowWide className={size} />
         )
@@ -83,29 +78,6 @@ export function GridHeader<T extends BaseGridData>(props: {
                             <Filter column={header.column} />
                         </div>
                     ) : null}
-                    {/* <div
-                        {...{
-                            onDoubleClick: () => header.column.resetSize(),
-                            onMouseDown: header.getResizeHandler(),
-                            onTouchStart: header.getResizeHandler(),
-                            className: `resizer ${props.gridConfig.table!.options.columnResizeDirection
-                                } ${header.column.getIsResizing() ? 'isResizing' : ''
-                                }`,
-                            style: {
-                                transform:
-                                    props.columnResizeMode === 'onEnd' &&
-                                        header.column.getIsResizing()
-                                        ? `translateX(${(props.gridConfig.table!.options.columnResizeDirection ===
-                                            'rtl'
-                                            ? -1
-                                            : 1) *
-                                        (props.gridConfig.table!.getState().columnSizingInfo
-                                            .deltaOffset ?? 0)
-                                        }px)`
-                                        : '',
-                            },
-                        }}
-                    ></div> */}
                 </TableHead>
             )
         })}
@@ -123,7 +95,7 @@ export function GridRow<T extends BaseGridData>(props: {
                 {props.row.getVisibleCells().map(cell => (
                     <TableCell key={cell.id}
                         className="border-r  last:border-r-0"
-                        style={{ ...getCommonPinningStyles(cell.column)}}>
+                        style={{ ...getCommonPinningStyles(cell.column) }}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                 ))}

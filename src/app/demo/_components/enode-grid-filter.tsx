@@ -1,19 +1,14 @@
 'use client'
 
-// import { Autocomplete, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material"
 import { Column, Row, RowData } from "@tanstack/react-table"
-import { SyntheticEvent, useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { BaseGridData, FormatColumnType } from "./types"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar as CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, X } from "lucide-react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
-// import LocalizationProvider from "@mui/lab/LocalizationProvider"
-// import AdapterDateFns from "@mui/lab/AdapterDateFns"
-// import DatePicker from "@mui/lab/DatePicker"
-// import { StyledPopper } from "./styles"
 
 declare module '@tanstack/react-table' {
     interface ColumnMeta<TData extends RowData, TValue> {
@@ -32,7 +27,6 @@ export function filterOnDate<T extends BaseGridData>(row: Row<T>, columnId: stri
 
     if (row.original) {
         if (columnId in row.original) {
-            // const valye = (row.original as any)[columnId];
             const value = row.original[columnId as keyof T] as (Date | null | undefined);
             if (!value) return false;
             const result = new Date(value.getFullYear(), value.getMonth(), value.getDate()).getTime() == new Date(filterValue.getFullYear(), filterValue.getMonth(), filterValue.getDate()).getTime();
@@ -50,7 +44,6 @@ export function filterCheckbox<T extends BaseGridData>(row: Row<T>, columnId: st
 
     if (row.original) {
         if (columnId in row.original) {
-            // const valye = (row.original as any)[columnId];
             const filterValueBoolean = filterValue == 'true';
             const value = row.original[columnId as keyof T] as (boolean | null | undefined);
 
@@ -63,8 +56,12 @@ export function filterCheckbox<T extends BaseGridData>(row: Row<T>, columnId: st
 
 
 export function Filter({ column }: { column: Column<any, unknown> }) {
-    const { filterVariant, formatColumnType } = column.columnDef.meta ?? {}
-    const columnFilterValue = column.getFilterValue()
+    const { filterVariant, formatColumnType } = column.columnDef.meta ?? {};
+    const columnFilterValue = column.getFilterValue();
+
+    const buildWidthPopOver = useMemo(() => {
+        return `w-[${column.getSize()}px] max-w-[${column.columnDef.maxSize}px] min-w-[${column.columnDef.minSize}px]`
+    }, [column])
 
     const sortedUniqueValues = useMemo(
         () =>
@@ -77,6 +74,7 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
     )
     if (!formatColumnType) {
         return (<FilterAutocomplete
+            popOverContentWidth={buildWidthPopOver}
             options={sortedUniqueValues}
             onChange={value => column.setFilterValue(value)}
         />)
@@ -104,8 +102,9 @@ function FilterCheckbox({
 }: {
     onChange: (value: checkBoxFilterType) => void
 }) {
+    const allValue = 'any';
     const [open, setOpen] = useState(false)
-    const [value, setValue] = useState<checkBoxFilterType>('any')
+    const [value, setValue] = useState<checkBoxFilterType>(allValue)
 
     useEffect(() => {
         onChange(value);
@@ -113,7 +112,7 @@ function FilterCheckbox({
 
     const checkState = [
         {
-            value: 'any',
+            value: allValue,
             label: "Any",
         },
         {
@@ -135,10 +134,11 @@ function FilterCheckbox({
                     aria-expanded={open}
                     className="w-full justify-between"
                 >
-                    {value
+                    <span className="truncate">{value
                         ? checkState.find((state) => state.value === value)?.label
-                        : ""}
-                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        : "Filter"}</span>
+                    {value != allValue ? clearFilter(() => setValue(allValue)
+                    ) : <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />}
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-max p-0">
@@ -150,7 +150,7 @@ function FilterCheckbox({
                                     key={state.value}
                                     value={state.value}
                                     onSelect={(currentValue) => {
-                                        setValue(currentValue === value ? "" : currentValue)
+                                        setValue(currentValue === value ? allValue : currentValue)
                                         setOpen(false)
                                     }}
                                 >
@@ -192,8 +192,9 @@ function FilterDate({
                     variant={"outline"}
                     className="w-full justify-between"
                 >
-                    {date ? date.toLocaleDateString() : <span>Filter</span>}
-                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    <span className="truncate">{date ? date.toLocaleDateString() : <span>Filter</span>}</span>
+                    {value ? clearFilter(() => setDate(undefined)
+                    ) : <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />}
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">
@@ -208,19 +209,32 @@ function FilterDate({
     )
 }
 
+const clearFilter = (onClick: () => void) => {
+
+    return (< X
+        onClick={(e) => {
+            e.stopPropagation(); // Prevent the Popover from toggling
+            onClick();
+        }}
+        className={cn("ml-2 h-4 w-4 shrink-0",)} />)
+}
+
 function FilterAutocomplete({
     options,
     onChange,
+    popOverContentWidth,
 }: {
-    options: any[]
-    onChange: (value: any) => void
+    options: any[],
+    onChange: (value: any) => void,
+    popOverContentWidth: string,
 }) {
 
     const [values] = useState(() => {
-        return options.map(option => { return { value: option?.toString() as (string | undefined), label: option?.toString() as (string | undefined) } })
+        return options.map(option => { return { value: option, label: option } })
     })
     const [open, setOpen] = useState(false)
-    const [value, setValue] = useState<string | undefined>("")
+    const [value, setValue] = useState<any>(undefined)
+
 
     useEffect(() => {
         onChange(value);
@@ -236,12 +250,14 @@ function FilterAutocomplete({
                     className="w-full justify-between"
                 >
                     <span className="truncate">{value
-                        ? values.find((option) => option.value === value)?.label
+                        ? values.find((option) => option.value == value)?.label?.toString()
                         : "Filter"}</span>
-                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+
+                    {value ? clearFilter(() => setValue(undefined)
+                    ) : <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />}
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="max-w-sm p-0">
+            <PopoverContent className={cn("max-w-sm p-0", popOverContentWidth)}>
                 <Command>
                     <CommandInput placeholder="Search..." />
                     <CommandEmpty>No data found.</CommandEmpty>
@@ -252,14 +268,14 @@ function FilterAutocomplete({
                                     key={option.value}
                                     value={option.value}
                                     onSelect={(currentValue) => {
-                                        setValue(currentValue === value ? "" : currentValue)
+                                        setValue(currentValue == value ? undefined : currentValue)
                                         setOpen(false)
                                     }}
                                 >
                                     <Check
                                         className={cn(
                                             "mr-2 h-4 w-4",
-                                            value === option.value ? "opacity-100" : "opacity-0"
+                                            value == option.value ? "opacity-100" : "opacity-0"
                                         )}
                                     />
                                     <span>{option.label}</span>
@@ -271,18 +287,4 @@ function FilterAutocomplete({
             </PopoverContent>
         </Popover>
     )
-
-    // return (
-    //     <Autocomplete
-    //         {...props}
-    //         options={options}
-    //         onChange={handleChange}
-    //         id='autocomplete-filter-header'
-    //         getOptionLabel={getOptionLabel}
-    //         PopperComponent={(popperProps) => (
-    //             <StyledPopper {...popperProps} />
-    //         )}
-    //         renderInput={params => <TextField {...params} variant='standard' size="small" placeholder="Filter" />}
-    //     />
-    // )
 }

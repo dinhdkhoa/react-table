@@ -3,87 +3,7 @@
 import { toast } from "sonner";
 import { ENodeGrid } from "./enode-grid";
 import { BaseGridConfig, FormatColumnType, Person, RowSelectType } from "./types";
-import { Check, ChevronsUpDown, Delete } from "lucide-react";
-import { useState } from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
-import { CommandList } from "cmdk";
-import { cn } from "@/lib/utils";
-
-const frameworks = [
-    {
-        value: "next.js",
-        label: "Next.js",
-    },
-    {
-        value: "sveltekit sveltekit sveltekit sveltekit sveltekit sveltekit sveltekit",
-        label: "sveltekit sveltekit sveltekit sveltekit sveltekit sveltekit sveltekit",
-    },
-    {
-        value: "nuxt.js",
-        label: "Nuxt.js",
-    },
-    {
-        value: "remix",
-        label: "Remix",
-    },
-    {
-        value: "astro",
-        label: "Astro",
-    },
-]
-
-function ComboboxDemo() {
-    const [open, setOpen] = useState(false)
-    const [value, setValue] = useState("")
-
-    return (
-        <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-                <Button
-                    variant="outline"
-                    role="combobox"
-                    aria-expanded={open}
-                    className="w-[200px] justify-between"
-                >
-                    <span className="truncate">{value
-                        ? frameworks.find((framework) => framework.value === value)?.label
-                        : "Select framework..."}</span>
-                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[200px] p-0">
-                <Command>
-                    <CommandInput placeholder="Search framework..." />
-                    <CommandEmpty>No framework found.</CommandEmpty>
-                    <CommandGroup>
-                        <CommandList>
-                            {frameworks.map((framework) => (
-                                <CommandItem
-                                    key={framework.value}
-                                    value={framework.value}
-                                    onSelect={(currentValue) => {
-                                        setValue(currentValue === value ? "" : currentValue)
-                                        setOpen(false)
-                                    }}
-                                >
-                                    <Check
-                                        className={cn(
-                                            "mr-2 h-4 w-4",
-                                            value === framework.value ? "opacity-100" : "opacity-0"
-                                        )}
-                                    />
-                                    {framework.label}
-                                </CommandItem>
-                            ))}
-                        </CommandList>
-                    </CommandGroup>
-                </Command>
-            </PopoverContent>
-        </Popover>
-    )
-}
+import { Delete } from "lucide-react";
 
 const defaultData: Person[] = [
     {
@@ -139,6 +59,9 @@ export default function ENode() {
         {
             id: 'status',
             accessorKey: 'status',
+            maxSize:400,
+            minSize:400,
+            size:400
         },
         {
             id: 'date',

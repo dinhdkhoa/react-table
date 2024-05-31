@@ -1,13 +1,9 @@
 'use client'
 
 import * as React from 'react';
-// import Menu from '@mui/material/Menu';
-// import MenuItem from '@mui/material/MenuItem';
-// import { IconButton, IconButtonProps, ListItemIcon, ListItemText, Tooltip, styled } from "@mui/material";
 import { BaseGridData, BaseRowAction, showChildButtonId } from "./types";
-// import { ChevronDown, DotsHorizontal } from 'mdi-material-ui';
 import { useState } from 'react';
-import { ChevronDown, ChevronsUpDown, MoreHorizontal, Settings } from 'lucide-react';
+import { ChevronsUpDown, MoreHorizontal } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
@@ -95,28 +91,6 @@ export default function GridActionColumn<T extends BaseGridData>(props: {
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
-
-
-                    // <Tooltip title={ac.name || ''} arrow>
-                    //     <Button 
-                    //         key
-                    //         variant="ghost">{ac.iconChild}
-                    //     </Button>
-                    //     {/* <IconButton
-                    //         key={action.id}
-                    //         size='small'
-                    //         disabled={isDisable}
-                    //         onClick={() => {
-                    //             if (allowAction) {
-                    //                 ac.action!(props.gridAction.data);
-                    //             }
-                    //             if (ac.id == showChildButtonId) {
-                    //                 props.gridAction.toggleExpandedHandler();
-                    //             }
-                    //         }}>
-                    //         {ac.iconChild}
-                    //     </IconButton> */}
-                    // </Tooltip> 
                     : <></>
             )
         })
@@ -127,14 +101,6 @@ export default function GridActionColumn<T extends BaseGridData>(props: {
 function GridMenuActionColumn<T extends BaseGridData>(props: { gridAction: GridActionType<T> }) {
     const showChildButton = props.gridAction.actions.find(w => w.id == showChildButtonId);
     const otherButton = props.gridAction.actions.filter(w => w.id != showChildButtonId);
-    // const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    // const open = Boolean(anchorEl);
-    // const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    //     setAnchorEl(event.currentTarget);
-    // };
-    // const handleClose = () => {
-    //     setAnchorEl(null);
-    // };
 
     const childButton = () => {
         if (showChildButton) {
@@ -172,74 +138,12 @@ function GridMenuActionColumn<T extends BaseGridData>(props: { gridAction: GridA
                                         {ac.iconChild}
                                         <span>{ac.name || ''}</span>
                                     </DropdownMenuItem>
-                                    // <MenuItem
-                                    //     key={action.id}
-                                    //     disabled={isDisable}
-                                    //     onClick={() => {
-                                    //         if (allowAction) {
-                                    //             ac.action!(props.gridAction.data)
-                                    //         }
-                                    //     }}>
-                                    //     <ListItemIcon>
-                                    //         {ac.iconChild}
-                                    //     </ListItemIcon>
-                                    //     <ListItemText>{ac.name || ''}</ListItemText>
-                                    // </MenuItem> 
                                     : <></>
                             )
                         })
                     }
-                    {/* <DropdownMenuItem onClick={() => { }}>
-                        <Settings className="mr-2 h-4 w-4" />
-                        <span>Settings</span>
-                    </DropdownMenuItem> */}
                 </DropdownMenuContent>
             </DropdownMenu>
-
-
-            {/* <Button
-                variant="ghost"
-                id="basic-button"
-                aria-controls={open ? 'basic-menu' : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? 'true' : undefined}
-                onClick={handleClick}>
-                {ac.iconChild}
-            </Button>
-
-            <Menu
-                id="basic-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                MenuListProps={{
-                    'aria-labelledby': 'basic-button',
-                }}
-            >
-                {
-                    otherButton.map(action => {
-                        const ac = { ...action };
-                        const { isDisable, isVisible, allowAction } = GetActionState(props.gridAction.data, ac);
-
-                        return (
-                            isVisible ?
-                                <MenuItem
-                                    key={action.id}
-                                    disabled={isDisable}
-                                    onClick={() => {
-                                        if (allowAction) {
-                                            ac.action!(props.gridAction.data)
-                                        }
-                                    }}>
-                                    <ListItemIcon>
-                                        {ac.iconChild}
-                                    </ListItemIcon>
-                                    <ListItemText>{ac.name || ''}</ListItemText>
-                                </MenuItem> : <></>
-                        )
-                    })
-                }
-            </Menu> */}
         </div>
     );
 }
