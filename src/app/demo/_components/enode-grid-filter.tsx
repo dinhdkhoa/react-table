@@ -164,13 +164,14 @@ function FilterCheckbox({ onChange }: { onChange: (value: checkBoxFilterType) =>
 
 function FilterDate({ value, onChange }: { value: dateFilterType, onChange: (value: dateFilterType) => void }) {
     const [date, setDate] = useState<dateFilterType>(value);
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         onChange(date);
     }, [date]);
 
     return (
-        <Popover>
+        <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button variant="outline" className="w-full justify-between">
                     <span className="truncate">{date ? date.toLocaleDateString() : "Filter"}</span>
@@ -178,7 +179,7 @@ function FilterDate({ value, onChange }: { value: dateFilterType, onChange: (val
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">
-                <Calendar mode="single" selected={date || undefined} onSelect={setDate} initialFocus />
+                <Calendar mode="single" selected={date || undefined} onSelect={(e) => {setDate(e); setOpen(false)}} initialFocus />
             </PopoverContent>
         </Popover>
     );
