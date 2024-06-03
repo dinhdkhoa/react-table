@@ -1,9 +1,12 @@
+'use client'
+
 import { ColumnDef, Row, RowData, SortingFn, Table, createColumnHelper } from "@tanstack/react-table"
 import { filterCheckbox, filterNumber, filterOnDate } from "./enode-grid-filter"
 import { DefaultCell } from "./enode-grid-cell"
 import { Delete, List, Pencil } from "lucide-react";
 import { CheckedState } from "@radix-ui/react-checkbox";
 import { isDateColumn, isNumberColumn } from "./utils";
+import { getKeys } from "./anotations/key";
 
 export const showChildButtonId = '_row_action_show_child';
 
@@ -30,22 +33,26 @@ declare module '@tanstack/react-table' {
     }
 }
 
-export interface Person extends BaseGridData {
-    firstName: string
-    lastName: string
-    age: number
-    visits: number
-    status: string
-    progress: number
-    date?: Date,
-    active?: boolean
+export interface IActivator<T> {
+    new(): T;
 }
 
-export interface BaseGridData {
-    __id__?: string
-    id?: any
+export class BaseGridData {
+    __id__?: string;
 }
 
+export class Person extends BaseGridData {
+    // @Key
+    id: string | undefined;
+    firstName?: string;
+    lastName?: string;
+    age?: number;
+    visits?: number;
+    status?: string;
+    progress?: number;
+    date?: Date;
+    active?: boolean;
+}
 export interface BaseRowAction<BaseGridData> {
     id: string,
     name: string,
@@ -56,7 +63,18 @@ export interface BaseRowAction<BaseGridData> {
 }
 
 
+export interface IActivator<T> {
+    new(): T;
+}
+
 export class BaseGridConfig<T extends BaseGridData> {
+    keys: string[] = [];
+
+    constructor(classT: IActivator<T>) {
+        const t = new classT();
+        this.keys.push(...getKeys(t))
+    }
+
     //
     table: Table<T> | undefined;
     columnHelper = createColumnHelper<T>()

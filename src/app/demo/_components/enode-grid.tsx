@@ -33,6 +33,7 @@ import GridPagination from './enode-grid-pagination'
 import { CheckedState } from '@radix-ui/react-checkbox'
 import { Input } from '@/components/ui/input'
 import GridHeaderActions from './enode-grid-header-action'
+import { getKeys } from './anotations/key'
 
 const rowActionId = 'rowAction';
 const rowSelectionId = 'rowSelection';
@@ -76,6 +77,19 @@ function handleRowsSelectionChange<T extends BaseGridData>(
   if (props.gridConfig.handleRowsSelectionChange) {
     props.gridConfig.handleRowsSelectionChange(isSelected, rows, arrData)
   }
+}
+
+function getRowId<T extends BaseGridData>(originalRow: T, index: number, parent?: Row<T>): string {
+  let keys = props.gridConfig.keys;
+  if (keys && Array.isArray(keys) && keys.length > 0) {
+    let keyValues: string[] = [];
+    keys.forEach(k => {
+      keyValues.push(((originalRow as any)[k] ?? 'null').toString());
+    })
+    return keyValues.join('_');
+  }
+
+  return originalRow.__id__ ?? index.toString();
 }
 
 function getActions<T extends BaseGridData>(
@@ -237,14 +251,14 @@ export function ENodeGrid<T extends BaseGridData>(props: {
     defaultColumn: {
       filterFn: filterFns.equals,
       maxSize: 200,
-      minSize:100
+      minSize: 100
     },
     columns,
     columnResizeMode,
     enableRowSelection: (row) => { return props.gridConfig.allowSelectRow(row.original) },
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getRowId: row => row.id,
+    getRowId: getRowId,
     getFilteredRowModel: getFilteredRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),

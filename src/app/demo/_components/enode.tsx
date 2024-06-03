@@ -7,6 +7,7 @@ import { Delete } from "lucide-react";
 
 const defaultData: Person[] = [
     {
+        id: '1',
         firstName: 'tanner',
         lastName: 'linsley',
         age: 24,
@@ -16,6 +17,7 @@ const defaultData: Person[] = [
         active: true,
     },
     {
+        id: '2',
         firstName: 'tandy',
         lastName: 'miller',
         age: 40,
@@ -26,6 +28,7 @@ const defaultData: Person[] = [
         active: false,
     },
     {
+        id: '3',
         firstName: 'joe',
         lastName: 'dirte',
         age: 1234567.89,
@@ -38,7 +41,7 @@ const defaultData: Person[] = [
 
 
 export default function ENode() {
-    const gridConfig = new BaseGridConfig<Person>();
+    const gridConfig = new BaseGridConfig<Person>(Person);
     gridConfig.cols.push(
         {
             id: 'firstName',
@@ -84,8 +87,20 @@ export default function ENode() {
             }
         }
     )
-    gridConfig.colsFixLeft.push('age')
-    gridConfig.init()
+
+    let aa = new Person()
+    aa.id= '1',
+    aa.firstName= 'tanner',
+    aa.lastName= 'linsley',
+    aa.age=24,
+    aa.visits= 100,
+    aa.status= 'In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship',
+    aa.progress= 50,
+    aa.active= true,
+
+    
+    gridConfig.colsFixLeft.push('age');
+    gridConfig.init();
 
     // gridConfig.isActionColumListType = false;
     gridConfig.isShowSelectionColumn = true;
