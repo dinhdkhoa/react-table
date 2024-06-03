@@ -2,14 +2,15 @@
 
 import { Column, Row, RowData } from "@tanstack/react-table";
 import { useEffect, useMemo, useState } from "react";
-import { BaseGridData, FormatColumnType } from "./types";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Check, ChevronsUpDown, X } from "lucide-react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
-import { isNumberColumn } from "./utils";
+import { BaseData } from "@/common/classes/base-data";
+import { isNumberColumn } from "./base-table-config";
+import { FormatColumnType } from "./enums";
 
 declare module '@tanstack/react-table' {
     interface ColumnMeta<TData extends RowData, TValue> {
@@ -20,7 +21,7 @@ declare module '@tanstack/react-table' {
 type checkBoxFilterType = string | null | undefined;
 type dateFilterType = Date | null | undefined;
 
-export function filterOnDate<T extends BaseGridData>(row: Row<T>, columnId: string, filterValue: Date | null | undefined) {
+export function filterOnDate<T extends BaseData>(row: Row<T>, columnId: string, filterValue: Date | null | undefined) {
     if (!filterValue) {
         return true;
     }
@@ -38,7 +39,7 @@ export function filterOnDate<T extends BaseGridData>(row: Row<T>, columnId: stri
     return false;
 }
 
-export function filterCheckbox<T extends BaseGridData>(row: Row<T>, columnId: string, filterValue: string | null | undefined) {
+export function filterCheckbox<T extends BaseData>(row: Row<T>, columnId: string, filterValue: string | null | undefined) {
     if (filterValue === 'any') return true;
 
     if (row.original && columnId in row.original) {
@@ -51,7 +52,7 @@ export function filterCheckbox<T extends BaseGridData>(row: Row<T>, columnId: st
     return false;
 }
 
-export function filterNumber<T extends BaseGridData>(row: Row<T>, columnId: string, filterValue: string | number | null | undefined) {
+export function filterNumber<T extends BaseData>(row: Row<T>, columnId: string, filterValue: string | number | null | undefined) {
     if (!filterValue) {
         return true;
     }
@@ -107,7 +108,7 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
     if ([FormatColumnType.Date, FormatColumnType.DateTime].includes(formatColumnType)) {
         return (
             <FilterDate
-                value={columnFilterValue ?? null}
+                value={(columnFilterValue ?? null) as dateFilterType}
                 onChange={value => column.setFilterValue(value)}
             />
         );

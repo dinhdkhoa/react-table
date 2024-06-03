@@ -1,10 +1,11 @@
 'use client'
 
 import { CellContext } from "@tanstack/react-table";
-import { BaseGridData, FormatColumnType } from "./types";
 import { Checkbox } from "@/components/ui/checkbox";
+import { BaseData } from "@/common/classes/base-data";
+import { FormatColumnType } from "./enums";
 
-export function DefaultCell<TData extends BaseGridData>(cellContext: CellContext<TData, any>) {
+export function DefaultCell<TData extends BaseData>(cellContext: CellContext<TData, any>) {
     const { formatColumnType } = cellContext.column.columnDef.meta ?? {}
     if (!formatColumnType) {
         const value = Value<TData, any>(cellContext);
@@ -44,35 +45,35 @@ export function DefaultCell<TData extends BaseGridData>(cellContext: CellContext
 }
 
 
-export function StringCell<TData extends BaseGridData>(
+export function StringCell<TData extends BaseData>(
     cellContext: CellContext<TData, string | null | undefined>) {
     const value = Value<TData, string | null | undefined>(cellContext);
 
     return value || '';
 }
 
-export function IntegerCell<TData extends BaseGridData>(
+export function IntegerCell<TData extends BaseData>(
     cellContext: CellContext<TData, number | null | undefined>) {
     const value = Value<TData, number | null | undefined>(cellContext);
 
     return <div style={{ textAlign: 'right' }} >{value?.toLocaleString() || ''}</div>
 }
 
-export function DecimalCell<TData extends BaseGridData>(
+export function DecimalCell<TData extends BaseData>(
     cellContext: CellContext<TData, number | null | undefined>) {
     const value = Value<TData, number | null | undefined>(cellContext);
 
     return <div style={{ textAlign: 'right' }} >{value?.toLocaleString() || ''}</div>
 }
 
-export function DateCell<TData extends BaseGridData>(
+export function DateCell<TData extends BaseData>(
     cellContext: CellContext<TData, Date | null | undefined>) {
 
     const value = Value<TData, Date | null | undefined>(cellContext);
 
     return value?.toLocaleDateString() || '';
 }
-export function DateTimeCell<TData extends BaseGridData>(
+export function DateTimeCell<TData extends BaseData>(
     cellContext: CellContext<TData, Date | null | undefined>) {
     const value = Value<TData, Date | null | undefined>(cellContext);
 
@@ -82,7 +83,7 @@ export function DateTimeCell<TData extends BaseGridData>(
     }) || ''
 }
 
-export function BooleanCell<TData extends BaseGridData>(
+export function BooleanCell<TData extends BaseData>(
     cellContext: CellContext<TData, boolean | null | undefined>) {
     const value = Value<TData, boolean | null | undefined>(cellContext);
 
@@ -91,7 +92,7 @@ export function BooleanCell<TData extends BaseGridData>(
     </div>
 }
 
-export function Value<TData extends BaseGridData, TValue>(cellContext: CellContext<TData, TValue>) {
+export function Value<TData extends BaseData, TValue>(cellContext: CellContext<TData, TValue>) {
     const colId = cellContext.column.id;
     const data = cellContext.row.original;
     if (colId && data) {

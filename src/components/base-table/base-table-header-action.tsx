@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { useState } from "react";
-export default function GridHeaderActions({ colspan, table }: { colspan: number, table: any }) {
+export default function TableHeaderActions({ colspan, table }: { colspan: number, table: any }) {
   const [dropDownOpen, setDropDownOpen] = useState(false)
   return (
     <TableRow className="bg-transparent h-10 hover:bg-transparent">

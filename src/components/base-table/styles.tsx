@@ -1,9 +1,8 @@
 
+import { BaseData } from "@/common/classes/base-data"
 import { Column } from "@tanstack/react-table"
 import { CSSProperties } from "react"
-import { BaseGridData } from "./types"
-
-export function getCommonPinningStyles<T extends BaseGridData>(column: Column<T>): CSSProperties {
+export function getCommonPinningStyles<T extends BaseData>(column: Column<T>): CSSProperties {
     const isPinned = column.getIsPinned()
     // const isLastLeftPinnedColumn =
     //     isPinned === 'left' && column.getIsLastColumn('left')
