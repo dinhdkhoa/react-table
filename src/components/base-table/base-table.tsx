@@ -158,7 +158,7 @@ export function BaseTable<T extends BaseData>(props: {
             return keyValues.join('_');
         }
 
-        return originalRow.__id__ ?? index.toString();
+       return index.toString()
     }
 
     const columns = useMemo<ColumnDef<T, any>[]>(
