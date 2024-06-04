@@ -1,5 +1,5 @@
 
-import { BaseData } from "@/common/classes/base-data"
+import { BaseData } from "@/core/classes/base-data"
 import { Column } from "@tanstack/react-table"
 import { CSSProperties } from "react"
 export function getCommonPinningStyles<T extends BaseData>(column: Column<T>): CSSProperties {

@@ -1,6 +1,6 @@
 'use client'
 
-import { BaseData } from "@/common/classes/base-data";
+import { BaseData } from "@/core/classes/base-data";
 
 export class Person extends BaseData {
     // @Key

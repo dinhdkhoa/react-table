@@ -8,7 +8,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
-import { BaseData } from "@/common/classes/base-data";
+import { BaseData } from "@/core/classes/base-data";
 import { isNumberColumn } from "./base-table-config";
 import { FormatColumnType } from "./enums";
 

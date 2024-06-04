@@ -2,7 +2,7 @@
 
 import { CellContext } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
-import { BaseData } from "@/common/classes/base-data";
+import { BaseData } from "@/core/classes/base-data";
 import { FormatColumnType } from "./enums";
 
 export function DefaultCell<TData extends BaseData>(cellContext: CellContext<TData, any>) {

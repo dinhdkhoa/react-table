@@ -6,7 +6,7 @@ import React from "react";
 import { ArrowDownNarrowWide, ArrowUpDown, ArrowUpNarrowWide } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BaseTableConfig } from "./base-table-config";
-import { BaseData } from "@/common/classes/base-data";
+import { BaseData } from "@/core/classes/base-data";
 import { getCommonPinningStyles } from "./styles";
 import { Filter } from "./base-table-filter";
 

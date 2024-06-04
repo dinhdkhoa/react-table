@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
 import { Toggle } from '@/components/ui/toggle';
-import { BaseData } from '@/common/classes/base-data';
+import { BaseData } from '@/core/classes/base-data';
 import { BaseRowAction, showChildButtonId } from './base-table-config';
 
 type ActionStateType = {

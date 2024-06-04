@@ -1,6 +1,6 @@
-import { getKeys } from "@/common/anotations/key";
-import { BaseData } from "@/common/classes/base-data";
-import { IActivator } from "@/common/interfaces/activator";
+import { getKeys } from "@/core/anotations/key";
+import { BaseData } from "@/core/classes/base-data";
+import { IActivator } from "@/core/interfaces/activator";
 import { CheckedState } from "@radix-ui/react-checkbox";
 import { ColumnDef, Row, SortingFn, Table, createColumnHelper } from "@tanstack/react-table";
 import { FormatColumnType, RowSelectType } from "./enums";
