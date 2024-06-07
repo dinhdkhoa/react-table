@@ -1,8 +1,8 @@
 import { UserEntity } from "@/domain/entities/user-entity";
-import { BaseService, HandleState } from "./base-service";
+import { BaseService } from "./base-service";
 import { LoginRequestModel } from "./models/requests/login-request.model";
 import { UserLoginResponseModel } from "./models/responses/login-response.model";
-import { HttpStatusCode } from "./common/types";
+import { HandleState } from "./common/handle-state";
 
 export class UserService extends BaseService {
   constructor(path?: string, apiVersion?: number) {
@@ -14,10 +14,6 @@ export class UserService extends BaseService {
     try {
       let response = await this.post<UserLoginResponseModel>({ data: request });
       return handleState.byResponse(response);
-      // if (response.status == HttpStatusCode.Ok && response.value) {
-      //   let { value, message } = response;
-      //   handleState.success({ resValue: value, message })
-      // }
     } catch (error) { }
     return handleState;
   }
