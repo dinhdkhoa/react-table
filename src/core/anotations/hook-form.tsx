@@ -1,3 +1,4 @@
+import { ChangeEventHandler, FocusEventHandler } from "react";
 import "reflect-metadata";
 import { z } from "zod";
 
@@ -12,6 +13,8 @@ export enum Control {
 }
 
 export type RHFOptions = {
+  onBlur?: FocusEventHandler<HTMLInputElement> | undefined;
+  onChange?: ChangeEventHandler<HTMLInputElement> | undefined;
   required?: boolean;
   label: string;
   placeHolder?: string;

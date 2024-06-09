@@ -1,7 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { FieldValues, UseFormReturn, useForm } from "react-hook-form"
+import { UseFormReturn, useForm } from "react-hook-form"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input"
 import { LoginEntity } from "@/domain/entities/login-entity"
 import { RHFOptions, RHF_FIELDS, ZOD_VALIDATIONS } from "@/core/anotations/hook-form"
 import { z } from "zod"
+import { onChangeFun, onBlurFun } from "@/core/classes/base-entity-form"
 
 export function useEntityForm<TEntity>(entity: TEntity) {
   const rhfFields = Reflect.getMetadata(RHF_FIELDS, entity as any);
@@ -27,7 +28,6 @@ export function useEntityForm<TEntity>(entity: TEntity) {
     resolver: zodResolver(schema),
     defaultValues: entity as any
   });
-  
 
   return {
     form,
@@ -38,7 +38,14 @@ export function useEntityForm<TEntity>(entity: TEntity) {
   };
 };
 
-export function generateFormControls(form: UseFormReturn, register: any, errors: any, rhfFields: any) {
+export function generateFormControls(
+  form: UseFormReturn,
+  register: any,
+  errors: any,
+  rhfFields: any,
+  onChange?: onChangeFun,
+  onBlur?: onBlurFun
+) {
   const fieldsArray = Object.keys(rhfFields).map((fieldName) => ({
     name: fieldName,
     options: rhfFields[fieldName] as RHFOptions
@@ -48,18 +55,27 @@ export function generateFormControls(form: UseFormReturn, register: any, errors:
   fieldsArray.sort((a, b) => (a.options.index ?? 0) - (b.options.index ?? 0));
 
   return fieldsArray.map((f) => (
-
     <FormField
       key={f.name}
       control={form.control}
       name={f.name}
-      render={({ field }) => (
+      render={({ field, }) => (
         <FormItem>
           <FormLabel>{f.options.label}</FormLabel>
           <FormControl>
-            <Input placeholder={f.options.placeHolder} {...field} />
+            <Input placeholder={f.options.placeHolder} {...field}
+              onChangeCapture={(e) => {
+                if (onChange) {
+                  onChange(form, f.name, e.currentTarget.value)
+                }
+              }}
+              onBlurCapture={(e) => {
+                if(onBlur){
+                  onBlur(form, f.name, e.currentTarget.value)
+                }
+              }}
+            />
           </FormControl>
-
           <FormMessage />
         </FormItem>
       )}
@@ -79,8 +95,9 @@ export function LoginForm() {
 
   return (
     <Form {...form}>
+      <div>{JSON.stringify(form.watch())}</div>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-2 w-full max-w-[400px]">
-        {generateFormControls(form, register, errors, rhfFields)}
+        {generateFormControls(form, register, errors, rhfFields, loginE.onChange, loginE.onBlur)}
         <Button type="submit" className="!mt-8 w-full" disabled={form.formState.isLoading}>
           Login
         </Button>
