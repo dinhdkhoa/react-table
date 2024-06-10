@@ -62,7 +62,7 @@ export function BasicComboboxForm(
   }
 
   const getFieldValueString = () => {
-    return field.value?.toString();
+    return form.getValues(rhf.name)?.toString();
   }
 
   const getValue = (item: any) => {
@@ -102,10 +102,19 @@ export function BasicComboboxForm(
                   value={getValueString(basicItem)}
                   onSelect={(currentValue) => {
                     const _valueString = (currentValue == getFieldValueString() ? undefined : currentValue);
-                    const _value = getValue(basicItem);
-                    form.setValue(rhf.name, _value)
-                    if (onChange) {
-                      onChange(form, rhf.name, _value);
+
+                    if (!_valueString) {
+                      form.setValue(rhf.name, undefined)
+                      if (onChange) {
+                        onChange(form, rhf.name, undefined);
+                      }
+                    }
+                    else {
+                      const _value = getValue(basicItem);
+                      form.setValue(rhf.name, _value)
+                      if (onChange) {
+                        onChange(form, rhf.name, _value);
+                      }
                     }
                     setOpen(false)
                   }}
