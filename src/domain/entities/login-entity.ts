@@ -1,4 +1,4 @@
-import { RHFField, ZodValidation } from "@/core/anotations/hook-form";
+import { Control, RHFField, ZodValidation } from "@/core/anotations/hook-form";
 import { BaseEntityForm, onBlurFun } from "@/core/classes/base-entity-form";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
@@ -20,20 +20,26 @@ export class LoginEntity extends BaseEntityForm {
   password: string;
 
   @RHFField({
-    index: 1,
+    index: 2,
     label: "Your Name",
-    // onChange: (event) => {
-    //   console.log(event);
-    // }
   })
   @ZodValidation(z.string().max(5, 'Max length is 5'))
   yourName: string | undefined;
+
+  @RHFField({
+    index: 3,
+    label: "Email Type",
+    type: Control.Combobox
+  })
+  @ZodValidation(z.string())
+  emailType: string | undefined;
 
   constructor(username?: string, password?: string) {
     super();
     this.username = username || '';
     this.password = password || ''
     this.yourName = ''
+    this.emailType = '';
   }
 
   onChange = (form: UseFormReturn, fieldName: string, value: any) => {

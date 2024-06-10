@@ -13,8 +13,6 @@ export enum Control {
 }
 
 export type RHFOptions = {
-  onBlur?: FocusEventHandler<HTMLInputElement> | undefined;
-  onChange?: ChangeEventHandler<HTMLInputElement> | undefined;
   required?: boolean;
   label: string;
   placeHolder?: string;

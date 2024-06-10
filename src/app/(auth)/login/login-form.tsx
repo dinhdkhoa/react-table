@@ -14,13 +14,14 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { LoginEntity } from "@/domain/entities/login-entity"
-import { RHFOptions, RHF_FIELDS, ZOD_VALIDATIONS } from "@/core/anotations/hook-form"
+import { Control, RHFOptions, RHF_FIELDS, ZOD_VALIDATIONS } from "@/core/anotations/hook-form"
 import { z } from "zod"
 import { onChangeFun, onBlurFun } from "@/core/classes/base-entity-form"
+import { ComboboxForm } from "./combobox-form"
 
-export function useEntityForm<TEntity>(entity: TEntity) {
-  const rhfFields = Reflect.getMetadata(RHF_FIELDS, entity as any);
-  const zodValidations = Reflect.getMetadata(ZOD_VALIDATIONS, entity as any);
+export function useEntityForm<TEntity extends object>(entity: TEntity) {
+  const rhfFields = Reflect.getMetadata(RHF_FIELDS, entity);
+  const zodValidations = Reflect.getMetadata(ZOD_VALIDATIONS, entity);
 
   const schema = z.object(zodValidations);
 
@@ -59,22 +60,28 @@ export function generateFormControls(
       key={f.name}
       control={form.control}
       name={f.name}
-      render={({ field, }) => (
+      render={({ field }) => (
         <FormItem>
           <FormLabel>{f.options.label}</FormLabel>
           <FormControl>
-            <Input placeholder={f.options.placeHolder} {...field}
+            { 
+              f.options.type === Control.Text ? <Input placeholder={f.options.placeHolder} {...field}
               onChangeCapture={(e) => {
                 if (onChange) {
                   onChange(form, f.name, e.currentTarget.value)
                 }
               }}
               onBlurCapture={(e) => {
-                if(onBlur){
+                if (onBlur) {
                   onBlur(form, f.name, e.currentTarget.value)
                 }
               }}
-            />
+            /> : 
+
+            ComboboxForm(form, f, field, onChange)
+
+
+            } 
           </FormControl>
           <FormMessage />
         </FormItem>
