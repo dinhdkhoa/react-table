@@ -18,15 +18,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { UseFormReturn } from "react-hook-form"
+import { ControllerRenderProps, FieldValues, UseFormReturn } from "react-hook-form"
 import { RHFOptions, SelectOption } from "@/core/anotations/hook-form"
 import { onChangeFun } from "@/core/classes/base-entity-form"
-import { useEffect } from "react"
 
 export type BasicComboboxFormType = {
   form: UseFormReturn,
   rhf: { name: string, options: RHFOptions, selectOption?: SelectOption },
   onChange?: onChangeFun,
+  field: ControllerRenderProps<FieldValues, string>,
   formValue?: any
 }
 
@@ -37,20 +37,13 @@ const clearFilter = (onClick: () => void) => (
 export function BasicComboboxForm(
   { form,
     rhf,
-    onChange }: BasicComboboxFormType) {
+    onChange, field }: BasicComboboxFormType) {
   const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState<any>(form.getValues(rhf.name))
-
-  useEffect(() => {
-    setValue(form.getValues(rhf.name))
-    // if (onChange) {
-    //   onChange(form, rhf.name, form.getValues(rhf.name))
-    // }
-  }, [form.getValues(rhf.name)])
 
   const display = () => {
-    if (value) {
-      const findItem = rhf.selectOption?.data.find((basicItem) => rhf.selectOption?.value(basicItem) == value);
+    const _value = form.getValues(rhf.name);
+    if (_value) {
+      const findItem = rhf.selectOption?.data.find((basicItem) => rhf.selectOption?.value(basicItem) == _value);
       if (findItem) {
         return rhf.selectOption?.display(findItem) || '';
       }
@@ -68,8 +61,13 @@ export function BasicComboboxForm(
     return getKey(item);
   }
 
+  const getFieldValueString = () => {
+    return field.value?.toString();
+  }
+
   const getValue = (item: any) => {
-    rhf.selectOption?.value(item);
+    const value = rhf.selectOption?.value(item);
+    return value;
   }
 
   return (
@@ -81,11 +79,10 @@ export function BasicComboboxForm(
           aria-expanded={open}
           className="justify-between"
         >
-          <span className="truncate">{value
+          <span className="truncate">{field.value
             ? display()
             : `Select ${rhf.options.label}`}</span>
-          {value ? clearFilter(() => {
-            setValue(undefined)
+          {field.value ? clearFilter(() => {
             form.setValue(rhf.name, undefined)
             if (onChange) {
               onChange(form, rhf.name, undefined);
@@ -104,10 +101,9 @@ export function BasicComboboxForm(
                   key={getKey(basicItem)}
                   value={getValueString(basicItem)}
                   onSelect={(currentValue) => {
-                    const _valueString = (currentValue == value ? undefined : currentValue);
+                    const _valueString = (currentValue == getFieldValueString() ? undefined : currentValue);
                     const _value = getValue(basicItem);
                     form.setValue(rhf.name, _value)
-                    setValue(_valueString)
                     if (onChange) {
                       onChange(form, rhf.name, _value);
                     }
@@ -117,7 +113,7 @@ export function BasicComboboxForm(
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      value == rhf.selectOption!.value(basicItem) ? "opacity-100" : "opacity-0"
+                      field.value == rhf.selectOption!.value(basicItem) ? "opacity-100" : "opacity-0"
                     )}
                   />
                   {rhf.selectOption!.display(basicItem)}

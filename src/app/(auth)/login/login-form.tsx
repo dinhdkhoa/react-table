@@ -77,7 +77,7 @@ export function generateFormControls(
                   }
                 }}
               /> :
-                BasicComboboxForm( {form, rhf, onChange})
+                BasicComboboxForm( {form, rhf, onChange, field})
 
 
             }

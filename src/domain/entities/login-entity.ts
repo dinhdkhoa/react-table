@@ -110,8 +110,14 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
     console.log('onChange', fieldName, value);
     console.log(form.getValues())
     // form.setValue('yourName', value + this.username)
-    if(fieldName == 'username' && value.includes('hehehe')){
-      form.setValue('age', 20)
+    if (fieldName == 'username') {
+      if (value.includes('hehehe')) {
+        form.setValue('age', 20)
+      }
+      else if (value.includes('hihihi')) {
+        form.setValue('age', 40)
+      }
+
     }
   }
 
