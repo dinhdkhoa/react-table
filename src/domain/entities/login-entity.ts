@@ -88,13 +88,22 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
   emailType: string | undefined;
 
   @RHFField({
-    index: 3,
+    index: 4,
     label: "Age",
     type: Control.Combobox,
 
   }, ageSelectOption)
   @ZodValidation(z.number().transform(value => Number(value)))
   age?: number;
+
+  @RHFField({
+    index: 5,
+    label: "Sex",
+    type: Control.Checkbox,
+
+  }, ageSelectOption)
+  @ZodValidation(z.boolean())
+  sex?: boolean;
 
 
   constructor(username?: string, password?: string) {
@@ -104,6 +113,7 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
     this.yourName = ''
     this.emailType = '';
     this.age = 30;
+    this.sex = true;
   }
 
   onChange = (form: UseFormReturn, fieldName: string, value: any) => {

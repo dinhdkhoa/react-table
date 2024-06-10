@@ -1,7 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { UseFormReturn, useForm } from "react-hook-form"
+import { ControllerRenderProps, FieldValues, UseFormReturn, useForm } from "react-hook-form"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -18,11 +18,18 @@ import { Control, RHFOptions, RHF_FIELDS, SelectOption, ZOD_VALIDATIONS } from "
 import { z } from "zod"
 import { onChangeFun, onBlurFun, BaseEntityForm } from "@/core/classes/base-entity-form"
 import { BasicComboboxForm } from "../../../components/form-controls/basic-combobox-form"
+import { BasicCheckboxForm } from "@/components/form-controls/base-checkbox-form"
+
+export type ReactHookField = {
+  name: string,
+  options: RHFOptions,
+  selectOption?: SelectOption
+}
 
 export function useEntityForm<TEntity extends BaseEntityForm<TEntity>>(entity: TEntity) {
   const rhfFields = Reflect.getMetadata(RHF_FIELDS, entity);
   const zodValidations = Reflect.getMetadata(ZOD_VALIDATIONS, entity);
-  const schema = z.object(zodValidations).superRefine((val, ctx) => {entity.onSuperRefine(val as TEntity, ctx);})
+  const schema = z.object(zodValidations).superRefine((val, ctx) => { entity.onSuperRefine(val as TEntity, ctx); })
 
   const form = useForm({
     resolver: zodResolver(schema),
@@ -46,7 +53,7 @@ export function generateFormControls(
   onChange?: onChangeFun,
   onBlur?: onBlurFun
 ) {
-  const fieldsArray = Object.keys(rhfFields).map((fieldName) => ({
+  const fieldsArray = Object.keys(rhfFields).map<ReactHookField>((fieldName) => ({
     name: fieldName,
     options: rhfFields[fieldName]['options'] as RHFOptions,
     selectOption: rhfFields[fieldName]['selectOption'] as SelectOption
@@ -54,6 +61,30 @@ export function generateFormControls(
 
   // Sort fields by index
   fieldsArray.sort((a, b) => (a.options.index ?? 0) - (b.options.index ?? 0));
+
+  const getControl = (rhf: ReactHookField, field: ControllerRenderProps<FieldValues, string>) => {
+    switch (rhf.options.type) {
+      case Control.Text:
+        return (<Input placeholder={rhf.options.placeHolder} {...field}
+          onChangeCapture={(e) => {
+            if (onChange) {
+              onChange(form, rhf.name, e.currentTarget.value)
+            }
+          }}
+          onBlurCapture={(e) => {
+            if (onBlur) {
+              onBlur(form, rhf.name, e.currentTarget.value)
+            }
+          }}
+        />)
+      case Control.Combobox:
+        return BasicComboboxForm({ form, rhf, onChange, field });
+      case Control.Checkbox:
+        return BasicCheckboxForm({ form, rhf, onChange, field });
+      default:
+        break;
+    }
+  }
 
   return fieldsArray.map((rhf) => (
     <FormField
@@ -65,21 +96,7 @@ export function generateFormControls(
           <FormLabel>{rhf.options.label}</FormLabel>
           <FormControl>
             {
-              rhf.options.type === Control.Text ? <Input placeholder={rhf.options.placeHolder} {...field}
-                onChangeCapture={(e) => {
-                  if (onChange) {
-                    onChange(form, rhf.name, e.currentTarget.value)
-                  }
-                }}
-                onBlurCapture={(e) => {
-                  if (onBlur) {
-                    onBlur(form, rhf.name, e.currentTarget.value)
-                  }
-                }}
-              /> :
-                BasicComboboxForm( {form, rhf, onChange, field})
-
-
+              getControl(rhf, field)
             }
           </FormControl>
           <FormMessage />
