@@ -1,9 +1,31 @@
-import { Control, RHFField, ZodValidation } from "@/core/anotations/hook-form";
-import { BaseEntityForm, onBlurFun } from "@/core/classes/base-entity-form";
+import { Control, RHFField, SelectOption, ZodValidation } from "@/core/anotations/hook-form";
+import { BaseEntityForm } from "@/core/classes/base-entity-form";
+import { BasicItem } from "@/core/classes/basic-item";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 
-export class LoginEntity extends BaseEntityForm {
+const emailTypeData: BasicItem<string>[] = [
+  {
+    value: "gmail",
+    text: "xxx.Gmail.com",
+  },
+  {
+    value: "itlvn",
+    text: "xxx.itlvn.com",
+  },
+  {
+    value: "yahoo",
+    text: "xxx.yahoo.com",
+  }
+]
+
+const emailSelectOption: SelectOption = {
+  data: emailTypeData,
+  value: (data) => data.value ?? '',
+  display: (data) => data.text ?? '',
+}
+
+export class LoginEntity extends BaseEntityForm<LoginEntity> {
 
   @RHFField({
     index: 0,
@@ -29,10 +51,20 @@ export class LoginEntity extends BaseEntityForm {
   @RHFField({
     index: 3,
     label: "Email Type",
-    type: Control.Combobox
+    type: Control.Combobox,
+    selectOption: emailSelectOption
   })
   @ZodValidation(z.string())
   emailType: string | undefined;
+
+  @RHFField({
+    index: 4,
+    label: "Agee",
+
+  })
+  @ZodValidation(z.number())
+  age?: number;
+
 
   constructor(username?: string, password?: string) {
     super();
@@ -49,5 +81,15 @@ export class LoginEntity extends BaseEntityForm {
 
   onBlur = (form: UseFormReturn, fieldName: string, value: any) => {
     console.log('onBlur', fieldName, value);
+  }
+
+  onSuperRefine(data: LoginEntity, ctx: z.RefinementCtx): void {
+    if (data.username.includes('hao')) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Username chứa Hao",
+        path: ['username']
+      });
+    }
   }
 }

@@ -1,4 +1,3 @@
-import { ChangeEventHandler, FocusEventHandler } from "react";
 import "reflect-metadata";
 import { z } from "zod";
 
@@ -12,12 +11,19 @@ export enum Control {
   Combobox = 'Combobox',
 }
 
+export type SelectOption = {
+  data: Array<any>;
+  value: (data: any) => any;
+  display: (data: any) => string;
+}
+
 export type RHFOptions = {
   required?: boolean;
   label: string;
   placeHolder?: string;
-  type?: Control,
-  index?: number
+  type?: Control;
+  index?: number;
+  selectOption?: SelectOption;
 }
 
 // Decorator factory for react-hook-form
