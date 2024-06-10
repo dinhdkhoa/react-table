@@ -1,4 +1,4 @@
-export class BasicItem<TValue = unknown>{
+export class BasicItem<TValue> {
     value?: TValue;
     text?: string;
 }

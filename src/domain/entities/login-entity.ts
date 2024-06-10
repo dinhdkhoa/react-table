@@ -19,9 +19,40 @@ const emailTypeData: BasicItem<string>[] = [
   }
 ]
 
-const emailSelectOption: SelectOption = {
+const ageData: BasicItem<number>[] = [
+  {
+    value: 10,
+    text: "10 tuổi",
+  },
+  {
+    value: 20,
+    text: "20 tuổi",
+  },
+  {
+    value: 30,
+    text: "30 tuổi",
+  },
+  {
+    value: 40,
+    text: "40 tuổi",
+  },
+  {
+    value: 50,
+    text: "50 tuổi",
+  },
+]
+
+const emailSelectOption: SelectOption<BasicItem<string>, string> = {
   data: emailTypeData,
   value: (data) => data.value ?? '',
+  valueString: (data) => (data.value ?? ''),
+  display: (data) => data.text ?? '',
+}
+
+const ageSelectOption: SelectOption<BasicItem<number | undefined>, number | undefined> = {
+  data: ageData,
+  value: (data) => (data.value),
+  valueString: (data) => (data.value ?? '').toString(),
   display: (data) => data.text ?? '',
 }
 
@@ -51,18 +82,18 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
   @RHFField({
     index: 3,
     label: "Email Type",
-    type: Control.Combobox,
-    selectOption: emailSelectOption
-  })
+    type: Control.Combobox
+  }, emailSelectOption)
   @ZodValidation(z.string())
   emailType: string | undefined;
 
   @RHFField({
-    index: 4,
-    label: "Agee",
+    index: 3,
+    label: "Age",
+    type: Control.Combobox,
 
-  })
-  @ZodValidation(z.number())
+  }, ageSelectOption)
+  @ZodValidation(z.number().transform(value => Number(value)))
   age?: number;
 
 
@@ -72,11 +103,16 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
     this.password = password || ''
     this.yourName = ''
     this.emailType = '';
+    this.age = 30;
   }
 
   onChange = (form: UseFormReturn, fieldName: string, value: any) => {
     console.log('onChange', fieldName, value);
-    form.setValue('yourName', value + this.username)
+    console.log(form.getValues())
+    // form.setValue('yourName', value + this.username)
+    if(fieldName == 'username' && value.includes('hehehe')){
+      form.setValue('age', 20)
+    }
   }
 
   onBlur = (form: UseFormReturn, fieldName: string, value: any) => {

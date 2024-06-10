@@ -11,10 +11,11 @@ export enum Control {
   Combobox = 'Combobox',
 }
 
-export type SelectOption = {
-  data: Array<any>;
-  value: (data: any) => any;
-  display: (data: any) => string;
+export type SelectOption<TEntity = unknown, TValue = unknown> = {
+  data: Array<TEntity>;
+  value: (data: TEntity) => TValue;
+  valueString: (data: TEntity) => string
+  display: (data: TEntity) => string;
 }
 
 export type RHFOptions = {
@@ -23,20 +24,25 @@ export type RHFOptions = {
   placeHolder?: string;
   type?: Control;
   index?: number;
-  selectOption?: SelectOption;
+  // selectOption?: SelectOption<TOptionEntity, TOptionValue>;
 }
 
 // Decorator factory for react-hook-form
-export function RHFField(options: RHFOptions) {
+export function RHFField<TOptionEntity = unknown, TOptionValue = unknown>(options: RHFOptions, selectOption?: SelectOption<TOptionEntity, TOptionValue>) {
   return function (target: any, propertyKey: string) {
     options.placeHolder = options.placeHolder || options.label;
     options.type = options.type || Control.Text;
     options.index = options.index || 0;
     const fields = Reflect.getMetadata(RHF_FIELDS, target) || {};
-    fields[propertyKey] = options;
+    fields[propertyKey] = { options, selectOption };
     Reflect.defineMetadata(RHF_FIELDS, fields, target);
   };
 }
+
+
+
+export type RHFField = (<TOptionEntity, TOptionValue>(options: RHFOptions, selectOption: SelectOption<TOptionEntity, TOptionValue>) => void) | ((options: RHFOptions) => void);
+
 
 // Decorator factory for zod validation and transformation
 export function ZodValidation(schema: z.ZodType<any, any>) {

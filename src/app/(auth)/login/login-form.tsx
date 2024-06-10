@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { LoginEntity } from "@/domain/entities/login-entity"
-import { Control, RHFOptions, RHF_FIELDS, ZOD_VALIDATIONS } from "@/core/anotations/hook-form"
+import { Control, RHFOptions, RHF_FIELDS, SelectOption, ZOD_VALIDATIONS } from "@/core/anotations/hook-form"
 import { z } from "zod"
 import { onChangeFun, onBlurFun, BaseEntityForm } from "@/core/classes/base-entity-form"
 import { BasicComboboxForm } from "../../../components/form-controls/basic-combobox-form"
@@ -48,7 +48,8 @@ export function generateFormControls(
 ) {
   const fieldsArray = Object.keys(rhfFields).map((fieldName) => ({
     name: fieldName,
-    options: rhfFields[fieldName] as RHFOptions
+    options: rhfFields[fieldName]['options'] as RHFOptions,
+    selectOption: rhfFields[fieldName]['selectOption'] as SelectOption
   }));
 
   // Sort fields by index
@@ -60,7 +61,7 @@ export function generateFormControls(
       control={form.control}
       name={rhf.name}
       render={({ field }) => (
-        <FormItem>
+        <FormItem className="flex flex-col">
           <FormLabel>{rhf.options.label}</FormLabel>
           <FormControl>
             {
@@ -76,7 +77,6 @@ export function generateFormControls(
                   }
                 }}
               /> :
-
                 BasicComboboxForm( {form, rhf, onChange})
 
 

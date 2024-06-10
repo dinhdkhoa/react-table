@@ -19,13 +19,15 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { UseFormReturn } from "react-hook-form"
-import { RHFOptions } from "@/core/anotations/hook-form"
+import { RHFOptions, SelectOption } from "@/core/anotations/hook-form"
 import { onChangeFun } from "@/core/classes/base-entity-form"
+import { useEffect } from "react"
 
 export type BasicComboboxFormType = {
   form: UseFormReturn,
-  rhf: { name: string, options: RHFOptions },
-  onChange?: onChangeFun
+  rhf: { name: string, options: RHFOptions, selectOption?: SelectOption },
+  onChange?: onChangeFun,
+  formValue?: any
 }
 
 const clearFilter = (onClick: () => void) => (
@@ -39,11 +41,18 @@ export function BasicComboboxForm(
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState<any>(form.getValues(rhf.name))
 
+  useEffect(() => {
+    setValue(form.getValues(rhf.name))
+    // if (onChange) {
+    //   onChange(form, rhf.name, form.getValues(rhf.name))
+    // }
+  }, [form.getValues(rhf.name)])
+
   const display = () => {
     if (value) {
-      const findItem = rhf.options.selectOption?.data.find((basicItem) => rhf.options.selectOption?.value(basicItem) == value);
+      const findItem = rhf.selectOption?.data.find((basicItem) => rhf.selectOption?.value(basicItem) == value);
       if (findItem) {
-        return rhf.options.selectOption?.display(findItem) || '';
+        return rhf.selectOption?.display(findItem) || '';
       }
       return 'N/A';
     }
@@ -51,8 +60,16 @@ export function BasicComboboxForm(
     return `Select ${rhf.options.label}`
   }
 
-  const key = (item: any) => {
-    return rhf.options.selectOption!.value(item)?.toString()
+  const getKey = (item: any) => {
+    return rhf.selectOption!.value(item)?.toString()
+  }
+
+  const getValueString = (item: any) => {
+    return getKey(item);
+  }
+
+  const getValue = (item: any) => {
+    rhf.selectOption?.value(item);
   }
 
   return (
@@ -62,7 +79,7 @@ export function BasicComboboxForm(
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className="justify-between"
         >
           <span className="truncate">{value
             ? display()
@@ -76,20 +93,21 @@ export function BasicComboboxForm(
           }) : <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-full	p-0">
         <Command>
           <CommandInput placeholder={`Search ${rhf.options.label}`} />
           <CommandList>
             <CommandEmpty>{`No ${rhf.options.label} found`}</CommandEmpty>
             <CommandGroup>
-              {rhf.options.selectOption?.data.map((basicItem) => (
+              {rhf.selectOption?.data.map((basicItem) => (
                 <CommandItem
-                  key={key(basicItem)}
-                  value={key(basicItem)}
+                  key={getKey(basicItem)}
+                  value={getValueString(basicItem)}
                   onSelect={(currentValue) => {
-                    const _value = (currentValue == value ? undefined : currentValue);
+                    const _valueString = (currentValue == value ? undefined : currentValue);
+                    const _value = getValue(basicItem);
                     form.setValue(rhf.name, _value)
-                    setValue(_value)
+                    setValue(_valueString)
                     if (onChange) {
                       onChange(form, rhf.name, _value);
                     }
@@ -99,10 +117,10 @@ export function BasicComboboxForm(
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      value == rhf.options.selectOption!.value(basicItem) ? "opacity-100" : "opacity-0"
+                      value == rhf.selectOption!.value(basicItem) ? "opacity-100" : "opacity-0"
                     )}
                   />
-                  {rhf.options.selectOption!.display(basicItem)}
+                  {rhf.selectOption!.display(basicItem)}
                 </CommandItem>
               ))}
             </CommandGroup>
