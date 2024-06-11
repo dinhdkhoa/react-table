@@ -1,48 +1,69 @@
 import "reflect-metadata";
 import { z } from "zod";
 
-export const RHF_FIELDS = 'rhf:fields';
-export const ZOD_VALIDATIONS = 'zod:validations';
-
 export enum Control {
   Text = 'Text',
   Number = 'Number',
   Checkbox = 'CheckBox',
   Combobox = 'Combobox',
+  Date = "Date",
 }
 
-export type SelectOption<TEntity = unknown, TValue = unknown> = {
+export type BasicControl = { type: Control }
+export type TextControl = BasicControl & {
+  type: Control.Text,
+  minLength?: number,
+  maxLength?: number,
+}
+export type NumberControl = BasicControl & {
+  type: Control.Number,
+  min?: number,
+  max?: number,
+}
+export type CheckboxControl = BasicControl;
+export type ComboboxControl<TOption, TOptionValue> = BasicControl & {
+  selectOption: SelectOption<TOption, TOptionValue>
+}
+export type DateControl = BasicControl & {
+  type: Control.Date,
+  includeTime: boolean
+}
+
+export const DefaultTextControl: TextControl = { type: Control.Text };
+export const DefaultNumberControl: NumberControl = { type: Control.Number };
+export const DefaultCheckboxControl: CheckboxControl = { type: Control.Checkbox };
+export const DefaultDateControl: DateControl = { type: Control.Date, includeTime: false }
+export const DefaultDateTimeControl: DateControl = { type: Control.Date, includeTime: true }
+
+export const RHF_FIELDS = 'rhf:fields';
+export const ZOD_VALIDATIONS = 'zod:validations';
+
+export type SelectOption<TEntity, TValue> = {
   data: Array<TEntity>;
   value: (data: TEntity) => TValue;
   valueString: (data: TEntity) => string
   display: (data: TEntity) => string;
 }
 
-export type RHFOptions = {
+export type RHFOptions<TOption, TOptionValue> = {
   required?: boolean;
   label: string;
   placeHolder?: string;
-  type?: Control;
+  type: TextControl | NumberControl | ComboboxControl<TOption, TOptionValue> | DateControl | CheckboxControl;
   index?: number;
-  // selectOption?: SelectOption<TOptionEntity, TOptionValue>;
 }
 
 // Decorator factory for react-hook-form
-export function RHFField<TOptionEntity = unknown, TOptionValue = unknown>(options: RHFOptions, selectOption?: SelectOption<TOptionEntity, TOptionValue>) {
+export function RHFField<TOption, TOptionValue>(options: RHFOptions<TOption, TOptionValue>) {
   return function (target: any, propertyKey: string) {
     options.placeHolder = options.placeHolder || options.label;
-    options.type = options.type || Control.Text;
+    // options.type = options.type || Control.Text;
     options.index = options.index || 0;
     const fields = Reflect.getMetadata(RHF_FIELDS, target) || {};
-    fields[propertyKey] = { options, selectOption };
+    fields[propertyKey] = { options };
     Reflect.defineMetadata(RHF_FIELDS, fields, target);
   };
 }
-
-
-
-export type RHFField = (<TOptionEntity, TOptionValue>(options: RHFOptions, selectOption: SelectOption<TOptionEntity, TOptionValue>) => void) | ((options: RHFOptions) => void);
-
 
 // Decorator factory for zod validation and transformation
 export function ZodValidation(schema: z.ZodType<any, any>) {

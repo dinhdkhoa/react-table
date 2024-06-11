@@ -12,18 +12,20 @@ import {
   FormLabel,
   FormMessage
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
 import { LoginEntity } from "@/domain/entities/login-entity"
-import { Control, RHFOptions, RHF_FIELDS, SelectOption, ZOD_VALIDATIONS } from "@/core/anotations/hook-form"
+import { ComboboxControl, Control, TextControl, NumberControl, RHFOptions, RHF_FIELDS, ZOD_VALIDATIONS, DateControl } from "@/core/anotations/hook-form"
 import { z } from "zod"
 import { onChangeFun, onBlurFun, BaseEntityForm } from "@/core/classes/base-entity-form"
 import { BasicComboboxForm } from "../../../components/form-controls/basic-combobox-form"
 import { BasicCheckboxForm } from "@/components/form-controls/base-checkbox-form"
+import { useState } from "react"
+import { BasicTextInputForm } from "@/components/form-controls/base-text-input-form"
+import { BasicNumberInputForm } from "@/components/form-controls/base-number-input-form"
+import { BasicDateTimeInputForm } from "@/components/form-controls/base-date-time-form"
 
-export type ReactHookField = {
+export type ReactHookField<TOption = unknown, TOptionValue = unknown> = {
   name: string,
-  options: RHFOptions,
-  selectOption?: SelectOption
+  options: RHFOptions<TOption, TOptionValue>
 }
 
 export function useEntityForm<TEntity extends BaseEntityForm<TEntity>>(entity: TEntity) {
@@ -53,34 +55,27 @@ export function generateFormControls(
   onChange?: onChangeFun,
   onBlur?: onBlurFun
 ) {
-  const fieldsArray = Object.keys(rhfFields).map<ReactHookField>((fieldName) => ({
+  const fieldsArray = Object.keys(rhfFields).map((fieldName) => ({
     name: fieldName,
-    options: rhfFields[fieldName]['options'] as RHFOptions,
-    selectOption: rhfFields[fieldName]['selectOption'] as SelectOption
+    options: rhfFields[fieldName]['options'] as RHFOptions<any, any>
   }));
 
   // Sort fields by index
   fieldsArray.sort((a, b) => (a.options.index ?? 0) - (b.options.index ?? 0));
 
   const getControl = (rhf: ReactHookField, field: ControllerRenderProps<FieldValues, string>) => {
-    switch (rhf.options.type) {
+
+    switch (rhf.options.type.type) {
       case Control.Text:
-        return (<Input placeholder={rhf.options.placeHolder} {...field}
-          onChangeCapture={(e) => {
-            if (onChange) {
-              onChange(form, rhf.name, e.currentTarget.value)
-            }
-          }}
-          onBlurCapture={(e) => {
-            if (onBlur) {
-              onBlur(form, rhf.name, e.currentTarget.value)
-            }
-          }}
-        />)
+        return BasicTextInputForm({ form, rhf, field, onChange, onBlur, type: (rhf.options.type as TextControl) })
+      case Control.Number:
+        return BasicNumberInputForm({ form, rhf, field, onChange, onBlur, type: (rhf.options.type as NumberControl) })
       case Control.Combobox:
-        return BasicComboboxForm({ form, rhf, onChange, field });
+        return BasicComboboxForm({ form, rhf, field, onChange, type: (rhf.options.type as ComboboxControl<any, any>) });
       case Control.Checkbox:
-        return BasicCheckboxForm({ form, rhf, onChange, field });
+        return BasicCheckboxForm({ form, rhf, field, onChange });
+      case Control.Date:
+        return BasicDateTimeInputForm({ form, rhf, field, onChange, type: (rhf.options.type as DateControl) });
       default:
         break;
     }
@@ -108,7 +103,7 @@ export function generateFormControls(
 
 
 export function LoginForm() {
-  const loginE = new LoginEntity('bound.hao@itlvn.com', '123');
+  const [loginE] = useState<LoginEntity>(new LoginEntity('bound.hao@itlvn.com', '123'))
 
   const { form, register, handleSubmit, errors, rhfFields } = useEntityForm(loginE);
 

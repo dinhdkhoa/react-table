@@ -1,4 +1,4 @@
-import { Control, RHFField, SelectOption, ZodValidation } from "@/core/anotations/hook-form";
+import { Control, DefaultCheckboxControl, DefaultDateControl, DefaultNumberControl, DefaultTextControl, RHFField, SelectOption, ZodValidation } from "@/core/anotations/hook-form";
 import { BaseEntityForm } from "@/core/classes/base-entity-form";
 import { BasicItem } from "@/core/classes/basic-item";
 import { UseFormReturn } from "react-hook-form";
@@ -60,14 +60,16 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
 
   @RHFField({
     index: 0,
-    label: "Email"
+    label: "Email",
+    type: DefaultTextControl
   })
   @ZodValidation(z.string().trim().min(1, "This field is required").transform(value => value.trim()))
   username: string;
 
   @RHFField({
     index: 1,
-    label: "Password"
+    label: "Password",
+    type: DefaultTextControl
   })
   @ZodValidation(z.string().trim().min(2, "This field is required").transform(value => value.trim()))
   password: string;
@@ -75,6 +77,7 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
   @RHFField({
     index: 2,
     label: "Your Name",
+    type: DefaultTextControl
   })
   @ZodValidation(z.string().max(5, 'Max length is 5'))
   yourName: string | undefined;
@@ -82,28 +85,52 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
   @RHFField({
     index: 3,
     label: "Email Type",
-    type: Control.Combobox
-  }, emailSelectOption)
+    type: {
+      type: Control.Combobox,
+      selectOption: emailSelectOption
+    }
+  })
   @ZodValidation(z.string())
   emailType: string | undefined;
 
   @RHFField({
     index: 4,
-    label: "Age",
-    type: Control.Combobox,
+    label: "Age Range",
+    type: { type: Control.Combobox, selectOption: ageSelectOption }
+  })
+  @ZodValidation(z.number().transform(value => Number(value)))
+  ageRange?: number;
 
-  }, ageSelectOption)
+  @RHFField({
+    index: 5,
+    label: "Age",
+    type: {
+      type: Control.Number,
+      min: 0,
+      max: 100,
+    }
+  })
   @ZodValidation(z.number().transform(value => Number(value)))
   age?: number;
 
   @RHFField({
     index: 5,
     label: "Sex",
-    type: Control.Checkbox,
-
-  }, ageSelectOption)
+    type: DefaultCheckboxControl
+  })
   @ZodValidation(z.boolean())
   sex?: boolean;
+  
+  @RHFField({
+    index: 6,
+    label: "Date of Birth",
+    type: {
+      type: Control.Date,
+      includeTime: true
+    }
+  })
+  @ZodValidation(z.date())
+  dob?: Date;
 
 
   constructor(username?: string, password?: string) {
@@ -117,15 +144,16 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
   }
 
   onChange = (form: UseFormReturn, fieldName: string, value: any) => {
-    console.log('onChange', fieldName, value);
-    console.log(form.getValues())
+    // console.log('onChange', fieldName, value);
+    console.log('form.getValues()', form.getValues())
+    console.log('this', this)
     // form.setValue('yourName', value + this.username)
     if (fieldName == 'username') {
       if (value.includes('hehehe')) {
-        form.setValue('age', 20)
+        form.setValue('ageRange', 20)
       }
       else if (value.includes('hihihi')) {
-        form.setValue('age', 40)
+        form.setValue('ageRange', 40)
       }
 
     }

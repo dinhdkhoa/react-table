@@ -6,6 +6,7 @@ import { BaseTableConfig } from "@/components/base-table/base-table-config";
 import { FormatColumnType, RowSelectType } from "@/components/base-table/enums";
 import { Person } from "./types";
 import { BaseTable } from "@/components/base-table/base-table";
+import { createColumnHelper } from "@tanstack/react-table";
 
 const defaultData: Person[] = [
     {
@@ -44,6 +45,7 @@ const defaultData: Person[] = [
 
 export default function ENode() {
     const tableConfig = new BaseTableConfig<Person>(Person);
+
     tableConfig.cols.push(
         {
             id: 'firstName',
@@ -70,9 +72,9 @@ export default function ENode() {
         {
             id: 'status',
             accessorKey: 'status',
-            maxSize:400,
-            minSize:400,
-            size:400
+            maxSize: 400,
+            minSize: 400,
+            size: 400
         },
         {
             id: 'date',
@@ -90,18 +92,28 @@ export default function ENode() {
         }
     )
 
-    let aa = new Person()
-    aa.id= '1',
-    aa.firstName= 'tanner',
-    aa.lastName= 'linsley',
-    aa.age=24,
-    aa.visits= 100,
-    aa.status= 'In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship',
-    aa.progress= 50,
-    aa.active= true,
+    let columnHelper = createColumnHelper<Person>();
 
-    
-    tableConfig.colsFixLeft.push('age');
+    columnHelper.accessor(row => row.lastName, {
+        id: '',
+        cell: info => <i>{info.getValue()}</i>,
+        header: () => <span>Last Name</span>,
+        footer: info => info.column.id,
+    });
+
+
+    let aa = new Person()
+    aa.id = '1',
+        aa.firstName = 'tanner',
+        aa.lastName = 'linsley',
+        aa.age = 24,
+        aa.visits = 100,
+        aa.status = 'In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship',
+        aa.progress = 50,
+        aa.active = true,
+
+
+        tableConfig.colsFixLeft.push('age');
     tableConfig.init();
 
     // gridConfig.isActionColumListType = false;
