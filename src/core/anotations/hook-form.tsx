@@ -1,5 +1,9 @@
+import { UseFormReturn } from "react-hook-form";
 import "reflect-metadata";
 import { z } from "zod";
+
+type VisibleFun<TEntity> = (form: UseFormReturn, entity: TEntity) => boolean;
+type DisableFun<TEntity> = (form: UseFormReturn, entity: TEntity) => boolean;
 
 export enum Control {
   Text = 'Text',
@@ -14,6 +18,7 @@ export type TextControl = BasicControl & {
   type: Control.Text,
   minLength?: number,
   maxLength?: number,
+  minLine?: number,
 }
 export type NumberControl = BasicControl & {
   type: Control.Number,
@@ -45,16 +50,18 @@ export type SelectOption<TEntity, TValue> = {
   display: (data: TEntity) => string;
 }
 
-export type RHFOptions<TOption, TOptionValue> = {
+export type RHFOptions<TEntity, TOption, TOptionValue> = {
   required?: boolean;
   label: string;
   placeHolder?: string;
   type: TextControl | NumberControl | ComboboxControl<TOption, TOptionValue> | DateControl | CheckboxControl;
   index?: number;
+  disableFn?: DisableFun<TEntity>;
+  visibleFn?: VisibleFun<TEntity>;
 }
 
 // Decorator factory for react-hook-form
-export function RHFField<TOption, TOptionValue>(options: RHFOptions<TOption, TOptionValue>) {
+export function RHFField<TEntity, TOption, TOptionValue>(options: RHFOptions<TEntity, TOption, TOptionValue>) {
   return function (target: any, propertyKey: string) {
     options.placeHolder = options.placeHolder || options.label;
     // options.type = options.type || Control.Text;

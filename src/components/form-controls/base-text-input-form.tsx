@@ -1,13 +1,25 @@
 "use client"
 
-import { BasicInputFormType, BasicTextFormType } from "./types"
+import { BasicTextFormType } from "./types"
 import { Input } from "../ui/input"
-import { Control } from "@/core/anotations/hook-form"
-export function BasicTextInputForm({ form,
+import { useEffect, useState } from "react"
+export function BasicTextInputForm({ entity, form,
     rhf,
     onChange, onBlur, field, type }: BasicTextFormType) {
+    const [disabled, setDisabled] = useState<boolean>(false);
+    const [visibled, setVisibled] = useState<boolean>(true);
 
-    return (
+    useEffect(() => {
+        if (rhf.options.disableFn) {
+            setDisabled(rhf.options.disableFn(form, entity))
+        }
+        if (rhf.options.visibleFn) {
+            setVisibled(rhf.options.visibleFn(form, entity))
+        }
+        
+    }, [form.getValues()]);
+
+    return (visibled &&
         <Input {...field}
             {...form.register(rhf.name, {
                 onChange: (e) => {
@@ -21,6 +33,7 @@ export function BasicTextInputForm({ form,
                     }
                 }
             })}
+            disabled={disabled}
             placeholder={rhf.options.placeHolder}
             type={'text'}
             minLength={type.minLength}

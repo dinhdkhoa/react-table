@@ -19,16 +19,30 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { BasicComboboxFormType } from "./types"
+import { useEffect, useState } from "react"
 
 const clearFilter = (onClick: () => void) => (
   <X onClick={e => { e.stopPropagation(); onClick(); }} className="ml-2 h-4 w-4 shrink-0" />
 );
 
 export function BasicComboboxForm(
-  { form,
+  { entity, form,
     rhf,
-    onChange, field, type }: BasicComboboxFormType<any, any>) {
+    onChange, field, type }: BasicComboboxFormType<any, any, any>) {
   const [open, setOpen] = React.useState(false)
+
+  const [disabled, setDisabled] = useState<boolean>(false);
+  const [visibled, setVisibled] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (rhf.options.disableFn) {
+      setDisabled(rhf.options.disableFn(form, entity))
+    }
+    if (rhf.options.visibleFn) {
+      setVisibled(rhf.options.visibleFn(form, entity))
+    }
+  }, [form.getValues()]);
+
 
   const display = () => {
     const _value = field.value;
@@ -60,10 +74,11 @@ export function BasicComboboxForm(
     return value;
   }
 
-  return (
+  return (visibled &&
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
+          disabled={disabled}
           variant="outline"
           role="combobox"
           className={cn(

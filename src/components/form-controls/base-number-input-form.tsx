@@ -2,11 +2,24 @@
 
 import { BasicNumberFormType } from "./types"
 import { Input } from "../ui/input"
-export function BasicNumberInputForm({ form,
+import { useEffect, useState } from "react";
+export function BasicNumberInputForm({ entity, form,
     rhf,
     onChange, onBlur, field, type }: BasicNumberFormType) {
 
-    return (
+    const [disabled, setDisabled] = useState<boolean>(false);
+    const [visibled, setVisibled] = useState<boolean>(true);
+
+    useEffect(() => {
+        if (rhf.options.disableFn) {
+            setDisabled(rhf.options.disableFn(form, entity))
+        }
+        if (rhf.options.visibleFn) {
+            setVisibled(rhf.options.visibleFn(form, entity))
+        }
+    }, [form.getValues()]);
+
+    return (visibled &&
         <Input {...field}
             {...form.register(rhf.name, {
                 valueAsNumber: true,
@@ -21,6 +34,7 @@ export function BasicNumberInputForm({ form,
                     }
                 }
             })}
+            disabled={disabled}
             placeholder={rhf.options.placeHolder}
             type={'number'}
             min={type.min}

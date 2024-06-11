@@ -61,7 +61,10 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
   @RHFField({
     index: 0,
     label: "Email",
-    type: DefaultTextControl
+    type: DefaultTextControl,
+    disableFn: (form, entity: LoginEntity) => {
+      return entity.age == 39;
+    }
   })
   @ZodValidation(z.string().trim().min(1, "This field is required").transform(value => value.trim()))
   username: string;
@@ -96,9 +99,15 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
   @RHFField({
     index: 4,
     label: "Age Range",
-    type: { type: Control.Combobox, selectOption: ageSelectOption }
+    type: { type: Control.Combobox, selectOption: ageSelectOption },
+    disableFn: (form, entity: LoginEntity) => {
+      return entity.age == 40;
+    },
+    visibleFn: (form, entity: LoginEntity) => {
+      return entity.age != 35;
+    }
   })
-  @ZodValidation(z.number().transform(value => Number(value)))
+  @ZodValidation(z.number().max(30).optional() .transform(value => Number(value)))
   ageRange?: number;
 
   @RHFField({
@@ -120,7 +129,7 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
   })
   @ZodValidation(z.boolean())
   sex?: boolean;
-  
+
   @RHFField({
     index: 6,
     label: "Date of Birth",
@@ -139,7 +148,7 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
     this.password = password || ''
     this.yourName = ''
     this.emailType = '';
-    this.age = 30;
+    this.age = 40;
     this.sex = true;
   }
 
@@ -164,7 +173,7 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
   }
 
   onSuperRefine(data: LoginEntity, ctx: z.RefinementCtx): void {
-    if (data.username.includes('hao')) {
+    if (data.username?.includes('hao')) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "Username chứa Hao",
