@@ -1,25 +1,11 @@
-"use client"
+'use client'
 
 import { BasicTextFormType } from "./types"
 import { Input } from "../ui/input"
-import { useEffect, useState } from "react"
-export function BasicTextInputForm({ entity, form,
+export function BasicTextInputForm({ form,
     rhf,
-    onChange, onBlur, field, type }: BasicTextFormType) {
-    const [disabled, setDisabled] = useState<boolean>(false);
-    const [visibled, setVisibled] = useState<boolean>(true);
-
-    useEffect(() => {
-        if (rhf.options.disableFn) {
-            setDisabled(rhf.options.disableFn(form, entity))
-        }
-        if (rhf.options.visibleFn) {
-            setVisibled(rhf.options.visibleFn(form, entity))
-        }
-        
-    }, [form.getValues()]);
-
-    return (visibled &&
+    onChange, onBlur, field, type, disabled }: BasicTextFormType) {
+    return (
         <Input {...field}
             {...form.register(rhf.name, {
                 onChange: (e) => {

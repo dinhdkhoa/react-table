@@ -101,13 +101,21 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
     label: "Age Range",
     type: { type: Control.Combobox, selectOption: ageSelectOption },
     disableFn: (form, entity: LoginEntity) => {
-      return entity.age == 40;
+      return form.getValues('age') == 40;
     },
     visibleFn: (form, entity: LoginEntity) => {
-      return entity.age != 35;
+      return form.getValues('age') != 35;
+    },
+    validate: {
+      max30: (value, entity: LoginEntity) => {
+        if (value > 30 && (entity.age ?? 0) > 37) {
+          return 'max 30 nhe'
+        }
+        return true;
+      }
     }
   })
-  @ZodValidation(z.number().max(30).optional() .transform(value => Number(value)))
+  @ZodValidation(z.number().optional().transform(value => Number(value)))
   ageRange?: number;
 
   @RHFField({
@@ -152,33 +160,42 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
     this.sex = true;
   }
 
-  onChange = (form: UseFormReturn, fieldName: string, value: any) => {
-    // console.log('onChange', fieldName, value);
-    console.log('form.getValues()', form.getValues())
-    console.log('this', this)
-    // form.setValue('yourName', value + this.username)
-    if (fieldName == 'username') {
-      if (value.includes('hehehe')) {
-        form.setValue('ageRange', 20)
-      }
-      else if (value.includes('hihihi')) {
-        form.setValue('ageRange', 40)
-      }
+  // onChange = (form: UseFormReturn, fieldName: string, value: any) => {
+  //   // console.log('onChange', fieldName, value);
+  //   console.log('form.getValues()', form.getValues())
+  //   console.log('this', this)
+  //   // form.setValue('yourName', value + this.username)
+  //   if (fieldName == 'username') {
+  //     if (value.includes('hehehe')) {
+  //       form.setValue('ageRange', 20)
+  //     }
+  //     else if (value.includes('hihihi')) {
+  //       form.setValue('ageRange', 40)
+  //     }
 
-    }
-  }
+  //   }
+  // }
 
-  onBlur = (form: UseFormReturn, fieldName: string, value: any) => {
-    console.log('onBlur', fieldName, value);
-  }
+  // onBlur = (form: UseFormReturn, fieldName: string, value: any) => {
+  //   console.log('onBlur', fieldName, value);
+  // }
 
   onSuperRefine(data: LoginEntity, ctx: z.RefinementCtx): void {
-    if (data.username?.includes('hao')) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Username chứa Hao",
-        path: ['username']
-      });
-    }
+
+
+    // if ((data.ageRange ?? 0) > 30) {
+    //   ctx.addIssue({
+    //     code: z.ZodIssueCode.custom,
+    //     message: "Max 30",
+    //     path: ['ageRange']
+    //   });
+    // }
+    // if (data.username?.includes('hao')) {
+    //   ctx.addIssue({
+    //     code: z.ZodIssueCode.custom,
+    //     message: "Username chứa Hao",
+    //     path: ['username']
+    //   });
+    // }
   }
 }

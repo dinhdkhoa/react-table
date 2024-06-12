@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import * as React from "react"
 import { Check, ChevronsUpDown, X } from "lucide-react"
@@ -26,24 +26,10 @@ const clearFilter = (onClick: () => void) => (
 );
 
 export function BasicComboboxForm(
-  { entity, form,
+  { form,
     rhf,
-    onChange, field, type }: BasicComboboxFormType<any, any, any>) {
+    onChange, field, type, disabled }: BasicComboboxFormType<any, any, any>) {
   const [open, setOpen] = React.useState(false)
-
-  const [disabled, setDisabled] = useState<boolean>(false);
-  const [visibled, setVisibled] = useState<boolean>(true);
-
-  useEffect(() => {
-    if (rhf.options.disableFn) {
-      setDisabled(rhf.options.disableFn(form, entity))
-    }
-    if (rhf.options.visibleFn) {
-      setVisibled(rhf.options.visibleFn(form, entity))
-    }
-  }, [form.getValues()]);
-
-
   const display = () => {
     const _value = field.value;
     if (_value) {
@@ -74,7 +60,7 @@ export function BasicComboboxForm(
     return value;
   }
 
-  return (visibled &&
+  return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
@@ -108,7 +94,7 @@ export function BasicComboboxForm(
                   value={getKey(language)}
                   key={getValueString(language)}
                   onSelect={() => {
-                    form.setValue(rhf.name, getValue(language))
+                    form.setValue(rhf.name, getValue(language), { shouldValidate: true })
                     if (onChange) {
                       onChange(form, rhf.name, getValue(language));
                     }

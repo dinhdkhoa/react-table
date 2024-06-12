@@ -1,4 +1,4 @@
-import { UseFormReturn } from "react-hook-form";
+import { FieldPathValue, UseFormReturn, Validate, ValidateResult } from "react-hook-form";
 import "reflect-metadata";
 import { z } from "zod";
 
@@ -58,6 +58,7 @@ export type RHFOptions<TEntity, TOption, TOptionValue> = {
   index?: number;
   disableFn?: DisableFun<TEntity>;
   visibleFn?: VisibleFun<TEntity>;
+  validate?: Record<string, (value: any, formValue: any) => ValidateResult | Promise<ValidateResult>>;
 }
 
 // Decorator factory for react-hook-form

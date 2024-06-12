@@ -32,17 +32,18 @@ export function useEntityForm<TEntity extends BaseEntityForm<TEntity>>(entity: T
   const rhfFields = Reflect.getMetadata(RHF_FIELDS, entity);
   const zodValidations = Reflect.getMetadata(ZOD_VALIDATIONS, entity);
   const schema = z.object(zodValidations).superRefine((val, ctx) => { entity.onSuperRefine(val as TEntity, ctx); })
-  
+
   const form = useForm({
-    resolver: zodResolver(schema),
+    // resolver: zodResolver(schema),
     defaultValues: entity as any
   });
 
+  const { register, handleSubmit, formState: { errors } } = form;
   return {
     form,
-    register: form.register,
-    handleSubmit: form.handleSubmit,
-    errors: form.formState.errors,
+    register,
+    handleSubmit,
+    errors,
     rhfFields
   };
 };
@@ -72,26 +73,40 @@ export function generateFormControls<TEntity>(
 export function CreateControl<TEntity>(form: UseFormReturn, entity: TEntity, rhf: ReactHookField<TEntity>, onChange?: onChangeFun,
   onBlur?: onBlurFun) {
   const [visibled, setVisibled] = useState<boolean>(true);
+  const [disabled, setDisabled] = useState<boolean>(false);
 
   useEffect(() => {
     if (rhf.options.visibleFn) {
       setVisibled(rhf.options.visibleFn(form, entity))
     }
+    if (rhf.options.disableFn) {
+      setDisabled(rhf.options.disableFn(form, entity));
+    }
   }, [form.getValues()]);
 
-  const getControl = (rhf: ReactHookField<TEntity>, field: ControllerRenderProps<FieldValues, string>) => {
 
+  useEffect(() => {
+    form.register(rhf.name, {
+      disabled: (rhf.options.disableFn ? rhf.options.disableFn(form, entity) : false) || !(rhf.options.visibleFn ? rhf.options.visibleFn(form, entity) : true),
+      validate: rhf.options.validate
+    })
+    if (disabled) {
+      form.clearErrors(rhf.name)
+    }
+  }, [disabled, visibled])
+
+  const getControl = (rhf: ReactHookField<TEntity>, field: ControllerRenderProps<FieldValues, string>) => {
     switch (rhf.options.type.type) {
       case Control.Text:
-        return BasicTextInputForm({ entity, form, rhf, field, onChange, onBlur, type: (rhf.options.type as TextControl) })
+        return BasicTextInputForm({ entity, form, rhf, field, onChange, onBlur, type: (rhf.options.type as TextControl), disabled })
       case Control.Number:
-        return BasicNumberInputForm({ entity, form, rhf, field, onChange, onBlur, type: (rhf.options.type as NumberControl) })
+        return BasicNumberInputForm({ entity, form, rhf, field, onChange, onBlur, type: (rhf.options.type as NumberControl), disabled })
       case Control.Combobox:
-        return BasicComboboxForm({ entity, form, rhf, field, onChange, type: (rhf.options.type as ComboboxControl<any, any>) });
+        return BasicComboboxForm({ entity, form, rhf, field, onChange, type: (rhf.options.type as ComboboxControl<any, any>), disabled });
       case Control.Checkbox:
-        return BasicCheckboxForm({ entity, form, rhf, field, onChange });
+        return BasicCheckboxForm({ entity, form, rhf, field, onChange, disabled });
       case Control.Date:
-        return BasicDateTimeInputForm({ entity, form, rhf, field, onChange, type: (rhf.options.type as DateControl) });
+        return BasicDateTimeInputForm({ entity, form, rhf, field, onChange, type: (rhf.options.type as DateControl), disabled });
       default:
         break;
     }
@@ -119,9 +134,7 @@ export function CreateControl<TEntity>(form: UseFormReturn, entity: TEntity, rhf
 
 
 export function LoginForm() {
-  // const loginE = new LoginEntity('bound.hao@itlvn.com', '123'); 
   const [loginE] = useState<LoginEntity>(new LoginEntity('bound.hao@itlvn.com', '123'))
-
   const { form, register, handleSubmit, errors, rhfFields } = useEntityForm(loginE);
 
   const onSubmit = (data: any) => {
@@ -133,10 +146,14 @@ export function LoginForm() {
       <div>{JSON.stringify(form.watch())}</div>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-2 w-full max-w-[400px]">
         {generateFormControls(loginE, form, register, errors, rhfFields, loginE.onChange, loginE.onBlur)}
-        <Button type="submit" className="!mt-8 w-full" disabled={form.formState.isLoading}>
+        <Button type="submit" className="!mt-8 w-full">
           Login
         </Button>
+
       </form>
+      <Button className="!mt-8 w-full" onClick={(_) => { form.reset() }} >
+        Reset
+      </Button>
     </Form>
   );
 }

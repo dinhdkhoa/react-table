@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { BasicDateTimeFormType } from "./types"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
@@ -8,24 +8,11 @@ import { Calendar } from "../ui/calendar"
 import { TimePickerDemo } from "../ui/date-time-input.tsx/time-picker-demo"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
-import { useEffect, useState } from "react"
 export function BasicDateTimeInputForm({ entity, form,
     rhf,
-    onChange, field, type }: BasicDateTimeFormType) {
+    onChange, field, type, disabled }: BasicDateTimeFormType) {
 
-    const [disabled, setDisabled] = useState<boolean>(false);
-    const [visibled, setVisibled] = useState<boolean>(true);
-
-    useEffect(() => {
-        if (rhf.options.disableFn) {
-            setDisabled(rhf.options.disableFn(form, entity))
-        }
-        if (rhf.options.visibleFn) {
-            setVisibled(rhf.options.visibleFn(form, entity))
-        }
-    }, [form.getValues()]);
-
-    return (visibled &&
+    return (
         <Popover>
             <PopoverTrigger asChild>
                 <Button

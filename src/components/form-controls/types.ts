@@ -10,7 +10,8 @@ export type BasicControlFormType<TEntity, TOption, TOptionValue> = {
     rhf: BasicReactHookField<TEntity, TOption, TOptionValue>,
     onChange?: onChangeFun,
     field: ControllerRenderProps<FieldValues, string>,
-    formValue?: any
+    formValue?: any,
+    disabled : boolean
 }
 
 export type BasicCheckboxFormType = BasicControlFormType<any, any, any>;
@@ -18,4 +19,4 @@ export type BasicInputFormType = BasicControlFormType<any, any, any> & { onBlur?
 export type BasicTextFormType = BasicInputFormType & { type: TextControl }
 export type BasicNumberFormType = BasicInputFormType & { type: NumberControl }
 export type BasicDateTimeFormType = BasicControlFormType<any, any, any> & { type: DateControl }
-export type BasicComboboxFormType<TEntity, TOption, TOptionValue> = BasicControlFormType<TEntity, TOption, TOptionValue> & { type: ComboboxControl<TOption, TOptionValue> };
+export type BasicComboboxFormType<TEntity, TOption, TOptionValue> = BasicControlFormType<TEntity, TOption, TOptionValue> & { type: ComboboxControl<TOption, TOptionValue>};

@@ -1,25 +1,12 @@
-"use client"
+'use client'
 
 import { BasicNumberFormType } from "./types"
 import { Input } from "../ui/input"
-import { useEffect, useState } from "react";
-export function BasicNumberInputForm({ entity, form,
+export function BasicNumberInputForm({ form,
     rhf,
-    onChange, onBlur, field, type }: BasicNumberFormType) {
+    onChange, onBlur, field, type, disabled }: BasicNumberFormType) {
 
-    const [disabled, setDisabled] = useState<boolean>(false);
-    const [visibled, setVisibled] = useState<boolean>(true);
-
-    useEffect(() => {
-        if (rhf.options.disableFn) {
-            setDisabled(rhf.options.disableFn(form, entity))
-        }
-        if (rhf.options.visibleFn) {
-            setVisibled(rhf.options.visibleFn(form, entity))
-        }
-    }, [form.getValues()]);
-
-    return (visibled &&
+    return (
         <Input {...field}
             {...form.register(rhf.name, {
                 valueAsNumber: true,
