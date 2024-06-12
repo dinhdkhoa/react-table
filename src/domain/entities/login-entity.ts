@@ -72,7 +72,16 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
   @RHFField({
     index: 1,
     label: "Password",
-    type: DefaultTextControl
+    type: DefaultTextControl,
+    validate: {
+      required: (value, entity: LoginEntity) => {
+    
+         if(value.length < 6 && value.length < 10){
+          return 'required 6 - 10'
+        }
+        return true;
+      }
+    }
   })
   @ZodValidation(z.string().trim().min(2, "This field is required").transform(value => value.trim()))
   password: string;
@@ -93,7 +102,7 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
       selectOption: emailSelectOption
     }
   })
-  @ZodValidation(z.string())
+  @ZodValidation(z.string().email())
   emailType: string | undefined;
 
   @RHFField({
@@ -110,6 +119,12 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
       max30: (value, entity: LoginEntity) => {
         if (value > 30 && (entity.age ?? 0) > 37) {
           return 'max 30 nhe'
+        }
+        return true;
+      },
+      required: (value, entity: LoginEntity) => {
+        if (!value) {
+          return 'required'
         }
         return true;
       }

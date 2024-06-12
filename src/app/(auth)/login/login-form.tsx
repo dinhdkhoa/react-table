@@ -22,6 +22,7 @@ import { useEffect, useState } from "react"
 import { BasicTextInputForm } from "@/components/form-controls/base-text-input-form"
 import { BasicNumberInputForm } from "@/components/form-controls/base-number-input-form"
 import { BasicDateTimeInputForm } from "@/components/form-controls/base-date-time-form"
+import { Getters } from "@/core/helper/helper"
 
 export type ReactHookField<TEntity, TOption = unknown, TOptionValue = unknown> = {
   name: string,
@@ -70,25 +71,57 @@ export function generateFormControls<TEntity>(
   ));
 };
 
+type FormFieldType<T> = Getters<Omit<T, keyof BaseEntityForm<T>>, JSX.Element>
+export function useBaseForm<TEntity>(
+  entity: TEntity,
+  form: UseFormReturn,
+  register: any,
+  errors: any,
+  rhfFields: any,
+  onChange?: onChangeFun,
+  onBlur?: onBlurFun
+) {
+  const fieldsArray = Object.keys(rhfFields).map((fieldName) => ({
+    name: fieldName,
+    options: rhfFields[fieldName]["options"] as RHFOptions<any, any, any>
+  }))
+
+  // Sort fields by index
+  fieldsArray.sort((a, b) => (a.options.index ?? 0) - (b.options.index ?? 0))
+
+  const field: any = {}
+
+  fieldsArray.forEach((rhf) => {
+    field[rhf.name] = CreateControl(form, entity, rhf, onChange, onBlur) || null
+  }) 
+  
+  return field as FormFieldType<TEntity>
+}
+
 export function CreateControl<TEntity>(form: UseFormReturn, entity: TEntity, rhf: ReactHookField<TEntity>, onChange?: onChangeFun,
   onBlur?: onBlurFun) {
   const [visibled, setVisibled] = useState<boolean>(true);
   const [disabled, setDisabled] = useState<boolean>(false);
-
+  
+  
   useEffect(() => {
     if (rhf.options.visibleFn) {
       setVisibled(rhf.options.visibleFn(form, entity))
     }
     if (rhf.options.disableFn) {
-      setDisabled(rhf.options.disableFn(form, entity));
+      setDisabled(rhf.options.disableFn(form, entity))
     }
-  }, [form.getValues()]);
+  }, [form.getValues()])
 
-
+  if (rhf.name == "password") {
+    console.log("visible", rhf.options.visibleFn?.(form, entity))
+    console.log("disableFn", rhf.options.disableFn?.(form, entity))
+  }
   useEffect(() => {
+    console.log('disable')
     form.register(rhf.name, {
       disabled: (rhf.options.disableFn ? rhf.options.disableFn(form, entity) : false) || !(rhf.options.visibleFn ? rhf.options.visibleFn(form, entity) : true),
-      validate: rhf.options.validate
+      validate: rhf.options.validate,
     })
     if (disabled) {
       form.clearErrors(rhf.name)
@@ -134,9 +167,19 @@ export function CreateControl<TEntity>(form: UseFormReturn, entity: TEntity, rhf
 
 
 export function LoginForm() {
+  console.log('form render')
   const [loginE] = useState<LoginEntity>(new LoginEntity('bound.hao@itlvn.com', '123'))
   const { form, register, handleSubmit, errors, rhfFields } = useEntityForm(loginE);
-
+  const field = useBaseForm<LoginEntity>(
+    loginE,
+    form,
+    register,
+    errors,
+    rhfFields,
+    loginE.onChange,
+    loginE.onBlur
+  )
+  console.log(errors)
   const onSubmit = (data: any) => {
     console.log(data);
   };
@@ -144,16 +187,31 @@ export function LoginForm() {
   return (
     <Form {...form}>
       <div>{JSON.stringify(form.watch())}</div>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-2 w-full max-w-[400px]">
-        {generateFormControls(loginE, form, register, errors, rhfFields, loginE.onChange, loginE.onBlur)}
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-2 w-full max-w-[400px]"
+      >
+        <div className="w-25">{field.username}</div>
+
+        {field.age}
+        {field.ageRange}
+        {field.dob}
+        {field.yourName}
+        {field.emailType}
+        {field.sex}
+        {field.password}
         <Button type="submit" className="!mt-8 w-full">
           Login
         </Button>
-
       </form>
-      <Button className="!mt-8 w-full" onClick={(_) => { form.reset() }} >
+      <Button
+        className="!mt-8 w-full"
+        onClick={(_) => {
+          form.reset()
+        }}
+      >
         Reset
       </Button>
     </Form>
-  );
+  )
 }
