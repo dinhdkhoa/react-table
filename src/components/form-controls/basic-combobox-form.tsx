@@ -1,8 +1,5 @@
-'use client'
-
 import * as React from "react"
 import { Check, ChevronsUpDown, X } from "lucide-react"
-
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -18,12 +15,27 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { BasicComboboxFormType } from "./types"
-import { useEffect, useState } from "react"
 
 const clearFilter = (onClick: () => void) => (
   <X onClick={e => { e.stopPropagation(); onClick(); }} className="ml-2 h-4 w-4 shrink-0" />
 );
+
+const getKey = (item: any) => {
+  return type.selectOption!.value(item)?.toString()
+}
+
+const getValueString = (item: any) => {
+  return getKey(item)
+}
+
+const getFieldValueString = () => {
+  return form.getValues(rhf.name)?.toString()
+}
+
+const getValue = (item: any) => {
+  const value = type.selectOption.value(item)
+  return value
+}
 
 export function BasicComboboxForm(
   { form,
@@ -43,22 +55,6 @@ export function BasicComboboxForm(
     return `Select ${rhf.options.label}`
   }
 
-  const getKey = (item: any) => {
-    return type.selectOption!.value(item)?.toString()
-  }
-
-  const getValueString = (item: any) => {
-    return getKey(item);
-  }
-
-  const getFieldValueString = () => {
-    return form.getValues(rhf.name)?.toString();
-  }
-
-  const getValue = (item: any) => {
-    const value = type.selectOption.value(item);
-    return value;
-  }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
