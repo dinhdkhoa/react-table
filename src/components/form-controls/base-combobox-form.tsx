@@ -19,7 +19,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { BasicComboboxFormType } from "./types"
-import { useEffect, useState } from "react"
 
 const clearFilter = (onClick: () => void) => (
   <X onClick={e => { e.stopPropagation(); onClick(); }} className="ml-2 h-4 w-4 shrink-0" />
