@@ -10,6 +10,7 @@ export enum Control {
   TextArea = 'TextArea',
   Number = 'Number',
   Checkbox = 'CheckBox',
+  Switch = 'Switch',
   Combobox = 'Combobox',
   RadioGroup = 'RadioGroup',
   Date = "Date",
@@ -36,7 +37,8 @@ export type NumberControl = BasicControl & {
   min?: number,
   max?: number,
 }
-export type CheckboxControl = BasicControl;
+export type CheckboxControl = {type: Control.Checkbox};
+export type SwitchControl = {type: Control.Switch};
 export type ComboboxControl<TOption, TOptionValue> = BasicControl & {
   type: Control.Combobox,
   selectOption: SelectOption<TOption, TOptionValue>
@@ -72,7 +74,7 @@ export type RHFOptions<TEntity, TOption, TOptionValue> = {
   required?: boolean;
   label: string;
   placeHolder?: string;
-  type: TextControl | TextAreaControl | NumberControl | ComboboxControl<TOption, TOptionValue> | RadioGroupControl<TOption, TOptionValue> | DateControl | CheckboxControl;
+  type: TextControl | TextAreaControl | NumberControl | ComboboxControl<TOption, TOptionValue> | RadioGroupControl<TOption, TOptionValue> | DateControl | CheckboxControl | SwitchControl;
   index?: number;
   disableFn?: DisableFun<TEntity>;
   visibleFn?: VisibleFun<TEntity>;

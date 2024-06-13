@@ -200,6 +200,13 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
   })
   weightRange?: number;
 
+  @RHFField({
+    index: 8,
+    label: "Homeless",
+    type: { type: Control.Switch }
+  })
+  homeLess?: boolean;
+
   constructor(username?: string, password?: string) {
     super();
     this.username = username || '';

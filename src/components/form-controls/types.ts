@@ -15,6 +15,7 @@ export type BasicControlFormType<TEntity, TOption, TOptionValue> = {
 }
 
 export type BasicCheckboxFormType = BasicControlFormType<any, any, any>;
+export type BasicSwitchFormType = BasicControlFormType<any, any, any>;
 export type BasicInputFormType = BasicControlFormType<any, any, any> & { onBlur?: onBlurFun };
 export type BasicTextFormType = BasicInputFormType & { type: TextControl }
 export type BasicTextAreaFormType = BasicInputFormType & { type: TextAreaControl }

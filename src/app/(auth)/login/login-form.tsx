@@ -26,6 +26,7 @@ import { BasicDateTimeInputForm } from "@/components/form-controls/base-date-tim
 import { Getters } from "@/core/helper/helper"
 import { BasicTextAreaInputForm } from "@/components/form-controls/base-text-area-input-form"
 import { BasicRadioGroupForm } from "@/components/form-controls/base-radio-group-form"
+import { BasicSwitchForm } from "@/components/form-controls/base-switch-form";
 
 export type ReactHookField<TEntity, TOption = unknown, TOptionValue = unknown> = {
   name: string,
@@ -157,6 +158,8 @@ export function CreateControl<TEntity>(form: UseFormReturn, entity: TEntity, rhf
         return BasicRadioGroupForm({ entity, form, rhf, field, onChange, type: (rhf.options.type as RadioGroupControl<any, any>), disabled });
       case Control.Checkbox:
         return BasicCheckboxForm({ entity, form, rhf, field, onChange, disabled });
+      case Control.Switch:
+        return BasicSwitchForm({ entity, form, rhf, field, onChange, disabled });
       case Control.Date:
         return BasicDateTimeInputForm({ entity, form, rhf, field, onChange, type: (rhf.options.type as DateControl), disabled });
       default:
@@ -203,7 +206,7 @@ export function LoginForm() {
   return (
     <>
       <Form {...form}>
-        {/* <div>{JSON.stringify(form.watch())}</div> */}
+        <div>{JSON.stringify(form.watch())}</div>
         {/* <div>{JSON.stringify(form.getValues())}</div> */}
         {/* {count} */}
         <form
@@ -221,6 +224,7 @@ export function LoginForm() {
           {field.password}
           {field.profile}
           {field.weightRange}
+          {field.homeLess}
           <Button type="submit" className="!mt-8 w-full">
             Login
           </Button>
