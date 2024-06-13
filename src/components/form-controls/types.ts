@@ -1,4 +1,4 @@
-import { ComboboxControl, DateControl, NumberControl, RHFOptions, SelectOption, TextControl } from "@/core/anotations/hook-form"
+import { ComboboxControl, DateControl, NumberControl, RHFOptions, RadioGroupControl, TextAreaControl, TextControl } from "@/core/anotations/hook-form"
 import { onBlurFun, onChangeFun } from "@/core/classes/base-entity-form"
 import { ControllerRenderProps, FieldValues, UseFormReturn } from "react-hook-form"
 
@@ -11,12 +11,14 @@ export type BasicControlFormType<TEntity, TOption, TOptionValue> = {
     onChange?: onChangeFun,
     field: ControllerRenderProps<FieldValues, string>,
     formValue?: any,
-    disabled : boolean
+    disabled: boolean
 }
 
 export type BasicCheckboxFormType = BasicControlFormType<any, any, any>;
 export type BasicInputFormType = BasicControlFormType<any, any, any> & { onBlur?: onBlurFun };
 export type BasicTextFormType = BasicInputFormType & { type: TextControl }
+export type BasicTextAreaFormType = BasicInputFormType & { type: TextAreaControl }
 export type BasicNumberFormType = BasicInputFormType & { type: NumberControl }
 export type BasicDateTimeFormType = BasicControlFormType<any, any, any> & { type: DateControl }
-export type BasicComboboxFormType<TEntity, TOption, TOptionValue> = BasicControlFormType<TEntity, TOption, TOptionValue> & { type: ComboboxControl<TOption, TOptionValue>};
+export type BasicComboboxFormType<TEntity, TOption, TOptionValue> = BasicControlFormType<TEntity, TOption, TOptionValue> & { type: ComboboxControl<TOption, TOptionValue> };
+export type BasicRadioGroupFormType<TEntity, TOption, TOptionValue> = BasicControlFormType<TEntity, TOption, TOptionValue> & { type: RadioGroupControl<TOption, TOptionValue> };

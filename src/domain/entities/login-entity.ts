@@ -1,7 +1,6 @@
-import { Control, DefaultCheckboxControl, DefaultDateControl, DefaultNumberControl, DefaultTextControl, RHFField, SelectOption, ZodValidation } from "@/core/anotations/hook-form";
+import { Control, DefaultCheckboxControl, DefaultTextAreaControl, DefaultTextControl, Direction, RHFField, SelectOption } from "@/core/anotations/hook-form";
 import { BaseEntityForm } from "@/core/classes/base-entity-form";
 import { BasicItem } from "@/core/classes/basic-item";
-import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 
 const emailTypeData: BasicItem<string>[] = [
@@ -42,6 +41,26 @@ const ageData: BasicItem<number>[] = [
   },
 ]
 
+const weightData: BasicItem<number>[] = [
+  {
+    value: 40,
+    text: "40 Kg",
+  },
+  {
+    value: 45,
+    text: "45 Kg",
+  }, {
+    value: 50,
+    text: "50 Kg",
+  }, {
+    value: 55,
+    text: "55 Kg",
+  }, {
+    value: 60,
+    text: "60 Kg",
+  },
+]
+
 const emailSelectOption: SelectOption<BasicItem<string>, string> = {
   data: emailTypeData,
   value: (data) => data.value ?? '',
@@ -51,6 +70,13 @@ const emailSelectOption: SelectOption<BasicItem<string>, string> = {
 
 const ageSelectOption: SelectOption<BasicItem<number | undefined>, number | undefined> = {
   data: ageData,
+  value: (data) => (data.value),
+  valueString: (data) => (data.value ?? '').toString(),
+  display: (data) => data.text ?? '',
+}
+
+const weightSelectOption: SelectOption<BasicItem<number | undefined>, number | undefined> = {
+  data: weightData,
   value: (data) => (data.value),
   valueString: (data) => (data.value ?? '').toString(),
   display: (data) => data.text ?? '',
@@ -66,7 +92,6 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
       return entity.age == 39;
     }
   })
-  @ZodValidation(z.string().trim().min(1, "This field is required").transform(value => value.trim()))
   username: string;
 
   @RHFField({
@@ -75,15 +100,14 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
     type: DefaultTextControl,
     validate: {
       required: (value, entity: LoginEntity) => {
-    
-         if(value.length < 6 && value.length < 10){
+
+        if (value.length < 6 && value.length < 10) {
           return 'required 6 - 10'
         }
         return true;
       }
     }
   })
-  @ZodValidation(z.string().trim().min(2, "This field is required").transform(value => value.trim()))
   password: string;
 
   @RHFField({
@@ -91,7 +115,6 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
     label: "Your Name",
     type: DefaultTextControl
   })
-  @ZodValidation(z.string().max(5, 'Max length is 5'))
   yourName: string | undefined;
 
   @RHFField({
@@ -102,7 +125,6 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
       selectOption: emailSelectOption
     }
   })
-  @ZodValidation(z.string().email())
   emailType: string | undefined;
 
   @RHFField({
@@ -130,7 +152,6 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
       }
     }
   })
-  @ZodValidation(z.number().optional().transform(value => Number(value)))
   ageRange?: number;
 
   @RHFField({
@@ -142,7 +163,6 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
       max: 100,
     }
   })
-  @ZodValidation(z.number().transform(value => Number(value)))
   age?: number;
 
   @RHFField({
@@ -150,7 +170,6 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
     label: "Sex",
     type: DefaultCheckboxControl
   })
-  @ZodValidation(z.boolean())
   sex?: boolean;
 
   @RHFField({
@@ -161,9 +180,25 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
       includeTime: true
     }
   })
-  @ZodValidation(z.date())
   dob?: Date;
 
+  @RHFField({
+    index: 7,
+    label: "Your Profile",
+    type: DefaultTextAreaControl
+  })
+  profile?: string;
+
+  @RHFField({
+    index: 7,
+    label: "Weight",
+    type: {
+      type: Control.RadioGroup,
+      selectOption: weightSelectOption,
+      direction: Direction.Column
+    }
+  })
+  weightRange?: number;
 
   constructor(username?: string, password?: string) {
     super();
@@ -173,6 +208,7 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
     this.emailType = '';
     this.age = 40;
     this.sex = true;
+    // this.weightRange = 50;
   }
 
   // onChange = (form: UseFormReturn, fieldName: string, value: any) => {

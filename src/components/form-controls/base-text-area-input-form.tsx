@@ -1,13 +1,13 @@
 'use client'
 
-import { BasicTextFormType } from "./types"
-import { Input } from "../ui/input"
-export function BasicTextInputForm({ form,
+import { cn } from "@/lib/utils"
+import { Textarea } from "../ui/textarea"
+import { BasicTextAreaFormType } from "./types"
+export function BasicTextAreaInputForm({ form,
     rhf,
-    onChange, onBlur, field, type, disabled }: BasicTextFormType) {
-    console.log(form.getValues(rhf.name))
+    onChange, onBlur, field, type, disabled }: BasicTextAreaFormType) {
     return (
-        <Input {...field}
+        <Textarea {...field}
             {...form.register(rhf.name, {
                 onChange: (e) => {
                     if (onChange) {
@@ -20,9 +20,9 @@ export function BasicTextInputForm({ form,
                     }
                 }
             })}
+            className={cn((type.resize ? '' : 'resize-none'))}
             disabled={disabled}
             placeholder={rhf.options.placeHolder}
-            type={'text'}
             minLength={type.minLength}
             maxLength={type.maxLength}
         />

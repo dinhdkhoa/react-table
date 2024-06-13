@@ -1,8 +1,9 @@
 "use client"
 
+let count = 0;
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ControllerRenderProps, FieldValues, UseFormReturn, useForm } from "react-hook-form"
-
+import {DevTool} from '@hookform/devtools'
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -13,7 +14,7 @@ import {
   FormMessage
 } from "@/components/ui/form"
 import { LoginEntity } from "@/domain/entities/login-entity"
-import { ComboboxControl, Control, TextControl, NumberControl, RHFOptions, RHF_FIELDS, ZOD_VALIDATIONS, DateControl } from "@/core/anotations/hook-form"
+import { ComboboxControl, Control, TextControl, NumberControl, RHFOptions, RHF_FIELDS, ZOD_VALIDATIONS, DateControl, TextAreaControl, RadioGroupControl } from "@/core/anotations/hook-form"
 import { z } from "zod"
 import { onChangeFun, onBlurFun, BaseEntityForm } from "@/core/classes/base-entity-form"
 import { BasicComboboxForm } from "../../../components/form-controls/basic-combobox-form"
@@ -23,6 +24,8 @@ import { BasicTextInputForm } from "@/components/form-controls/base-text-input-f
 import { BasicNumberInputForm } from "@/components/form-controls/base-number-input-form"
 import { BasicDateTimeInputForm } from "@/components/form-controls/base-date-time-form"
 import { Getters } from "@/core/helper/helper"
+import { BasicTextAreaInputForm } from "@/components/form-controls/base-text-area-input-form"
+import { BasicRadioGroupForm } from "@/components/form-controls/base-radio-group-form"
 
 export type ReactHookField<TEntity, TOption = unknown, TOptionValue = unknown> = {
   name: string,
@@ -93,32 +96,44 @@ export function useBaseForm<TEntity>(
 
   fieldsArray.forEach((rhf) => {
     field[rhf.name] = CreateControl(form, entity, rhf, onChange, onBlur) || null
-  }) 
-  
+  })
+
   return field as FormFieldType<TEntity>
 }
 
 export function CreateControl<TEntity>(form: UseFormReturn, entity: TEntity, rhf: ReactHookField<TEntity>, onChange?: onChangeFun,
   onBlur?: onBlurFun) {
-  const [visibled, setVisibled] = useState<boolean>(true);
-  const [disabled, setDisabled] = useState<boolean>(false);
-  
-  
-  useEffect(() => {
+  const [visibled, setVisibled] = useState<boolean>(() => {
     if (rhf.options.visibleFn) {
-      setVisibled(rhf.options.visibleFn(form, entity))
+      return rhf.options.visibleFn(form, entity);
     }
+    return true;
+  });
+  const [disabled, setDisabled] = useState<boolean>(() => {
     if (rhf.options.disableFn) {
-      setDisabled(rhf.options.disableFn(form, entity))
+      return rhf.options.disableFn(form, entity);
     }
-  }, [form.getValues()])
+    return false;
+  });
 
-  if (rhf.name == "password") {
-    console.log("visible", rhf.options.visibleFn?.(form, entity))
-    console.log("disableFn", rhf.options.disableFn?.(form, entity))
-  }
+
   useEffect(() => {
-    console.log('disable')
+    let sub = form.watch(() => {
+      if (rhf.options.visibleFn) {
+        setVisibled(rhf.options.visibleFn(form, entity));
+      }
+      if (rhf.options.disableFn) {
+        setDisabled(rhf.options.disableFn(form, entity));
+      }
+    })
+
+    return () => {
+      sub.unsubscribe();
+    }
+  }, [])
+
+
+  useEffect(() => {
     form.register(rhf.name, {
       disabled: (rhf.options.disableFn ? rhf.options.disableFn(form, entity) : false) || !(rhf.options.visibleFn ? rhf.options.visibleFn(form, entity) : true),
       validate: rhf.options.validate,
@@ -132,10 +147,14 @@ export function CreateControl<TEntity>(form: UseFormReturn, entity: TEntity, rhf
     switch (rhf.options.type.type) {
       case Control.Text:
         return BasicTextInputForm({ entity, form, rhf, field, onChange, onBlur, type: (rhf.options.type as TextControl), disabled })
+      case Control.TextArea:
+        return BasicTextAreaInputForm({ entity, form, rhf, field, onChange, onBlur, type: (rhf.options.type as TextAreaControl), disabled })
       case Control.Number:
         return BasicNumberInputForm({ entity, form, rhf, field, onChange, onBlur, type: (rhf.options.type as NumberControl), disabled })
       case Control.Combobox:
         return BasicComboboxForm({ entity, form, rhf, field, onChange, type: (rhf.options.type as ComboboxControl<any, any>), disabled });
+      case Control.RadioGroup:
+        return BasicRadioGroupForm({ entity, form, rhf, field, onChange, type: (rhf.options.type as RadioGroupControl<any, any>), disabled });
       case Control.Checkbox:
         return BasicCheckboxForm({ entity, form, rhf, field, onChange, disabled });
       case Control.Date:
@@ -144,7 +163,6 @@ export function CreateControl<TEntity>(form: UseFormReturn, entity: TEntity, rhf
         break;
     }
   }
-
 
   return (visibled &&
     <FormField
@@ -167,7 +185,6 @@ export function CreateControl<TEntity>(form: UseFormReturn, entity: TEntity, rhf
 
 
 export function LoginForm() {
-  console.log('form render')
   const [loginE] = useState<LoginEntity>(new LoginEntity('bound.hao@itlvn.com', '123'))
   const { form, register, handleSubmit, errors, rhfFields } = useEntityForm(loginE);
   const field = useBaseForm<LoginEntity>(
@@ -179,39 +196,45 @@ export function LoginForm() {
     loginE.onChange,
     loginE.onBlur
   )
-  console.log(errors)
   const onSubmit = (data: any) => {
     console.log(data);
   };
-
+  count++;
   return (
-    <Form {...form}>
-      <div>{JSON.stringify(form.watch())}</div>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-2 w-full max-w-[400px]"
-      >
-        <div className="w-25">{field.username}</div>
+    <>
+      <Form {...form}>
+        {/* <div>{JSON.stringify(form.watch())}</div> */}
+        {/* <div>{JSON.stringify(form.getValues())}</div> */}
+        {/* {count} */}
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-2 w-full max-w-[400px]"
+        >
+          <div className="w-25">{field.username}</div>
 
-        {field.age}
-        {field.ageRange}
-        {field.dob}
-        {field.yourName}
-        {field.emailType}
-        {field.sex}
-        {field.password}
-        <Button type="submit" className="!mt-8 w-full">
-          Login
+          {field.age}
+          {field.ageRange}
+          {field.dob}
+          {field.yourName}
+          {field.emailType}
+          {field.sex}
+          {field.password}
+          {field.profile}
+          {field.weightRange}
+          <Button type="submit" className="!mt-8 w-full">
+            Login
+          </Button>
+        </form>
+        <Button
+          className="!mt-8 w-full"
+          onClick={(_) => {
+            form.reset()
+          }}
+        >
+          Reset
         </Button>
-      </form>
-      <Button
-        className="!mt-8 w-full"
-        onClick={(_) => {
-          form.reset()
-        }}
-      >
-        Reset
-      </Button>
-    </Form>
+      </Form>
+      {/* <DevTool control={form.control}/> */}
+    </>
   )
 }

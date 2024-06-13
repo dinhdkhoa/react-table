@@ -7,10 +7,17 @@ type DisableFun<TEntity> = (form: UseFormReturn, entity: TEntity) => boolean;
 
 export enum Control {
   Text = 'Text',
+  TextArea = 'TextArea',
   Number = 'Number',
   Checkbox = 'CheckBox',
   Combobox = 'Combobox',
+  RadioGroup = 'RadioGroup',
   Date = "Date",
+}
+
+export enum Direction {
+  Column = 'Column',
+  Row = 'Row',
 }
 
 export type BasicControl = { type: Control }
@@ -20,6 +27,10 @@ export type TextControl = BasicControl & {
   maxLength?: number,
   minLine?: number,
 }
+export type TextAreaControl = Omit<TextControl, 'type'> & {
+  type: Control.TextArea,
+  resize: boolean
+}
 export type NumberControl = BasicControl & {
   type: Control.Number,
   min?: number,
@@ -27,6 +38,12 @@ export type NumberControl = BasicControl & {
 }
 export type CheckboxControl = BasicControl;
 export type ComboboxControl<TOption, TOptionValue> = BasicControl & {
+  type: Control.Combobox,
+  selectOption: SelectOption<TOption, TOptionValue>
+}
+export type RadioGroupControl<TOption, TOptionValue> = BasicControl & {
+  type: Control.RadioGroup,
+  direction: Direction,
   selectOption: SelectOption<TOption, TOptionValue>
 }
 export type DateControl = BasicControl & {
@@ -35,6 +52,7 @@ export type DateControl = BasicControl & {
 }
 
 export const DefaultTextControl: TextControl = { type: Control.Text };
+export const DefaultTextAreaControl: TextAreaControl = { type: Control.TextArea, resize: true };
 export const DefaultNumberControl: NumberControl = { type: Control.Number };
 export const DefaultCheckboxControl: CheckboxControl = { type: Control.Checkbox };
 export const DefaultDateControl: DateControl = { type: Control.Date, includeTime: false }
@@ -54,7 +72,7 @@ export type RHFOptions<TEntity, TOption, TOptionValue> = {
   required?: boolean;
   label: string;
   placeHolder?: string;
-  type: TextControl | NumberControl | ComboboxControl<TOption, TOptionValue> | DateControl | CheckboxControl;
+  type: TextControl | TextAreaControl | NumberControl | ComboboxControl<TOption, TOptionValue> | RadioGroupControl<TOption, TOptionValue> | DateControl | CheckboxControl;
   index?: number;
   disableFn?: DisableFun<TEntity>;
   visibleFn?: VisibleFun<TEntity>;

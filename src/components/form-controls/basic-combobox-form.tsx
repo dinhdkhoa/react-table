@@ -89,14 +89,16 @@ export function BasicComboboxForm(
           <CommandList>
             <CommandEmpty>{`No ${rhf.options.label} found`}</CommandEmpty>
             <CommandGroup>
-              {type.selectOption.data.map((language) => (
+              {type.selectOption.data.map((item) => (
                 <CommandItem
-                  value={getKey(language)}
-                  key={getValueString(language)}
+                  value={getValueString(item)}
+                  key={getKey(item)}
                   onSelect={() => {
-                    form.setValue(rhf.name, getValue(language), { shouldValidate: true })
+                    const val = getValue(item);
+                    field.onChange(val)
+                    form.setValue(rhf.name, val, { shouldValidate: true })
                     if (onChange) {
-                      onChange(form, rhf.name, getValue(language));
+                      onChange(form, rhf.name, val);
                     }
                     setOpen(false)
                   }}
@@ -104,12 +106,12 @@ export function BasicComboboxForm(
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      getValue(language) === field.value
+                      getValue(item) === field.value
                         ? "opacity-100"
                         : "opacity-0"
                     )}
                   />
-                  {type.selectOption!.display(language)}
+                  {type.selectOption!.display(item)}
                 </CommandItem>
               ))}
             </CommandGroup>
