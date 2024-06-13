@@ -3,7 +3,7 @@
 let count = 0;
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ControllerRenderProps, FieldValues, UseFormReturn, useForm } from "react-hook-form"
-import {DevTool} from '@hookform/devtools'
+import { DevTool } from '@hookform/devtools'
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -136,8 +136,8 @@ export function CreateControl<TEntity>(form: UseFormReturn, entity: TEntity, rhf
 
   useEffect(() => {
     form.register(rhf.name, {
-      disabled: (rhf.options.disableFn ? rhf.options.disableFn(form, entity) : false) || !(rhf.options.visibleFn ? rhf.options.visibleFn(form, entity) : true),
-      validate: rhf.options.validate,
+      // disabled: (rhf.options.disableFn ? rhf.options.disableFn(form, entity) : false) || !(rhf.options.visibleFn ? rhf.options.visibleFn(form, entity) : true),
+      validate: !((rhf.options.disableFn ? rhf.options.disableFn(form, entity) : false) || !(rhf.options.visibleFn ? rhf.options.visibleFn(form, entity) : true)) ? rhf.options.validate : undefined,
     })
     if (disabled) {
       form.clearErrors(rhf.name)
@@ -206,8 +206,8 @@ export function LoginForm() {
   return (
     <>
       <Form {...form}>
-        <div>{JSON.stringify(form.watch())}</div>
-        {/* <div>{JSON.stringify(form.getValues())}</div> */}
+        {/* <div>{JSON.stringify(form.watch())}</div>
+        <div>{JSON.stringify(loginE)}</div> */}
         {/* {count} */}
         <form
           onSubmit={handleSubmit(onSubmit)}
