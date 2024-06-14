@@ -8,30 +8,27 @@ import {
   useFormField
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { RHFSharedType, TextControl } from "@/core/anotations/hook-form"
 import { ChangeEvent, FocusEvent } from "react"
 
-type props = {
-  name: string
+type TextInputPropsType<T extends Record<string, unknown>> = {
+  fieldName: keyof T & string
 }
-const TextInput = ({ ...props }: props) => {
+const TextInput = <TEntity extends RHFSharedType<TEntity, TextControl>>({ fieldName }: TextInputPropsType<TEntity>) => {
   const { form } = useBaseFormContext()
   return (
     <FormField
       control={form.control}
-      name={props.name}
-      render={(params) => <TextInputItem {...params} {...props} />}
+      name={fieldName}
+      render={(params) => <TextInputItem {...params} fieldName={fieldName } />}
     />
   )
 }
 
 const TextInputItem = ({ field, fieldState, formState, ...props }: any) => {
   const { rhf, setAfterDataChanged, form } = useBaseFormContext()
-  const {
-    visibleFn,
-    placeholder,
-    label,
-    disableFn
-  } = rhf[props.name]
+  console.log(rhf)
+  const { placeholder, label, disableFn } = rhf[props.name]
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     field.onChange(e)

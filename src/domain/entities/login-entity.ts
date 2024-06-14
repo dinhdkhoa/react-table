@@ -62,6 +62,7 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
     index: 0,
     label: "Email",
     type: DefaultTextControl,
+    placeholder: 'Email',
     disableFn: (form, entity: LoginEntity) => {
       return entity.age == 39;
     }
@@ -97,6 +98,7 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
   @RHFField({
     index: 3,
     label: "Email Type",
+    placeholder: 'Email Type',
     type: {
       type: Control.Combobox,
       selectOption: emailSelectOption
