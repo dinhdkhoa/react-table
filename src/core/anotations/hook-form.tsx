@@ -50,7 +50,7 @@ export type SelectOption<TEntity, TValue> = {
 type RHFSharedType<TEntity, TControlType extends ControlType> = {
   required?: boolean
   label: string
-  placeHolder?: string
+  placeholder?: string
   index?: number
   name?: keyof TEntity & string
   disableFn?: (form: UseFormReturn, entity: TEntity) => boolean
@@ -76,7 +76,7 @@ export function RHFField<TEntity, TControlType extends ControlType>(
   options: RHFOptions<TEntity, TControlType>
 ) {
   return function (target: any, propertyKey: keyof TEntity & string) {
-    options.placeHolder = options.placeHolder || options.label
+    options.placeholder = options.placeholder || options.label
     // options.type = options.type || Control.Text;
     options.index = options.index || 0
     options.name = propertyKey

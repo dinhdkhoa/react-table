@@ -5,12 +5,14 @@ import { useForm } from "react-hook-form"
 
 import { Button } from "@/components/ui/button"
 import {
+  BaseForm,
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
+  useFormField
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { RegisterBody, RegisterBodyType } from "@/schemaValidations/auth.schema"
@@ -19,6 +21,8 @@ import registerAPI from "./register.api"
 import { useRouter } from "next/navigation"
 import { handleApiError } from "@/lib/utils"
 import { useState } from "react"
+import TextInput from "./_components/input"
+let count = 0 
 
 export function RegisterForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -34,40 +38,27 @@ export function RegisterForm() {
   })
 
   // 2. Define a submit handler.
-  async function onSubmit(values: RegisterBodyType) {
-     if (isLoading) return
-     setIsLoading(true)
-    try {
-      const resp = await registerAPI.register(values)
-      toast.success(resp.payload.message)
-      router.push("/login")
-    } catch (error) {
-      handleApiError(error, form.setError)
-    } finally {
-      setIsLoading(false)
-    }
+  async function onSubmit() {
+    count++
+    form.setValue("email", String(count))
+    
+  }  
+  // console.log(form.getValues())
+  const props : any = {
+    form,
+    name: 'register',
+    onchange: (fieldName: string) => {
+      console.log(fieldName, 'change')
+    },
   }
 
   return (
-    <Form {...form}>
+    <BaseForm {...props}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-2 w-full max-w-[400px]"
       >
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input placeholder="Username" {...field} />
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <TextInput name="email" />
         <FormField
           control={form.control}
           name="email"
@@ -100,21 +91,24 @@ export function RegisterForm() {
         <FormField
           control={form.control}
           name="confirmPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Confirm Password</FormLabel>
-              <FormControl>
-                <Input placeholder="Confirm Password" {...field} />
-              </FormControl>
+          render={({ field, fieldState, formState }) => {
+            // console.log(field.value)
+            return (
+              <FormItem>
+                <FormLabel>Confirm Password</FormLabel>
+                <FormControl>
+                  <Input placeholder="Confirm Password" {...field} />
+                </FormControl>
 
-              <FormMessage />
-            </FormItem>
-          )}
+                <FormMessage />
+              </FormItem>
+            )
+          }}
         />
-        <Button type="submit" className="!mt-8 w-full">
+        <Button type="button" onClick={onSubmit} className="!mt-8 w-full">
           Register
         </Button>
       </form>
-    </Form>
+    </BaseForm>
   )
 }

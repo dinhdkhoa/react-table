@@ -36,6 +36,8 @@ export function BasicTextInputForm<TEntity extends BaseEntityForm<TEntity>>({
         onChange: handleChange,
         onBlur: handleBlur
       })}
+
+      
       disabled={disabled}
       placeholder={rhf.placeHolder}
       type={"text"}

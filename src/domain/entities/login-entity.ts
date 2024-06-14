@@ -175,21 +175,13 @@ export class LoginEntity extends BaseEntityForm<LoginEntity> {
     this.sex = true;
   }
 
-  // onChange = (form: UseFormReturn, fieldName: string, value: any) => {
-  //   // console.log('onChange', fieldName, value);
-  //   console.log('form.getValues()', form.getValues())
-  //   console.log('this', this)
-  //   // form.setValue('yourName', value + this.username)
-  //   if (fieldName == 'username') {
-  //     if (value.includes('hehehe')) {
-  //       form.setValue('ageRange', 20)
-  //     }
-  //     else if (value.includes('hihihi')) {
-  //       form.setValue('ageRange', 40)
-  //     }
-
-  //   }
-  // }
+  onChange = (form: UseFormReturn, fieldName: string | undefined, value: any) => {
+    // console.log('onChange', fieldName, value);
+    // console.log('form.getValues()', form.getValues())
+    console.log(this.username)
+    // form.setValue('yourName', value + this.username)
+ 
+  }
 
   // onBlur = (form: UseFormReturn, fieldName: string, value: any) => {
   //   console.log('onBlur', fieldName, value);
