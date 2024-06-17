@@ -14,7 +14,7 @@ export enum Control {
   Checkbox = "CheckBox",
   Combobox = "Combobox",
   Date = "Date"
-}
+} 
 
 export type TextControl = {
   type: Control.Text
@@ -47,7 +47,7 @@ export type SelectOption<TEntity, TValue> = {
   display: (data: TEntity) => string
 }
 
-type RHFSharedType<TEntity, TControlType extends ControlType> = {
+export type RHFSharedType<TEntity> = {
   required?: boolean
   label: string
   placeholder?: string
@@ -59,7 +59,7 @@ type RHFSharedType<TEntity, TControlType extends ControlType> = {
     string,
     (value: any, formValue: TEntity) => ValidateResult | Promise<ValidateResult>
   >
-} & TControlType
+} 
 
 export type ControlType =
   | TextControl
@@ -68,8 +68,7 @@ export type ControlType =
   | DateControl
   | CheckboxControl
 
-export type RHFOptions<TEntity, TControlType extends ControlType> = RHFSharedType<
-TEntity,TControlType> 
+export type RHFOptions<TEntity, ControlType> = RHFSharedType<TEntity> & ControlType
 
 // Decorator factory for react-hook-form
 export function RHFField<TEntity, TControlType extends ControlType>(

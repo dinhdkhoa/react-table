@@ -55,11 +55,11 @@ const ageSelectOption: SelectOption<BasicItem<number | undefined>, number | unde
   display: (data) => data.text ?? '',
 }
 
-export class LoginEntity extends BaseEntityForm<LoginEntity> {
+export class LoginEntity extends BaseEntityForm {
 
   @RHFField({
     label: "Email",
-    type: Control.Text,
+    type: Control.Number,
     placeholder: 'Email',
 
   })

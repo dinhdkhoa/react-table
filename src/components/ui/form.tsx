@@ -7,11 +7,14 @@ import {
   FieldPath,
   FieldValues,
   FormProvider,
+  UseFormReturn,
   useFormContext,
 } from "react-hook-form"
 
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
+import { ControlType, RHFOptions, TextControl } from "@/core/anotations/hook-form-refac"
+import { BaseEntityForm } from "@/core/classes/base-entity-form"
 
 const Form = FormProvider
 
@@ -35,16 +38,37 @@ type BaseFormContextValue = {
   entity: any
 }
 
-const BaseFormContext = React.createContext<BaseFormContextValue>(
-  {} as BaseFormContextValue
+const createBaseFormContext = <TEntity extends FieldValues = FieldValues, TControlType extends ControlType  = ControlType>() => React.createContext<BaseFormPropsType<TEntity,TControlType> >(
+  {} as BaseFormPropsType<TEntity,TControlType>
 )
 
-const BaseForm = ({ ...props }: any) => {
+const BaseFormContext = createBaseFormContext()
+
+type BaseFormPropsType<TEntity extends FieldValues = FieldValues, TControlType extends ControlType = ControlType> = {
+  form: UseFormReturn<TEntity>
+  rhf: RHFOptions<TEntity, TControlType>
+  entity: TEntity
+  children?: React.ReactNode
+}
+
+const BaseForm = <
+  TEntity  extends FieldValues = FieldValues,
+  TControlType extends ControlType = ControlType,
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+>({
+  ...props
+}: BaseFormPropsType<TEntity, TControlType> &
+  Partial<ControllerProps<TFieldValues, TName>>) => {
   return (
-    <BaseFormContext.Provider value={{form: props.form, rhf: props.rhf, entity: props.entity}}>
-      <Form {...props.form}>
-        {props.children}
-      </Form>
+    <BaseFormContext.Provider
+      value={{
+        form : props.form as any,
+        rhf: props.rhf as any,
+        entity: props.entity
+      }}
+    >
+      <Form<TEntity> {...props.form}>{props.children}</Form>
     </BaseFormContext.Provider>
   )
 }
@@ -62,8 +86,8 @@ const FormField = <
   )
 }
 
-const useBaseFormContext = () => {
-  const baseFormContext = React.useContext(BaseFormContext)
+const useBaseFormContext = <TEntity extends BaseEntityForm, TControlType extends ControlType>() => {
+  const baseFormContext = React.useContext<BaseFormPropsType<TEntity, TControlType>>(BaseFormContext as any)
   
   if (!baseFormContext) {
     throw new Error("useBaseFormContext should be used within <BaseForm>")

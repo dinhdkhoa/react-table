@@ -8,19 +8,27 @@ import {
   useFormField
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { RHFSharedType, TextControl } from "@/core/anotations/hook-form"
+import { RHFOptions, TextControl } from "@/core/anotations/hook-form-refac"
+import { BaseEntityForm } from "@/core/classes/base-entity-form"
 import { ChangeEvent, FocusEvent } from "react"
+import { FieldPath, FieldValues, Path } from "react-hook-form"
 
-type TextInputPropsType<T extends Record<string, unknown>> = {
-  fieldName: keyof T & string
+type TextInputPropsType<
+  TEntity extends BaseEntityForm,
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+> = {
+  name: TName
 }
-const TextInput = <TEntity extends RHFSharedType<TEntity, TextControl>>({ fieldName }: TextInputPropsType<TEntity>) => {
-  const { form } = useBaseFormContext()
+const TextInput = <TEntity extends BaseEntityForm>({
+  name
+}: TextInputPropsType<TEntity>) => {
+  const { form } = useBaseFormContext<TEntity, TextControl>()
   return (
     <FormField
       control={form.control}
-      name={fieldName}
-      render={(params) => <TextInputItem {...params} fieldName={fieldName } />}
+      name={name as Path<TEntity>}
+      render={(params) => <TextInputItem {...params} />}
     />
   )
 }
@@ -47,7 +55,7 @@ const TextInputItem = ({ field, fieldState, formState, ...props }: any) => {
           placeholder={placeholder}
           onChange={handleChange}
           onBlur={handleBlur}
-          disabled={disableFn ? disableFn(formState) : false}
+          disabled={disableFn ? disableFn() : false}
         />
       </FormControl>
       <FormMessage />

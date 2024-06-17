@@ -8,7 +8,7 @@ import { LoginEntity } from "@/domain/entities/login-entity"
 import { createElement, useState } from "react"
 import TextInput from "../register/_components/input"
 
-const useBaseForm = <TEntity extends BaseEntityForm<TEntity>>(
+const useBaseForm = <TEntity extends BaseEntityForm>(
   entity: TEntity
 ) => {
   const [state] = useState(entity)
@@ -18,14 +18,14 @@ const useBaseForm = <TEntity extends BaseEntityForm<TEntity>>(
     defaultValues: entity as any
   })
   return {
-    rhf,
+    rhf : rhf as TEntity,
     form,
     entity: entity
   }
 }
 
 export function LoginForm3() {
-  const { ...props } = useBaseForm(
+  const { ...props } = useBaseForm<LoginEntity>(
     new LoginEntity("bound.hao@itlvn.com", "123")
   )
 

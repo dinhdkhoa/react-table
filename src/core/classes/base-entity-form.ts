@@ -4,8 +4,7 @@ import { RefinementCtx } from "zod";
 
 export type onChangeFun = (form: UseFormReturn, fieldName: string | undefined, value: any) => void;
 export type onBlurFun = (form: UseFormReturn, fieldName: string | undefined, value: any) => void; 
-export abstract class BaseEntityForm<T> extends BaseData {
+export abstract class BaseEntityForm extends BaseData {
     onChange: onChangeFun | undefined;
-    onBlur: onBlurFun | undefined;
-    onSuperRefine(data: T, ctx: RefinementCtx): void{};
+    onBlur?: onBlurFun | undefined;
 }
