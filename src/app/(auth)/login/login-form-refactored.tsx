@@ -1,25 +1,25 @@
 "use client"
-import { useForm } from "react-hook-form"
+import { DefaultValues, useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import { BaseForm } from "@/components/ui/form"
 import { RHF_FIELDS } from "@/core/anotations/hook-form"
 import { BaseEntityForm } from "@/core/classes/base-entity-form"
-import { LoginEntity } from "@/domain/entities/login-entity"
+import { LoginEntity } from "@/domain/entities/login-entity-refactor"
 import { createElement, useState } from "react"
 import TextInput from "../register/_components/input"
 
-const useBaseForm = <TEntity extends BaseEntityForm>(
-  entity: TEntity
-) => {
+function useBaseForm<TEntity>(
+  entity: TEntity & Object
+)  {
   const [state] = useState(entity)
   console.log(state)
   const rhf = Reflect.getMetadata(RHF_FIELDS, entity)
   console.log(rhf)
   const form = useForm({
-    defaultValues: entity as any
+    defaultValues: entity as DefaultValues<TEntity>
   })
   return {
-    rhf : rhf as TEntity,
+    rhf : rhf,
     form,
     entity: entity
   }
@@ -27,7 +27,7 @@ const useBaseForm = <TEntity extends BaseEntityForm>(
 
 export function LoginForm3() {
   const { ...props } = useBaseForm<LoginEntity>(
-    new LoginEntity("bound.hao@itlvn.com", "123")
+    new LoginEntity("bound.hao@itlvn.com")
   )
 
   const onSubmit = () => {

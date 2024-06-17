@@ -14,7 +14,6 @@ import { ChangeEvent, FocusEvent } from "react"
 import { FieldPath, FieldValues, Path } from "react-hook-form"
 
 type TextInputPropsType<
-  TEntity extends BaseEntityForm,
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
 > = {
@@ -27,7 +26,7 @@ const TextInput = <TEntity extends BaseEntityForm>({
   return (
     <FormField
       control={form.control}
-      name={name as Path<TEntity>}
+      name={name}
       render={(params) => <TextInputItem {...params} />}
     />
   )
