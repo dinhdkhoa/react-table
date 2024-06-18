@@ -22,10 +22,12 @@ import { useRouter } from "next/navigation"
 import { handleApiError } from "@/lib/utils"
 import { useState } from "react"
 import TextInput from "./_components/input"
+import { LoginEntity } from "@/domain/entities/login-entity-refactor"
 let count = 0 
 
 export function RegisterForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [state] =useState<LoginEntity>( new LoginEntity('sdfsdfsf'))
   const router = useRouter()
   const form = useForm<RegisterBodyType>({
     resolver: zodResolver(RegisterBody),
@@ -46,10 +48,7 @@ export function RegisterForm() {
   // console.log(form.getValues())
   const props : any = {
     form,
-    name: 'register',
-    onchange: (fieldName: string) => {
-      console.log(fieldName, 'change')
-    },
+    
   }
 
   return (
@@ -58,7 +57,7 @@ export function RegisterForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-2 w-full max-w-[400px]"
       >
-        <TextInput name="email" />
+        {/* <TextInput name="email" /> */}
         <FormField
           control={form.control}
           name="email"

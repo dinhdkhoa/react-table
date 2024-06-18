@@ -52,7 +52,7 @@ type BaseFormPropsType<TEntity extends FieldValues = FieldValues, TControlType e
 }
 
 const BaseForm = <
-  TEntity  extends FieldValues = FieldValues,
+  TEntity extends FieldValues = FieldValues,
   TControlType extends ControlType = ControlType,
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
@@ -63,12 +63,12 @@ const BaseForm = <
   return (
     <BaseFormContext.Provider
       value={{
-        form : props.form as any,
+        form: props.form as any,
         rhf: props.rhf as any,
         entity: props.entity
       }}
     >
-      <Form<TEntity> {...props.form}>{props.children}</Form>
+      <Form {...props.form}>{props.children}</Form>
     </BaseFormContext.Provider>
   )
 }
@@ -95,7 +95,7 @@ const useBaseFormContext = <TEntity extends BaseEntityForm, TControlType extends
 
   const { rhf, form, entity } = baseFormContext
 
-  return { setAfterDataChanged: entity.onChange, form, rhf }
+  return { setAfterDataChanged: entity?.onChange ?? null, form, rhf }
 }
 
 const useFormField = () => {
