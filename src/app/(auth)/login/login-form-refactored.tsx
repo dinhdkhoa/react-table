@@ -8,9 +8,11 @@ import { LoginEntity } from "@/domain/entities/login-entity-refactor"
 import { createElement, useState } from "react"
 import TextInput from "../register/_components/input"
 
+let count = 0;
+
 function useBaseForm<TEntity>(
   entity: TEntity & Object
-)  {
+) {
   const [state] = useState(entity)
 
   const rhf = Reflect.getMetadata(RHF_FIELDS, entity)
@@ -18,9 +20,9 @@ function useBaseForm<TEntity>(
     defaultValues: entity as DefaultValues<TEntity>
   })
   return {
-    rhf : rhf,
+    rhf: rhf,
     form,
-    entity: entity
+    entity: state
   }
 }
 
@@ -32,15 +34,18 @@ export function LoginForm3() {
   const onSubmit = () => {
     console.log()
   }
-
+  count++;
   return (
-    <BaseForm {...props}>
-      <form onSubmit={onSubmit} className="space-y-2 w-full max-w-[400px]">
-        <TextInput name="" />
-        <Button type="submit" className="!mt-8 w-full">
-          Login
-        </Button>
-      </form>
-    </BaseForm>
+    <>{count}
+      <BaseForm {...props}>
+        <form onSubmit={onSubmit} className="space-y-2 w-full max-w-[400px]">
+          <TextInput<LoginEntity> name="username" />
+          <TextInput<LoginEntity> name="password" />
+          <Button type="submit" className="!mt-8 w-full">
+            Login
+          </Button>
+        </form>
+      </BaseForm>
+    </>
   )
 }

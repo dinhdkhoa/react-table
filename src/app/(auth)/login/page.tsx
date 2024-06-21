@@ -12,11 +12,15 @@ import { LoginForm } from "./login-form"
 import { LoginForm3 } from "./login-form-refactored"
 // import { LoginForm2 } from "./login-form copy"
 
+let count = 0;
+
 export default function Login() {
+  count++;
   return (
     <div className="items-center mt-40">
       <Card className="mx-auto max-w-md">
         <CardHeader>
+          {count}
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>
             Enter your infomation below to login your account

@@ -59,23 +59,49 @@ export class LoginEntity extends BaseEntityForm {
 
   @RHFField({
     label: "Email",
-    type: Control.Number,
+    type: Control.Text,
     placeholder: 'Email',
-
+    // visibleFn: (form: UseFormReturn, entity: LoginEntity) => {
+    //   return !entity.abc;
+    // },
+    disableFn: (form: UseFormReturn, entity: LoginEntity) => {
+      // console.log('disableFn', entity, form.getValues());
+      return false;
+    }
   })
   username: string;
 
+  @RHFField({
+    label: ":Password",
+    type: Control.Text,
+    placeholder: 'Password',
+    // visibleFn: (form: UseFormReturn, entity: LoginEntity) => {
+    //   return !entity.abc;
+    // },
+    disableFn: (form: UseFormReturn, entity: LoginEntity) => {
+      // console.log('disableFn', entity, form.getValues());
+      return entity.abc;
+    }
+  })
+  password: string;
+
+
+  abc: boolean;
 
   constructor(username?: string) {
     super();
-    this.username = username || ''
+    this.username = username || '',
+    this.password = '';
+    this.abc = false;
   }
 
   onChange = (form: UseFormReturn, fieldName: string | undefined, value: any) => {
-    console.log(this.username)
-
+    // console.log('onChange', this.username, form.getValues(), this);
+    console.log('onChange',form.getValues());
+   this.abc = this.username == 'ccc'
   }
 
-
-  
+  onBlur = (form: UseFormReturn, fieldName: string | undefined, value: any) => {
+    // console.log('onBlur', this.username, form.getValues(), this)
+  }
 }

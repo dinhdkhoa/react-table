@@ -3,6 +3,7 @@ import {
   ValidateResult
 } from "react-hook-form"
 import "reflect-metadata"
+import { BaseEntityForm } from "../classes/base-entity-form"
 
 
 export enum Control {

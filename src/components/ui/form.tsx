@@ -86,7 +86,7 @@ const FormField = <
   )
 }
 
-const useBaseFormContext = <TEntity extends BaseEntityForm, TControlType extends ControlType>() => {
+const useBaseFormContext = <TControlType extends ControlType, TEntity extends FieldValues = FieldValues>() => {
   const baseFormContext = React.useContext<BaseFormPropsType<TEntity, TControlType>>(BaseFormContext as any)
   
   if (!baseFormContext) {
@@ -95,7 +95,7 @@ const useBaseFormContext = <TEntity extends BaseEntityForm, TControlType extends
 
   const { rhf, form, entity } = baseFormContext
 
-  return { setAfterDataChanged: entity?.onChange ?? null, form, rhf }
+  return { setAfterDataChanged: entity?.onChange ?? null, form, rhf, entity, onBlur: entity?.onBlur }
 }
 
 const useFormField = () => {

@@ -10,8 +10,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { RHFOptions, TextControl } from "@/core/anotations/hook-form-refac"
 import { BaseEntityForm } from "@/core/classes/base-entity-form"
-import { ChangeEvent, FocusEvent } from "react"
-import { FieldPath, FieldValues, Path } from "react-hook-form"
+import { ChangeEvent, FocusEvent, useEffect, useState } from "react"
+import { ControllerFieldState, ControllerProps, ControllerRenderProps, FieldPath, FieldValues, Path, UseFormStateReturn } from "react-hook-form"
 
 type TextInputPropsType<
   TFieldValues extends FieldValues = FieldValues,
@@ -19,31 +19,71 @@ type TextInputPropsType<
 > = {
   name: TName
 }
-const TextInput = <TEntity extends BaseEntityForm>({
+const TextInput = <TEntity extends FieldValues = FieldValues>({
   name
 }: TextInputPropsType<TEntity>) => {
-  const { form } = useBaseFormContext<TEntity, TextControl>()
-  return (
+  const { form, rhf, entity } = useBaseFormContext<TextControl, TEntity>()
+  const { visibleFn } = (rhf as any)[name]['options'];
+
+  const [visibled, setVisibled] = useState<boolean>(() => {
+    if (visibleFn) {
+      return visibleFn(form, entity);
+    }
+    return true;
+  });
+
+  useEffect(() => {
+    if (visibleFn) {
+      setVisibled(visibleFn(form, entity));
+    }
+  }, [form.watch()]);
+
+  return (visibled &&
     <FormField
       control={form.control}
       name={name}
-      render={(params) => <TextInputItem {...params} />}
+      render={(params) => <TextInputItem visibled={visibled} {...params} />}
     />
   )
 }
 
-const TextInputItem = ({ field, fieldState, formState, ...props }: any) => {
-  const { rhf, setAfterDataChanged, form } = useBaseFormContext()
-  console.log(rhf)
-  const { placeholder, label, disableFn } = rhf[props.name]
+const TextInputItem = <TEntity extends FieldValues = FieldValues,>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
+  const { rhf, setAfterDataChanged, form, entity, onBlur } = useBaseFormContext()
+  const { placeholder, label, disableFn } = (rhf as any)[field.name]['options'];
+
+  const [disabled, setDisabled] = useState<boolean>(() => {
+    if (disableFn) {
+      return disableFn(form, entity);
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (disableFn) {
+      setDisabled(disableFn(form, entity));
+    }
+  }, [form.watch()]);
+
+  useEffect(() => {
+    form.register(field.name, {
+      validate: !((disableFn ? disableFn(form, entity) : false) || !visibled) ? rhf.validate : undefined,
+    })
+    if (disabled) {
+      form.clearErrors(field.name)
+    }
+  }, [disableFn, disabled, entity, field.name, form, rhf.validate, visibled])
+
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     field.onChange(e)
     if (setAfterDataChanged)
-      setAfterDataChanged(form, props.name, e.currentTarget.value)
+      setAfterDataChanged(form, field.name, e.currentTarget.value)
   }
   const handleBlur = (e: FocusEvent<HTMLInputElement, Element>) => {
-    field.onBlur(e)
+    field.onBlur();
+    if (onBlur) {
+      onBlur(form, field.name, e.currentTarget.value)
+    }
   }
   return (
     <FormItem>
@@ -54,7 +94,7 @@ const TextInputItem = ({ field, fieldState, formState, ...props }: any) => {
           placeholder={placeholder}
           onChange={handleChange}
           onBlur={handleBlur}
-          disabled={disableFn ? disableFn() : false}
+          disabled={disabled}
         />
       </FormControl>
       <FormMessage />
