@@ -1,49 +1,99 @@
-import { TextControl } from "@/core/anotations/hook-form"
-import { BaseEntityForm, onBlurFun } from "@/core/classes/base-entity-form"
-import { ChangeEvent, FocusEvent } from "react"
-import { Input } from "../ui/input"
-import { BasicControlFormType } from "./types"
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  useBaseFormContext
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { TextControl } from "@/core/anotations/hook-form-refac"
+import { ChangeEvent, FocusEvent, useEffect, useState } from "react"
+import { ControllerFieldState, ControllerRenderProps, FieldValues, Path, UseFormStateReturn } from "react-hook-form"
+import { FieldInputPropsType } from "./types"
 
-type BasicTextInputFormTypeProps<TEntity> = BasicControlFormType<
-  TEntity,
-  TextControl
-> & {
-  onBlur?: onBlurFun
-}
+const BaseTextInput = <TEntity extends FieldValues = FieldValues>({
+  name
+}: FieldInputPropsType<TEntity>) => {
+  const { form, rhf, entity } = useBaseFormContext<TextControl, TEntity>()
+  const { visibleFn } = rhf[name]['options'];
 
-export function BasicTextInputForm<TEntity extends BaseEntityForm<TEntity>>({
-  form,
-  rhf,
-  entity,
-  field,
-  disabled
-}: BasicTextInputFormTypeProps<TEntity>) {
-  const { onChange, onBlur } = entity
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (onChange) {
-      onChange(form, rhf.name, e.currentTarget.value)
+  const [visibled, setVisibled] = useState<boolean>(() => {
+    if (visibleFn) {
+      return visibleFn(form, entity);
     }
-  }
-  const handleBlur = (e: FocusEvent<HTMLInputElement, Element>) => {
-    if (onBlur) {
-      onBlur(form, rhf.name, e.currentTarget.value)
-    }
-  }
-  return (
-    <Input
-      {...field}
-      {...form.register(rhf.name as string, {
-        onChange: handleChange,
-        onBlur: handleBlur
-      })}
+    return true;
+  });
 
-      
-      disabled={disabled}
-      placeholder={rhf.placeHolder}
-      type={"text"}
-      onBlur={handleBlur}
-      minLength={rhf.minLength}
-      maxLength={rhf.maxLength}
+  useEffect(() => {
+    if (visibleFn) {
+      setVisibled(visibleFn(form, entity));
+    }
+  }, [form.watch()]);
+
+  return (visibled &&
+    <FormField
+      control={form.control}
+      name={name}
+      render={(params) => <TextInputItem visibled={visibled} {...params} />}
     />
   )
 }
+
+const TextInputItem = <TEntity extends FieldValues = FieldValues,>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
+  const { rhf, setAfterDataChanged, form, entity, onBlur } = useBaseFormContext<TextControl>()
+  const { placeholder, label, disableFn, validate, minLength, maxLength } = rhf[field.name]['options'];
+
+  const [disabled, setDisabled] = useState<boolean>(() => {
+    if (disableFn) {
+      return disableFn(form, entity);
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (disableFn) {
+      setDisabled(disableFn(form, entity));
+    }
+  }, [form.watch()]);
+
+  useEffect(() => {
+    form.register(field.name, {
+      validate: !((disableFn ? disableFn(form, entity) : false) || !visibled) ? validate : undefined,
+      onChange: handleChange,
+      onBlur: handleBlur
+    })
+    if (disabled) {
+      form.clearErrors(field.name)
+    }
+  }, [disableFn, disabled, entity, field.name, form, validate, visibled])
+
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (setAfterDataChanged)
+      setAfterDataChanged(form, field.name, e.target.value)
+  }
+  const handleBlur = (e: FocusEvent<HTMLInputElement, Element>) => {
+    if (onBlur) {
+      onBlur(form, field.name, e.target.value)
+    }
+  }
+  
+  return (
+    <FormItem>
+      <FormLabel>{label}</FormLabel>
+      <FormControl>
+        <Input
+          {...field}
+          placeholder={placeholder}
+          disabled={disabled}
+          minLength={minLength}
+          maxLength={maxLength}
+        />
+      </FormControl>
+      <FormMessage />
+    </FormItem>
+  )
+}
+
+export default BaseTextInput

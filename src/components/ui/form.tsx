@@ -46,8 +46,9 @@ const BaseFormContext = createBaseFormContext()
 
 type BaseFormPropsType<TEntity extends FieldValues = FieldValues, TControlType extends ControlType = ControlType> = {
   form: UseFormReturn<TEntity>
-  rhf: RHFOptions<TEntity, TControlType>
-  entity: TEntity
+  rhf: Record<string, Record<string, RHFOptions<TEntity, TControlType>>>
+  // rhf: RHFOptions<TEntity, TControlType>,
+  entity: TEntity 
   children?: React.ReactNode
 }
 

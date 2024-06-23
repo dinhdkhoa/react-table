@@ -1,6 +1,6 @@
 import { ControlType, RHFOptions } from "@/core/anotations/hook-form"
 import { BaseEntityForm, onChangeFun } from "@/core/classes/base-entity-form"
-import { ControllerRenderProps, FieldValues, UseFormReturn } from "react-hook-form"
+import { ControllerRenderProps, FieldPath, FieldValues, UseFormReturn } from "react-hook-form"
 
 // export type BasicReactHookField<TEntity, TOption, TOptionValue> = { name: string, options: RHFOptions<TEntity, TOption, TOptionValue> }
 
@@ -9,7 +9,7 @@ export type BasicControlFormType<TEntity, TControlType extends ControlType> = {
     form: UseFormReturn,
     rhf: RHFOptions<TEntity, TControlType>,
     field: ControllerRenderProps<FieldValues, string>,
-    disabled : boolean
+    disabled: boolean
     formValue?: any,
 }
 
@@ -19,3 +19,11 @@ export type BasicControlFormType<TEntity, TControlType extends ControlType> = {
 // export type BasicNumberFormType = BasicInputFormType & { type: NumberControl }
 // export type BasicDateTimeFormType = BasicControlFormType<any, any, any> & { type: DateControl }
 // export type BasicComboboxFormType<TEntity, TOption, TOptionValue> = BasicControlFormType<TEntity, TOption, TOptionValue> & { type: ComboboxControl<TOption, TOptionValue>};
+
+
+export type FieldInputPropsType<
+    TFieldValues extends FieldValues = FieldValues,
+    TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+> = {
+    name: TName
+}

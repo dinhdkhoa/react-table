@@ -1,4 +1,6 @@
 import {
+  FieldValue,
+  FieldValues,
   UseFormReturn,
   ValidateResult
 } from "react-hook-form"
@@ -26,7 +28,7 @@ export type NumberControl = {
   max?: number
 }
 export type CheckboxControl = { type: Control.Checkbox }
-export type ComboboxControl<TOption = {}, TOptionValue = {}> = {
+export type ComboboxControl<TOption = unknown, TOptionValue = unknown> = {
   type: Control.Combobox
   selectOption: SelectOption<TOption, TOptionValue>
 }
@@ -39,19 +41,19 @@ export const RHF_FIELDS = "rhf:fields"
 export const ZOD_VALIDATIONS = "zod:validations"
 
 export type SelectOption<TEntity, TValue> = {
-  data: Array<TEntity>
-  value: (data: TEntity) => TValue
+  data: Array<TEntity>;
+  value: (data: TEntity) => TValue;
   valueString: (data: TEntity) => string
-  display: (data: TEntity) => string
+  display: (data: TEntity) => string;
 }
 
-export type RHFSharedType<TEntity, ControlType> = {
+export type RHFSharedType<TEntity extends FieldValues, ControlType> = {
   required?: boolean
   label?: string
   placeholder?: string
   index?: number
-  disableFn?: (form: UseFormReturn, entity: TEntity) => boolean
-  visibleFn?: (form: UseFormReturn, entity: TEntity) => boolean
+  disableFn?: (form: UseFormReturn<TEntity>, entity: TEntity) => boolean
+  visibleFn?: (form: UseFormReturn<TEntity>, entity: TEntity) => boolean
   validate?: Record<
     string,
     (value: any, formValue: TEntity) => ValidateResult | Promise<ValidateResult>
@@ -65,10 +67,10 @@ export type ControlType =
   | DateControl
   | CheckboxControl
 
-export type RHFOptions<TEntity, ControlType> = RHFSharedType<TEntity, ControlType> 
+export type RHFOptions<TEntity extends FieldValues , ControlType> = RHFSharedType<TEntity, ControlType> 
 
 // Decorator factory for react-hook-form
-export function RHFField<TEntity, ControlType>(
+export function RHFField<TEntity extends FieldValues, ControlType>(
   options: RHFOptions<TEntity, ControlType>
 ) {
   return function (target: any, propertyKey: keyof TEntity & string) {

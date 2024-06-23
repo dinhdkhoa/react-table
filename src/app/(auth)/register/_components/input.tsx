@@ -4,14 +4,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  useBaseFormContext,
-  useFormField
+  useBaseFormContext
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { RHFOptions, TextControl } from "@/core/anotations/hook-form-refac"
-import { BaseEntityForm } from "@/core/classes/base-entity-form"
+import { TextControl } from "@/core/anotations/hook-form-refac"
 import { ChangeEvent, FocusEvent, useEffect, useState } from "react"
-import { ControllerFieldState, ControllerProps, ControllerRenderProps, FieldPath, FieldValues, Path, UseFormStateReturn } from "react-hook-form"
+import { ControllerFieldState, ControllerRenderProps, FieldPath, FieldValues, Path, UseFormStateReturn } from "react-hook-form"
 
 type TextInputPropsType<
   TFieldValues extends FieldValues = FieldValues,
@@ -48,7 +46,7 @@ const TextInput = <TEntity extends FieldValues = FieldValues>({
 }
 
 const TextInputItem = <TEntity extends FieldValues = FieldValues,>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
-  const { rhf, setAfterDataChanged, form, entity, onBlur } = useBaseFormContext()
+  const { rhf, setAfterDataChanged, form, entity, onBlur } = useBaseFormContext<TextControl>()
   const { placeholder, label, disableFn } = (rhf as any)[field.name]['options'];
 
   const [disabled, setDisabled] = useState<boolean>(() => {
@@ -95,6 +93,8 @@ const TextInputItem = <TEntity extends FieldValues = FieldValues,>({ field, fiel
           onChange={handleChange}
           onBlur={handleBlur}
           disabled={disabled}
+          minLength={rhf.minLength}
+          maxLength={rhf.maxLength}
         />
       </FormControl>
       <FormMessage />

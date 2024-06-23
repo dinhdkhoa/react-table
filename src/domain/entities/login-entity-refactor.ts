@@ -72,7 +72,7 @@ export class LoginEntity extends BaseEntityForm {
   username: string;
 
   @RHFField({
-    label: ":Password",
+    label: "Password",
     type: Control.Text,
     placeholder: 'Password',
     // visibleFn: (form: UseFormReturn, entity: LoginEntity) => {
@@ -85,6 +85,47 @@ export class LoginEntity extends BaseEntityForm {
   })
   password: string;
 
+  @RHFField({
+    label: "Date of Birth",
+    type: Control.Date,
+    includeTime: true,
+    // visibleFn: (form: UseFormReturn, entity: LoginEntity) => {
+    //   return !entity.abc;
+    // },
+    disableFn: (form: UseFormReturn, entity: LoginEntity) => {
+      // console.log('disableFn', entity, form.getValues());
+      return entity.abc;
+    }
+  })
+  dob?: Date;
+
+  @RHFField({
+    label: "Male",
+    type: Control.Checkbox,
+    // visibleFn: (form: UseFormReturn, entity: LoginEntity) => {
+    //   return !entity.abc;
+    // },
+    disableFn: (form: UseFormReturn, entity: LoginEntity) => {
+      // console.log('disableFn', entity, form.getValues());
+      return entity.abc;
+    }
+  })
+  male?: boolean;
+
+  @RHFField({
+    label: "Email Type",
+    type: Control.Combobox,
+    selectOption: emailSelectOption,
+    // visibleFn: (form: UseFormReturn, entity: LoginEntity) => {
+    //   return !entity.abc;
+    // },
+    disableFn: (form: UseFormReturn, entity: LoginEntity) => {
+      // console.log('disableFn', entity, form.getValues());
+      return entity.abc;
+    }
+  })
+  emailType?: string;
+
 
   abc: boolean;
 
@@ -93,11 +134,13 @@ export class LoginEntity extends BaseEntityForm {
     this.username = username || '',
     this.password = '';
     this.abc = false;
+    this.dob = new Date();
+    this.male = true;
   }
 
   onChange = (form: UseFormReturn, fieldName: string | undefined, value: any) => {
     // console.log('onChange', this.username, form.getValues(), this);
-    console.log('onChange',form.getValues());
+    console.log('onChange',form.getValues(), this);
    this.abc = this.username == 'ccc'
   }
 
