@@ -2,14 +2,19 @@
 import { DefaultValues, useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import { BaseForm } from "@/components/ui/form"
-import { RHF_FIELDS } from "@/core/anotations/hook-form"
+// import { RHF_FIELDS } from "@/core/anotations/hook-form"
 import { BaseEntityForm } from "@/core/classes/base-entity-form"
 import { LoginEntity } from "@/domain/entities/login-entity-refactor"
 import { createElement, useState } from "react"
 import BaseTextInput from "@/components/form-controls/base-text-input-form"
 import BaseDateTimeInput from "@/components/form-controls/base-date-time-form"
 import BaseCheckboxInput from "@/components/form-controls/base-checkbox-form"
-import BaseCombobxInput from "@/components/form-controls/basic-combobox-form"
+import BaseComboboxInput from "@/components/form-controls/basic-combobox-form"
+import BaseRadioGroupInput from "@/components/form-controls/base-radio-group-form"
+import { RHF_FIELDS } from "@/core/anotations/hook-form-refac"
+import BaseSwitchInput from "@/components/form-controls/base-switch-form"
+import BaseTextAreaInput from "@/components/form-controls/base-text-area-input-form"
+import BaseMultipleSelectInput from "@/components/form-controls/base-multiple-select-form"
 // import TextInput from "../register/_components/input"
 
 let count = 0;
@@ -47,7 +52,11 @@ export function LoginForm3() {
           <BaseTextInput<LoginEntity> name="password" />
           <BaseDateTimeInput<LoginEntity> name="dob"/>
           <BaseCheckboxInput<LoginEntity> name="male"/>
-          <BaseCombobxInput<LoginEntity> name="emailType"/>
+          <BaseComboboxInput<LoginEntity> name="emailType"/>
+          <BaseRadioGroupInput<LoginEntity> name="weightRange"/>
+          <BaseSwitchInput<LoginEntity> name="homeLess"/>
+          <BaseTextAreaInput<LoginEntity> name="yourProfile"/>
+          <BaseMultipleSelectInput<LoginEntity> name="multipleAgeRange"/>
           
           <Button type="submit" className="!mt-8 w-full">
             Login

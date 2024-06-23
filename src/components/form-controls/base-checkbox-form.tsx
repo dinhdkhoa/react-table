@@ -17,7 +17,7 @@ const BaseCheckboxInput = <TEntity extends FieldValues = FieldValues>({
   name
 }: FieldInputPropsType<TEntity>) => {
   const { form, rhf, entity } = useBaseFormContext<CheckboxControl, TEntity>()
-  const { visibleFn } = rhf[name]['options'];
+  const { visibleFn } = rhf[name];
 
   const [visibled, setVisibled] = useState<boolean>(() => {
     if (visibleFn) {
@@ -36,14 +36,14 @@ const BaseCheckboxInput = <TEntity extends FieldValues = FieldValues>({
     <FormField
       control={form.control}
       name={name}
-      render={(params) => <CheckboxItem visibled={visibled} {...params} />}
+      render={(params) => <BaseCheckboxItem visibled={visibled} {...params} />}
     />
   )
 }
 
-const CheckboxItem = <TEntity extends FieldValues = FieldValues,>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
+const BaseCheckboxItem = <TEntity extends FieldValues = FieldValues,>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
   const { rhf, setAfterDataChanged, form, entity } = useBaseFormContext<CheckboxControl>()
-  const { label, disableFn, validate } = rhf[field.name]['options'];
+  const { label, disableFn, validate } = rhf[field.name];
 
   const [disabled, setDisabled] = useState<boolean>(() => {
     if (disableFn) {

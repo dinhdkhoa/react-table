@@ -16,11 +16,11 @@ import { Check, ChevronsUpDown, X } from "lucide-react"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command"
 import { cn } from "@/lib/utils"
 
-const BaseCombobxInput = <TEntity extends FieldValues = FieldValues>({
+const BaseComboboxInput = <TEntity extends FieldValues = FieldValues>({
   name
 }: FieldInputPropsType<TEntity>) => {
   const { form, rhf, entity } = useBaseFormContext<ComboboxControl, TEntity>()
-  const { visibleFn } = rhf[name]['options'];
+  const { visibleFn } = rhf[name];
 
   const [visibled, setVisibled] = useState<boolean>(() => {
     if (visibleFn) {
@@ -39,7 +39,7 @@ const BaseCombobxInput = <TEntity extends FieldValues = FieldValues>({
     <FormField
       control={form.control}
       name={name}
-      render={(params) => <ComboboxInputItem visibled={visibled} {...params} />}
+      render={(params) => <BaseComboboxInputItem visibled={visibled} {...params} />}
     />
   )
 }
@@ -49,9 +49,9 @@ const clearFilter = (onClick: () => void) => (
   <X onClick={e => { e.stopPropagation(); onClick(); }} className="ml-2 h-4 w-4 shrink-0" />
 );
 
-const ComboboxInputItem = <TEntity extends FieldValues = FieldValues>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
-  const { rhf, setAfterDataChanged, form, entity, onBlur } = useBaseFormContext<ComboboxControl, TEntity>()
-  const { placeholder, label, disableFn, selectOption, validate } = rhf[field.name]['options'];
+const BaseComboboxInputItem = <TEntity extends FieldValues = FieldValues>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
+  const { rhf, setAfterDataChanged, form, entity } = useBaseFormContext<ComboboxControl, TEntity>()
+  const { placeholder, label, disableFn, selectOption, validate } = rhf[field.name];
   const [open, setOpen] = useState(false)
 
   const [disabled, setDisabled] = useState<boolean>(() => {
@@ -172,4 +172,4 @@ const ComboboxInputItem = <TEntity extends FieldValues = FieldValues>({ field, f
   )
 }
 
-export default BaseCombobxInput
+export default BaseComboboxInput

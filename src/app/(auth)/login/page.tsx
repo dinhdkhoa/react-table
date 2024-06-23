@@ -20,7 +20,7 @@ export default function Login() {
     <div className="items-center mt-40">
       <Card className="mx-auto max-w-md">
         <CardHeader>
-          {count}
+          
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>
             Enter your infomation below to login your account

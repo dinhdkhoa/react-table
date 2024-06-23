@@ -16,7 +16,7 @@ const BaseTextInput = <TEntity extends FieldValues = FieldValues>({
   name
 }: FieldInputPropsType<TEntity>) => {
   const { form, rhf, entity } = useBaseFormContext<TextControl, TEntity>()
-  const { visibleFn } = rhf[name]['options'];
+  const { visibleFn } = rhf[name];
 
   const [visibled, setVisibled] = useState<boolean>(() => {
     if (visibleFn) {
@@ -35,14 +35,14 @@ const BaseTextInput = <TEntity extends FieldValues = FieldValues>({
     <FormField
       control={form.control}
       name={name}
-      render={(params) => <TextInputItem visibled={visibled} {...params} />}
+      render={(params) => <BaseTextInputItem visibled={visibled} {...params} />}
     />
   )
 }
 
-const TextInputItem = <TEntity extends FieldValues = FieldValues,>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
+const BaseTextInputItem = <TEntity extends FieldValues = FieldValues,>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
   const { rhf, setAfterDataChanged, form, entity, onBlur } = useBaseFormContext<TextControl>()
-  const { placeholder, label, disableFn, validate, minLength, maxLength } = rhf[field.name]['options'];
+  const { placeholder, label, disableFn, validate, minLength, maxLength } = rhf[field.name];
 
   const [disabled, setDisabled] = useState<boolean>(() => {
     if (disableFn) {

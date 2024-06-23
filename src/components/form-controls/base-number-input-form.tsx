@@ -16,7 +16,7 @@ const BaseNumberInput = <TEntity extends FieldValues = FieldValues>({
   name
 }: FieldInputPropsType<TEntity>) => {
   const { form, rhf, entity } = useBaseFormContext<NumberControl, TEntity>()
-  const { visibleFn } = rhf[name]['options'];
+  const { visibleFn } = rhf[name];
 
   const [visibled, setVisibled] = useState<boolean>(() => {
     if (visibleFn) {
@@ -35,14 +35,14 @@ const BaseNumberInput = <TEntity extends FieldValues = FieldValues>({
     <FormField
       control={form.control}
       name={name}
-      render={(params) => <NumberInputItem visibled={visibled} {...params} />}
+      render={(params) => <BaseNumberInputItem visibled={visibled} {...params} />}
     />
   )
 }
 
-const NumberInputItem = <TEntity extends FieldValues = FieldValues,>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
+const BaseNumberInputItem = <TEntity extends FieldValues = FieldValues,>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
   const { rhf, setAfterDataChanged, form, entity, onBlur } = useBaseFormContext<NumberControl>()
-  const { placeholder, label, disableFn, validate, min, max } = rhf[field.name]['options'];
+  const { placeholder, label, disableFn, validate, min, max } = rhf[field.name];
 
   const [disabled, setDisabled] = useState<boolean>(() => {
     if (disableFn) {

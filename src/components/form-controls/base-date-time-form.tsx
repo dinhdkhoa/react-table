@@ -22,7 +22,7 @@ const BaseDateTimeInput = <TEntity extends FieldValues = FieldValues>({
   name
 }: FieldInputPropsType<TEntity>) => {
   const { form, rhf, entity } = useBaseFormContext<DateControl, TEntity>()
-  const { visibleFn } = rhf[name]['options'];
+  const { visibleFn } = rhf[name];
 
   const [visibled, setVisibled] = useState<boolean>(() => {
     if (visibleFn) {
@@ -41,14 +41,14 @@ const BaseDateTimeInput = <TEntity extends FieldValues = FieldValues>({
     <FormField
       control={form.control}
       name={name}
-      render={(params) => <DateTimeInputItem visibled={visibled} {...params} />}
+      render={(params) => <BaseDateTimeInputItem visibled={visibled} {...params} />}
     />
   )
 }
 
-const DateTimeInputItem = <TEntity extends FieldValues = FieldValues,>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
+const BaseDateTimeInputItem = <TEntity extends FieldValues = FieldValues,>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
   const { rhf, setAfterDataChanged, form, entity } = useBaseFormContext<DateControl>()
-  const { placeholder, label, disableFn, validate, includeTime } = rhf[field.name]['options'];
+  const { placeholder, label, disableFn, validate, includeTime } = rhf[field.name];
 
   const [disabled, setDisabled] = useState<boolean>(() => {
     if (disableFn) {
@@ -79,8 +79,6 @@ const DateTimeInputItem = <TEntity extends FieldValues = FieldValues,>({ field, 
       setAfterDataChanged(form, field.name, e)
   }
 
-  console.log("includeTime", includeTime);
-
   return (
     <FormItem>
       <FormLabel>{label}</FormLabel>
@@ -104,14 +102,14 @@ const DateTimeInputItem = <TEntity extends FieldValues = FieldValues,>({ field, 
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0">
-            
+
             <Calendar
               mode="single"
               selected={field.value}
               onSelect={handleChange}
               initialFocus
             />
-            
+
             {includeTime && <div className="p-3 border-t border-border">
               <TimePickerDemo
                 setDate={handleChange}
@@ -120,7 +118,6 @@ const DateTimeInputItem = <TEntity extends FieldValues = FieldValues,>({ field, 
             </div>}
           </PopoverContent>
         </Popover>
-
       </FormControl>
       <FormMessage />
     </FormItem>
