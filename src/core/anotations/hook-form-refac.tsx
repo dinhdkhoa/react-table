@@ -15,7 +15,7 @@ export enum Control {
   Text = "Text",
   TextArea = "TextArea",
   Number = "Number",
-  Checkbox = "CheckBox",
+  Checkbox = "Checkbox",
   Switch = 'Switch',
   Combobox = "Combobox",
   MultipleSelect = 'MultipleSelect',

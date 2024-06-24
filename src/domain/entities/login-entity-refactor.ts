@@ -114,6 +114,20 @@ export class LoginEntity extends BaseEntityForm {
   password: string;
 
   @RHFField({
+    label: "Age",
+    type: Control.Number,
+    placeholder: 'Age',
+    // visibleFn: (form: UseFormReturn, entity: LoginEntity) => {
+    //   return !entity.abc;
+    // },
+    disableFn: (form: UseFormReturn<LoginEntity>, entity: LoginEntity) => {
+      // console.log('disableFn', entity, form.getValues());
+      return entity.abc;
+    }
+  })
+  age?: number;
+
+  @RHFField({
     label: "Date of Birth",
     type: Control.Date,
     includeTime: true,

@@ -15,6 +15,7 @@ import { RHF_FIELDS } from "@/core/anotations/hook-form-refac"
 import BaseSwitchInput from "@/components/form-controls/base-switch-form"
 import BaseTextAreaInput from "@/components/form-controls/base-text-area-input-form"
 import BaseMultipleSelectInput from "@/components/form-controls/base-multiple-select-form"
+import BaseNumberInput from "@/components/form-controls/base-number-input-form"
 // import TextInput from "../register/_components/input"
 
 let count = 0;
@@ -50,6 +51,7 @@ export function LoginForm3() {
         <form onSubmit={onSubmit} className="space-y-2 w-full max-w-[400px]">
           <BaseTextInput<LoginEntity> name="username" />
           <BaseTextInput<LoginEntity> name="password" />
+          <BaseNumberInput<LoginEntity> name="age" />
           <BaseDateTimeInput<LoginEntity> name="dob"/>
           <BaseCheckboxInput<LoginEntity> name="male"/>
           <BaseComboboxInput<LoginEntity> name="emailType"/>
