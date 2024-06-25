@@ -99,7 +99,7 @@ export function Menu({ isOpen }: MenuProps) {
 
 const UserInfo = ({ isOpen }: { isOpen?: boolean }) => {
   return (
-    <div className="w-full items-center flex justify-between ">
+    <div className="w-full items-center flex justify-between lg:hidden">
       {isOpen !== false && (
         <>
           <SidebarAvatarBtn disabled={true} />

@@ -17,7 +17,7 @@ let count = 0;
 export default function Login() {
   count++;
   return (
-    <div className="items-center mt-40">
+    <div className="items-center pt-20">
       <Card className="mx-auto max-w-md">
         <CardHeader>
           

@@ -18,5 +18,7 @@ const ModeToggle = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElemen
   )
 })
 
+ModeToggle.displayName = "ModeToggle"
+
 export default ModeToggle
 

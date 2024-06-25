@@ -25,5 +25,6 @@ const SidebarAvatarBtn = React.forwardRef<HTMLButtonElement, Props>(
   )
 )
 
+SidebarAvatarBtn.displayName = "SidebarAvatarBtn"
 
 export default SidebarAvatarBtn

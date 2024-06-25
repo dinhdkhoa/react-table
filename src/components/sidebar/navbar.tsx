@@ -1,5 +1,6 @@
 import { SheetMenu } from "@/components/sidebar/sheet-menu";
 import PageTitle from "./page-title";
+import { UserProfileMenu } from "./user-profile-menu";
 
 export function Navbar() {
   return (
@@ -9,9 +10,9 @@ export function Navbar() {
           <SheetMenu />
           <PageTitle />
         </div>
-        {/* <div className="flex flex-1 items-center space-x-2 justify-end"> 
-          //right side of header
-        </div> */}
+        <div className="flex flex-1 items-center space-x-2 justify-end"> 
+          <UserProfileMenu isOpen={false}/>
+        </div>
       </div>
     </header>
   )

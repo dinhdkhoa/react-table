@@ -28,6 +28,8 @@ export const handleApiError = (error: unknown, setError?: UseFormSetError<any>, 
   }
 }
 
+export const isClient = typeof window !== 'undefined'
+
 export const decodeJWT = <Payload>(token: string) => {
   return jwt.decode(token) as Payload
 }
