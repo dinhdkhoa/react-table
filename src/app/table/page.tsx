@@ -575,14 +575,14 @@ export default function TableDemo() {
                     // (row.getValue("status") == "failed" && "error")
                   }
                   data-selected={row.getIsSelected()}
-                  data-success={row.getValue("status") == "success"}
-                  data-error={row.getValue("status") == "failed"}
+                  // data-success={row.getValue("status") == "success"}
+                  // data-error={row.getValue("status") == "failed"}
                 >
                   {row.getVisibleCells().map((cell) => (
                     // cell nhỏ thêm px-2 py-0
                     <TableCell
                       key={cell.id}
-                      className="border-r  last:border-r-0 px-2 py-0"
+                      className="border-r last:border-r-0 px-2 py-0 text-xs"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,

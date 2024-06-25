@@ -9,7 +9,7 @@ import { LoginForm } from "./login-form"
 
 export default function Login() {
   return (
-    <div className="items-center mt-40">
+    <div className="items-center pt-20">
       <Card className="mx-auto max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
