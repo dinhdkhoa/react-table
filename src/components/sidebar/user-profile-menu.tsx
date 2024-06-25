@@ -1,22 +1,13 @@
 "use client"
 
-import Link from "next/link"
 import {
-  Ellipsis,
   EllipsisVertical,
   LayoutGrid,
   LogOut,
   User
 } from "lucide-react"
+import Link from "next/link"
 
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-  TooltipProvider
-} from "@/components/ui/tooltip"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,7 +17,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import ModeToggle  from "../mode-toggle"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from "@/components/ui/tooltip"
+import ModeToggle from "../mode-toggle"
 import SidebarAvatarBtn from "./sidebar-avatar-btn"
 import UserInfoLabel from "./user-info-label"
 
@@ -45,7 +42,7 @@ export function UserProfileMenu({ isOpen }: { isOpen?: boolean }) {
             </DropdownMenuTrigger>
           </TooltipTrigger>
           {isOpen == false && (
-            <TooltipContent side="right" hidden={isOpen}>
+            <TooltipContent side="bottom" hidden={isOpen}>
               Profile
             </TooltipContent>
           )}
