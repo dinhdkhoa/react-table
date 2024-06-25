@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import tableEventEmitter from './events';
 
 import {
     ColumnDef,
@@ -30,15 +31,15 @@ import { TableBody, TableFooter, Table as ShadcnTable, TableHeader } from '@/com
 import { CheckedState } from '@radix-ui/react-checkbox'
 import { Input } from '@/components/ui/input'
 import { BaseData } from '@/core/classes/base-data'
-import { FormatColumnType, RowSelectType } from './enums'
+import { FormatColumnType, ModeType, RowSelectType } from './enums'
 import TableActionColumn from './base-table-action'
-import { BaseTableConfig } from './base-table-config'
+import { BaseTableConfig, rowIdsEditingChangeEvent } from './base-table-config'
 import TableHeaderActions from './base-table-header-action'
 import { BaseTableFooter, BaseTableHeader, BaseTableRow } from './base-table-row'
 import BaseTablePagination from './base-table-pagination'
 
-const rowActionId = 'rowAction';
-const rowSelectionId = 'rowSelection';
+export const rowActionId = 'rowAction';
+export const rowSelectionId = 'rowSelection';
 
 declare module '@tanstack/react-table' {
 
@@ -103,6 +104,7 @@ function getActions<T extends BaseData>(
                 actions: props.tableConfig.getActions()
             }}
             menuList={props.tableConfig.isActionColumListType}
+            mode={props.tableConfig.mode}
         />
     )
 }
@@ -135,6 +137,7 @@ export function BaseTable<T extends BaseData>(props: {
     data: Array<T>,
     tableConfig: BaseTableConfig<T>
 }) {
+    const [rowIdsEditing, setRowIdsEditing] = useState(() => [...props.tableConfig.rowIdsEditing]);
     const [columnPinningState, setColumnPinningState] = useState<ColumnPinningState>({})
     const [data] = useState(() => [...props.data]);
     const [rowSelection, setRowSelection] = useState({});
@@ -158,7 +161,7 @@ export function BaseTable<T extends BaseData>(props: {
             return keyValues.join('_');
         }
 
-       return index.toString()
+        return originalRow.__id__ || index.toString()
     }
 
     const columns = useMemo<ColumnDef<T, any>[]>(
@@ -217,9 +220,9 @@ export function BaseTable<T extends BaseData>(props: {
                     enableSorting: false,
                     enableColumnFilter: false,
                     enableResizing: false,
-                    size: 100,
-                    minSize: 100,
-                    maxSize: 100,
+                    size: 120,
+                    minSize: 120,
+                    maxSize: 120,
                     header: () => 'action',
                     cell: ({ row }) => {
                         return getActions(row, props)
@@ -247,6 +250,20 @@ export function BaseTable<T extends BaseData>(props: {
         })
 
     }, [rowSelection])
+
+    useEffect(() => {
+        const handleRowsIdEditingChange = (newValue: Array<string>) => {
+           console.log('newValue', newValue);
+           console.log('rowIdsEditing', rowIdsEditing);
+            setRowIdsEditing(newValue);
+        }
+
+        tableEventEmitter.on(rowIdsEditingChangeEvent, handleRowsIdEditingChange);
+
+        return () => {
+            tableEventEmitter.off(rowIdsEditingChangeEvent, handleRowsIdEditingChange);
+        };
+    }, []);
 
     props.tableConfig.table = useReactTable({
 
@@ -283,21 +300,22 @@ export function BaseTable<T extends BaseData>(props: {
 
     return (
         <div className="max-w-7xl mx-auto mb-10 mt-5">
+            {JSON.stringify(rowIdsEditing)}
             <div className="flex items-center ">
                 <h1 className="text-3xl font-bold leading-tight tracking-tighter md:text-4xl lg:leading-[1.1]">
                     Table
                 </h1>
             </div>
-            <div className="flex items-center py-4">
+            {/* <div className="flex items-center py-4">
                 <Input
-                    placeholder="Filter emails..."
+                    placeholder="Filtebr emails..."
                     value={(props.tableConfig.table!.getColumn("email")?.getFilterValue() as string) ?? ""}
                     onChange={(event) =>
                         props.tableConfig.table!.getColumn("email")?.setFilterValue(event.target.value)
                     }
                     className="max-w-sm"
                 />
-            </div>
+            </div> */}
             <div className="rounded-md border mb-4">
                 <ShadcnTable {...{
                     style: {

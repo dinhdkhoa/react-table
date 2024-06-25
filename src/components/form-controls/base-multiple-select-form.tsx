@@ -79,7 +79,6 @@ const BaseMultipleSelectInputItem = <TEntity extends FieldValues = FieldValues>(
 
 
     const handleChange = (e: any) => {
-        field.onChange(e);
         form.setValue(field.name, e);
         if (setAfterDataChanged)
             setAfterDataChanged(form, field.name, e)

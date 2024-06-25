@@ -72,6 +72,7 @@ export function generateFormControls<TEntity>(
 };
 
 type FormFieldType<T> = Getters<Omit<T, keyof BaseEntityForm<T>>, JSX.Element>
+
 export function useBaseForm<TEntity>(
   entity: TEntity,
   form: UseFormReturn,

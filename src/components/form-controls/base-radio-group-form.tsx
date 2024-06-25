@@ -61,7 +61,7 @@ const BaseRadioGroupItem = <TEntity extends FieldValues = FieldValues,>({ field,
     });
 
     const handleChange = (e: string) => {
-        field.onChange(getValue(e))
+        form.setValue(field.name, getValue(e) as any);
         if (setAfterDataChanged)
             setAfterDataChanged(form, field.name, e)
     }
@@ -106,7 +106,7 @@ const BaseRadioGroupItem = <TEntity extends FieldValues = FieldValues,>({ field,
                 <RadioGroup
                     disabled={disabled}
                     onValueChange={handleChange}
-                    defaultValue={field.value?.toString()}
+                    defaultValue={form.getValues(field.name)?.toString()}
                     className={cn("flex", directionItem)}
                 >{
                         selectOption.data.map(item => (

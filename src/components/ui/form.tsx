@@ -38,8 +38,8 @@ type BaseFormContextValue = {
   entity: any
 }
 
-const createBaseFormContext = <TEntity extends FieldValues = FieldValues, TControlType extends ControlType  = ControlType>() => React.createContext<BaseFormPropsType<TEntity,TControlType> >(
-  {} as BaseFormPropsType<TEntity,TControlType>
+const createBaseFormContext = <TEntity extends FieldValues = FieldValues, TControlType extends ControlType = ControlType>() => React.createContext<BaseFormPropsType<TEntity, TControlType>>(
+  {} as BaseFormPropsType<TEntity, TControlType>
 )
 
 const BaseFormContext = createBaseFormContext()
@@ -47,7 +47,7 @@ const BaseFormContext = createBaseFormContext()
 type BaseFormPropsType<TEntity extends FieldValues = FieldValues, TControlType extends ControlType = ControlType> = {
   form: UseFormReturn<TEntity>
   rhf: Record<string, RHFOptions<TEntity, TControlType>>
-  entity: TEntity 
+  entity: TEntity
   children?: React.ReactNode
 }
 
@@ -88,7 +88,7 @@ const FormField = <
 
 const useBaseFormContext = <TControlType extends ControlType, TEntity extends FieldValues = FieldValues>() => {
   const baseFormContext = React.useContext<BaseFormPropsType<TEntity, TControlType>>(BaseFormContext as any)
-  
+
   if (!baseFormContext) {
     throw new Error("useBaseFormContext should be used within <BaseForm>")
   }
@@ -107,7 +107,7 @@ const useFormField = () => {
   if (!fieldContext) {
     throw new Error("useFormField should be used within <FormField>")
   }
-  
+
 
   const { id } = itemContext
 

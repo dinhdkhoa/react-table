@@ -68,7 +68,7 @@ const BaseSwitchItem = <TEntity extends FieldValues = FieldValues,>({ field, fie
 
 
     const handleChange = (e: boolean) => {
-        field.onChange(e)
+        form.setValue(field.name, e as any);
         if (setAfterDataChanged)
             setAfterDataChanged(form, field.name, e)
     }
@@ -78,7 +78,7 @@ const BaseSwitchItem = <TEntity extends FieldValues = FieldValues,>({ field, fie
             <FormLabel>{label}</FormLabel>
             <FormControl>
                 <div className="flex items-center space-x-2">
-                    <Switch id={field.name} {...field} onCheckedChange={handleChange} disabled={disabled} checked={field.value} />
+                    <Switch id={field.name} {...field} onCheckedChange={handleChange} disabled={disabled} checked={form.getValues(field.name)} />
                     <label
                         htmlFor={field.name}
                         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"

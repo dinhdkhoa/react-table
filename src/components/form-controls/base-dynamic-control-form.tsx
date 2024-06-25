@@ -6,10 +6,10 @@ import BaseTextAreaInput from "./base-text-area-input-form"
 import BaseNumberInput from "./base-number-input-form"
 import BaseCheckboxInput from "./base-checkbox-form"
 import BaseSwitchInput from "./base-switch-form"
-import BaseComboboxInput from "./basic-combobox-form"
 import BaseMultipleSelectInput from "./base-multiple-select-form"
 import BaseRadioGroupInput from "./base-radio-group-form"
 import BaseDateTimeInput from "./base-date-time-form"
+import BaseComboboxInput from "./base-combobox-form"
 
 type Props = {
     name: string
@@ -17,7 +17,7 @@ type Props = {
 
 const BaseDynamicControl = <TEntity extends FieldValues = FieldValues,>(props: Props) => {
     const { rhf } = useBaseFormContext<ControlType, TEntity>()
-    const { type } = rhf[props.name];
+    const { type } = rhf[props.name] ?? {};
 
     const createControl = () => {
         switch (type) {
@@ -40,7 +40,7 @@ const BaseDynamicControl = <TEntity extends FieldValues = FieldValues,>(props: P
             case Control.Date:
                 return <BaseDateTimeInput<TEntity> name={props.name as any} />
             default:
-                return <>Control Is Not Found</>
+                return <></>
         }
     }
     return createControl();

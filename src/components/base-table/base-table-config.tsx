@@ -3,18 +3,23 @@ import { BaseData } from "@/core/classes/base-data";
 import { IActivator } from "@/core/interfaces/activator";
 import { CheckedState } from "@radix-ui/react-checkbox";
 import { ColumnDef, Row, SortingFn, Table, createColumnHelper } from "@tanstack/react-table";
-import { FormatColumnType, RowSelectType } from "./enums";
-import { Delete, List, Pencil } from "lucide-react";
+import { FormatColumnType, ModeType, RowSelectType } from "./enums";
+import { Delete, List, Pencil, Save, X } from "lucide-react";
 import { filterCheckbox, filterNumber, filterOnDate } from "./base-table-filter";
 import { DefaultCell } from "./base-table-cell";
+import { ReactNode } from "react";
+import tableEventEmitter from "./events";
 
 
 export const showChildButtonId = '_row_action_show_child';
+export const saveButtonId = '_row_action_save';
+export const cancelButtonId = '_row_action_cancel';
+export const rowIdsEditingChangeEvent = 'rowsIdsEditingChange'
 
 export interface BaseRowAction<BaseData> {
     id: string,
     name: string,
-    iconChild?: any,
+    iconChild?: ReactNode,
     action?: (data: BaseData) => void,
     disableFn?: (data: BaseData) => boolean,
     visibleFn?: (data: BaseData) => boolean,
@@ -30,10 +35,19 @@ export const isDateColumn = (columnType: FormatColumnType | undefined) => {
 
 export class BaseTableConfig<T extends BaseData> {
     keys: string[] = [];
+    data: T[] = [];
+    rowIdsEditing: string[] = [];
 
     constructor(classT: IActivator<T>) {
         const t = new classT();
         this.keys.push(...getKeys(t))
+    }
+
+    setData(data: T[]) {
+        this.data = data;
+    }
+    get getData() {
+        return this.data;
     }
 
     //
@@ -42,6 +56,10 @@ export class BaseTableConfig<T extends BaseData> {
     cols: ColumnDef<T>[] = [];
     colsFixLeft: string[] = [];
     colsFixRight: string[] = [];
+
+    //ModeType
+    mode = ModeType.View;
+    allowEditInline = false;
 
     //Pagination
     pageIndexDefault = 0;
@@ -59,18 +77,30 @@ export class BaseTableConfig<T extends BaseData> {
     isActionColumListType = true;
     isShowActionColumn = true;
     isShowChild = false;
-    editButton: BaseRowAction<T> = { id: '_row_action_edit', name: 'Edit', iconChild: <Pencil fontSize='inherit' /> };
-    detailButton: BaseRowAction<T> = { id: '_row_action_detail', name: 'Detail', iconChild: <List fontSize='inherit' /> };
-    deleteButton: BaseRowAction<T> = { id: '_row_action_delete', name: 'Delete', iconChild: <Delete fontSize='inherit' /> };
+    editButton: BaseRowAction<T> = {
+        id: '_row_action_edit', name: 'Edit', iconChild: <Pencil className="h-4 w-4" fontSize='inherit' />,
+        action: (data) => {
+            if (!this.rowIdsEditing.includes(data.getId(this.keys) ?? '')) {
+                this.rowIdsEditing.push(data.getId(this.keys) ?? '')
+                tableEventEmitter.emit(rowIdsEditingChangeEvent, this.rowIdsEditing)
+            }
+        }
+    };
+    detailButton: BaseRowAction<T> = { id: '_row_action_detail', name: 'Detail', iconChild: <List className="h-4 w-4" fontSize='inherit' /> };
+    deleteButton: BaseRowAction<T> = { id: '_row_action_delete', name: 'Delete', iconChild: <Delete className="h-4 w-4" fontSize='inherit' /> };
+
+    saveButton: BaseRowAction<T> = { id: '_row_action_save', name: 'Save', iconChild: <Save className="h-4 w-4" fontSize='inherit' /> };
+    cancelButton: BaseRowAction<T> = { id: '_row_action_cancel', name: 'Cancel', iconChild: <X className="h-4 w-4" fontSize='inherit' /> };
+
     showChildButton: BaseRowAction<T> = {
         id: showChildButtonId, name: 'Show Child'
     };
-    otherButton: Array<BaseRowAction<T>> = []
+    otherButton: Array<BaseRowAction<T>> = [];
 
     getActions() {
         let actions = [this.editButton,
         this.detailButton,
-        this.deleteButton, ...this.otherButton];
+        this.deleteButton, this.saveButton, this.cancelButton, ...this.otherButton];
 
         if (this.isShowChild) {
             actions = [this.showChildButton, ...actions];
@@ -84,6 +114,22 @@ export class BaseTableConfig<T extends BaseData> {
         const valueRowB = ((rowB.original as any)[columnId] ?? false).toString();
         const val = (valueRowA == valueRowB) ? 0 : ((valueRowA > valueRowB) ? 1 : -1);
         return val;
+    }
+
+    getRowId(originalRow: T, index: number, parent?: Row<T>): string {
+        if (this.keys && Array.isArray(this.keys) && this.keys.length > 0) {
+            let keyValues: string[] = [];
+            this.keys.forEach(k => {
+                keyValues.push(((originalRow as any)[k] ?? 'null').toString());
+            })
+            return keyValues.join('_');
+        }
+        return originalRow.__id__ || index.toString()
+    }
+
+    getEntityByRow(originalRow: T, index: number, parent?: Row<T>) {
+        let rowId = this.getRowId(originalRow, index, parent);
+        return this.data.find(w => w.getId && w.getId(this.keys) == rowId);
     }
 
     init() {

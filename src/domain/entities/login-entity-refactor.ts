@@ -226,6 +226,7 @@ export class LoginEntity extends BaseEntityForm {
     this.dob = new Date();
     this.male = true;
     this.weightRange = 50;
+    this.emailType = 'gmail';
   }
 
 

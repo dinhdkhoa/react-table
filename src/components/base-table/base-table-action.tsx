@@ -9,7 +9,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from '@/component
 import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
 import { Toggle } from '@/components/ui/toggle';
 import { BaseData } from '@/core/classes/base-data';
-import { BaseRowAction, showChildButtonId } from './base-table-config';
+import { BaseRowAction, cancelButtonId, saveButtonId, showChildButtonId } from './base-table-config';
+import { ModeType } from './enums';
 
 type ActionStateType = {
     isDisable: boolean | undefined,
@@ -55,11 +56,47 @@ export type TableActionType<T extends BaseData> = {
 
 export default function TableActionColumn<T extends BaseData>(props: {
     tableAction: TableActionType<T>
-    menuList: boolean
+    menuList: boolean,
+    mode: ModeType
 }) {
+
+    if (props.mode == ModeType.Edit) {
+        let saveAndCancelButton = props.tableAction.actions.filter(w => [saveButtonId, cancelButtonId].includes(w.id));
+        return (saveAndCancelButton.map(action => {
+            const ac = { ...action };
+            const { isDisable, isVisible, allowAction } = GetActionState(props.tableAction.data, ac);
+            return (
+                isVisible ?
+                    <TooltipProvider key={action.id}>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    variant="ghost"
+                                    disabled={isDisable}
+                                    onClick={() => {
+                                        if (allowAction) {
+                                            ac.action!(props.tableAction.data);
+                                        }
+                                        if (ac.id == showChildButtonId) {
+                                            props.tableAction.toggleExpandedHandler();
+                                        }
+                                    }}>
+                                    {ac.iconChild}
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>{ac.name || ''}</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                    : <></>
+            )
+        }))
+    }
 
     if (props.menuList) {
         return <TableMenuActionColumn tableAction={props.tableAction} />
+
     }
 
     return (
@@ -125,8 +162,8 @@ function TableMenuActionColumn<T extends BaseData>(props: { tableAction: TableAc
                     {
                         otherButton.map(action => {
                             const ac = { ...action };
+                            if ([saveButtonId, cancelButtonId].includes(ac.id)) return <></>
                             const { isDisable, isVisible, allowAction } = GetActionState(props.tableAction.data, ac);
-
                             return (
                                 isVisible ?
                                     <DropdownMenuItem key={action.id} disabled={isDisable}
@@ -136,7 +173,7 @@ function TableMenuActionColumn<T extends BaseData>(props: { tableAction: TableAc
                                             }
                                         }}>
                                         {ac.iconChild}
-                                        <span>{ac.name || ''}</span>
+                                        <span className="ml-4">{ac.name || ''}</span>
                                     </DropdownMenuItem>
                                     : <></>
                             )

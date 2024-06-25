@@ -12,3 +12,9 @@ export enum FormatColumnType {
     DateTime = 'DateTime',
     Boolean = 'Boolean'
 }
+
+export enum ModeType {
+    View = 'View',
+    Edit = 'Edit',
+    AddNew = 'AddNew'
+}

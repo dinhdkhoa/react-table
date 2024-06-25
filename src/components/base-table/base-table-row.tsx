@@ -2,13 +2,18 @@
 
 import { ColumnResizeMode, HeaderGroup, Row, SortDirection, flexRender } from "@tanstack/react-table";
 import { TableCell, TableHead, TableRow } from "@/components/ui/table";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ArrowDownNarrowWide, ArrowUpDown, ArrowUpNarrowWide } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BaseTableConfig } from "./base-table-config";
 import { BaseData } from "@/core/classes/base-data";
 import { getCommonPinningStyles } from "./styles";
 import { Filter } from "./base-table-filter";
+import { RHF_FIELDS } from "@/core/anotations/hook-form-refac";
+import { DefaultValues, useForm } from "react-hook-form";
+import BaseDynamicControl from "../form-controls/base-dynamic-control-form";
+import { BaseForm } from "../ui/form";
+import { rowActionId, rowSelectionId } from "./base-table";
 
 function TableSortLabel(props: {
     active: boolean,
@@ -86,20 +91,46 @@ export function BaseTableHeader<T extends BaseData>(props: {
     )
 }
 
+function useBaseForm<TEntity>(
+    entity: TEntity & Object
+) {
+    const [state] = useState(entity)
+
+    const rhf = Reflect.getMetadata(RHF_FIELDS, entity)
+    const form = useForm({
+        defaultValues: entity as DefaultValues<TEntity>
+    })
+    return {
+        rhf: rhf,
+        form,
+        entity: state
+    }
+}
+
 export function BaseTableRow<T extends BaseData>(props: {
     row: Row<T>,
     tableConfig: BaseTableConfig<T>
 }) {
+
+    const { ...baseFormProps } = useBaseForm<T>(
+        (props.tableConfig.getEntityByRow(props.row.original, props.row.index, props.row.getParentRow())!)
+    );
+
     return (
         <>
             <TableRow>
-                {props.row.getVisibleCells().map(cell => (
-                    <TableCell key={cell.id}
-                        className="border-r  last:border-r-0"
-                        style={{ ...getCommonPinningStyles(cell.column) }}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                ))}
+                <BaseForm {...baseFormProps}>
+                    {props.row.getVisibleCells().map(cell => (
+                        <TableCell key={cell.id}
+                            className="border-r  last:border-r-0"
+                            style={{ ...getCommonPinningStyles(cell.column) }}>
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            {props.tableConfig.rowIdsEditing.includes(props.row.id)
+                                && ![rowSelectionId, rowActionId].includes(cell.column.id)
+                                ? <BaseDynamicControl name={cell.column.id} /> : flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                    ))}
+                </BaseForm>
 
             </TableRow>
             {props.row.getIsExpanded() && (

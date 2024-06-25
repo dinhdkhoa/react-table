@@ -78,14 +78,13 @@ const BaseComboboxInputItem = <TEntity extends FieldValues = FieldValues>({ fiel
 
 
   const handleChange = (e: any) => {
-    field.onChange(e);
     form.setValue(field.name, e);
     if (setAfterDataChanged)
       setAfterDataChanged(form, field.name, e)
   }
 
   const display = useMemo(() => {
-    const _value = field.value;
+    const _value = form.getValues(field.name);
     if (_value) {
       const findItem = selectOption.data.find((basicItem) => selectOption.value(basicItem) == _value);
       if (findItem) {
@@ -123,13 +122,13 @@ const BaseComboboxInputItem = <TEntity extends FieldValues = FieldValues>({ fiel
               role="combobox"
               className={cn(
                 "justify-between",
-                !field.value && "text-muted-foreground"
+                !form.getValues(field.name) && "text-muted-foreground"
               )}
             >
-              <span className="truncate">{field.value
+              <span className="truncate">{form.getValues(field.name)
                 ? display
                 : placeholder}</span>
-              {field.value ? clearFilter(() => {
+              {form.getValues(field.name) ? clearFilter(() => {
                 handleChange(undefined);
               }) : <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />}
             </Button>
@@ -153,7 +152,7 @@ const BaseComboboxInputItem = <TEntity extends FieldValues = FieldValues>({ fiel
                       <Check
                         className={cn(
                           "mr-2 h-4 w-4",
-                          getValue(item) === field.value
+                          getValue(item) === form.getValues(field.name)
                             ? "opacity-100"
                             : "opacity-0"
                         )}

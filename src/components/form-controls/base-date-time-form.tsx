@@ -74,7 +74,7 @@ const BaseDateTimeInputItem = <TEntity extends FieldValues = FieldValues,>({ fie
 
 
   const handleChange = (e: Date | undefined) => {
-    field.onChange(e)
+    form.setValue(field.name, e as any);
     if (setAfterDataChanged)
       setAfterDataChanged(form, field.name, e)
   }
@@ -90,12 +90,12 @@ const BaseDateTimeInputItem = <TEntity extends FieldValues = FieldValues,>({ fie
               variant="outline"
               className={cn(
                 "justify-start text-left font-normal",
-                !field.value && "text-muted-foreground"
+                !form.getValues(field.name) && "text-muted-foreground"
               )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {field.value ? (
-                format(field.value, "PPP HH:mm:ss")
+              {form.getValues(field.name) ? (
+                format(form.getValues(field.name), "PPP HH:mm:ss")
               ) : (
                 <span>{placeholder}</span>
               )}
@@ -105,7 +105,7 @@ const BaseDateTimeInputItem = <TEntity extends FieldValues = FieldValues,>({ fie
 
             <Calendar
               mode="single"
-              selected={field.value}
+              selected={form.getValues(field.name)}
               onSelect={handleChange}
               initialFocus
             />
@@ -113,7 +113,7 @@ const BaseDateTimeInputItem = <TEntity extends FieldValues = FieldValues,>({ fie
             {includeTime && <div className="p-3 border-t border-border">
               <TimePickerDemo
                 setDate={handleChange}
-                date={field.value}
+                date={form.getValues(field.name)}
               />
             </div>}
           </PopoverContent>

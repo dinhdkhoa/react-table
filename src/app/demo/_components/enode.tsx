@@ -4,47 +4,50 @@ import { toast } from "sonner";
 import { Delete } from "lucide-react";
 import { BaseTableConfig } from "@/components/base-table/base-table-config";
 import { FormatColumnType, RowSelectType } from "@/components/base-table/enums";
-import { Person } from "./types";
+
 import { BaseTable } from "@/components/base-table/base-table";
 import { createColumnHelper } from "@tanstack/react-table";
+import { PersonEntity } from "@/domain/entities/person-entity";
 
-const defaultData: Person[] = [
-    {
-        id: '1',
-        firstName: 'tanner',
-        lastName: 'linsley',
-        age: 24,
-        visits: 100,
-        status: 'In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship',
-        progress: 50,
-        active: true,
-    },
-    {
-        id: '2',
-        firstName: 'tandy',
-        lastName: 'miller',
-        age: 40,
-        visits: 1234567,
-        status: 'Single',
-        progress: 80,
-        date: new Date(),
-        active: false,
-    },
-    {
-        id: '3',
-        firstName: 'joe',
-        lastName: 'dirte',
-        age: 1234567.89,
-        visits: 20,
-        status: 'Complicated',
-        date: new Date(2024, 5, 26),
-        progress: 10,
-    },
+// const defaultData: Person[] = [];
+const defaultData: PersonEntity[] = [
+    new PersonEntity(
+        '1',
+        'tanner',
+        'linsley',
+        24,
+        100,
+        'In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship',
+        50, undefined,
+        true,
+    ),
+    new PersonEntity(
+        '2',
+        'tandy',
+        'miller',
+        40,
+        1234567,
+        'Single',
+        80,
+        new Date(),
+        false,
+    ),
+    new PersonEntity(
+        '3',
+        'joe',
+        'dirte',
+        1234567.89,
+        20,
+        'Complicated',
+        10,
+        new Date(2024, 5, 26),
+    ),
 ]
 
 
 export default function ENode() {
-    const tableConfig = new BaseTableConfig<Person>(Person);
+    const tableConfig = new BaseTableConfig<PersonEntity>(PersonEntity);
+
 
     tableConfig.cols.push(
         {
@@ -92,7 +95,7 @@ export default function ENode() {
         }
     )
 
-    let columnHelper = createColumnHelper<Person>();
+    let columnHelper = createColumnHelper<PersonEntity>();
 
     columnHelper.accessor(row => row.lastName, {
         id: '',
@@ -102,7 +105,7 @@ export default function ENode() {
     });
 
 
-    let aa = new Person()
+    let aa = new PersonEntity()
     aa.id = '1',
         aa.firstName = 'tanner',
         aa.lastName = 'linsley',
@@ -120,9 +123,9 @@ export default function ENode() {
     tableConfig.isShowSelectionColumn = true;
     tableConfig.isShowChild = true;
 
-    tableConfig.editButton.action = (data) => {
-        toast(`Edit ${JSON.stringify(data)}`)
-    }
+    // tableConfig.editButton.action = (data) => {
+    //     toast(`Edit ${JSON.stringify(data)}`)
+    // }
     tableConfig.detailButton.action = (data) => {
         toast(`Detail ${JSON.stringify(data)}`)
     }
@@ -140,7 +143,12 @@ export default function ENode() {
     // }
 
     // eslint-disable-next-line react/jsx-no-undef
-    tableConfig.otherButton.push({ id: '_row_action_hehe', name: 'Hehe', iconChild: <Delete fontSize='inherit' /> });
+    tableConfig.otherButton.push({
+        id: '_row_action_hehe', name: 'Hehe', iconChild: <Delete className="h-4 w-4" fontSize='inherit' />, action: (data) => {
+        }
+    });
+
+
     // gridConfig.isSelectAllPages = true;
     tableConfig.allowSelectRow = (data) => {
         return (data.lastName != 'dirte')
@@ -174,9 +182,11 @@ export default function ENode() {
         // console.log(arrData);
     }
 
+    tableConfig.setData([...defaultData,]);
+
     return (
         <>
-            <BaseTable<Person> data={[...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData]} tableConfig={tableConfig} />
+            <BaseTable<PersonEntity> data={tableConfig.getData} tableConfig={tableConfig} />
         </>
 
     )

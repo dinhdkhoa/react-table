@@ -69,7 +69,7 @@ const BaseCheckboxItem = <TEntity extends FieldValues = FieldValues,>({ field, f
 
 
   const handleChange = (e: CheckedState) => {
-    field.onChange(e)
+    form.setValue(field.name, e as any);
     if (setAfterDataChanged)
       setAfterDataChanged(form, field.name, e)
   }
@@ -79,7 +79,7 @@ const BaseCheckboxItem = <TEntity extends FieldValues = FieldValues,>({ field, f
       <FormLabel>{label}</FormLabel>
       <FormControl>
         <div className="flex items-center space-x-2">
-          <Checkbox id={field.name} {...field} onCheckedChange={handleChange} disabled={disabled} checked={field.value} />
+          <Checkbox id={field.name} onCheckedChange={handleChange} disabled={disabled} checked={form.getValues(field.name)} />
           <label
             htmlFor={field.name}
             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
