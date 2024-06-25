@@ -34,6 +34,7 @@ export const isDateColumn = (columnType: FormatColumnType | undefined) => {
 }
 
 export class BaseTableConfig<T extends BaseData> {
+    static defaultIconSize = "h-4 w-4";
     keys: string[] = [];
     data: T[] = [];
     rowIdsEditing: string[] = [];
@@ -58,7 +59,7 @@ export class BaseTableConfig<T extends BaseData> {
     colsFixRight: string[] = [];
 
     //ModeType
-    mode = ModeType.View;
+    // mode = ModeType.View;
     allowEditInline = false;
 
     //Pagination
@@ -78,19 +79,26 @@ export class BaseTableConfig<T extends BaseData> {
     isShowActionColumn = true;
     isShowChild = false;
     editButton: BaseRowAction<T> = {
-        id: '_row_action_edit', name: 'Edit', iconChild: <Pencil className="h-4 w-4" fontSize='inherit' />,
+        id: '_row_action_edit', name: 'Edit', iconChild: <Pencil className={BaseTableConfig.defaultIconSize} fontSize='inherit' />,
         action: (data) => {
-            if (!this.rowIdsEditing.includes(data.getId(this.keys) ?? '')) {
-                this.rowIdsEditing.push(data.getId(this.keys) ?? '')
-                tableEventEmitter.emit(rowIdsEditingChangeEvent, this.rowIdsEditing)
-            }
+            this._addRowEditing(data.getId(this.keys ?? '') || '');
         }
     };
-    detailButton: BaseRowAction<T> = { id: '_row_action_detail', name: 'Detail', iconChild: <List className="h-4 w-4" fontSize='inherit' /> };
-    deleteButton: BaseRowAction<T> = { id: '_row_action_delete', name: 'Delete', iconChild: <Delete className="h-4 w-4" fontSize='inherit' /> };
+    detailButton: BaseRowAction<T> = { id: '_row_action_detail', name: 'Detail', iconChild: <List className={BaseTableConfig.defaultIconSize} fontSize='inherit' /> };
+    deleteButton: BaseRowAction<T> = { id: '_row_action_delete', name: 'Delete', iconChild: <Delete className={BaseTableConfig.defaultIconSize} fontSize='inherit' /> };
 
-    saveButton: BaseRowAction<T> = { id: '_row_action_save', name: 'Save', iconChild: <Save className="h-4 w-4" fontSize='inherit' /> };
-    cancelButton: BaseRowAction<T> = { id: '_row_action_cancel', name: 'Cancel', iconChild: <X className="h-4 w-4" fontSize='inherit' /> };
+    saveButton: BaseRowAction<T> = {
+        id: '_row_action_save', name: 'Save', iconChild: <Save className={BaseTableConfig.defaultIconSize} fontSize='inherit' />,
+        action: (data) => {
+            this._removeRowEditing(data.getId(this.keys ?? '') || '')
+        }
+    };
+    cancelButton: BaseRowAction<T> = {
+        id: '_row_action_cancel', name: 'Cancel', iconChild: <X className={BaseTableConfig.defaultIconSize} fontSize='inherit' />,
+        action: (data) => {
+            this._removeRowEditing(data.getId(this.keys ?? '') || '')
+        }
+    };
 
     showChildButton: BaseRowAction<T> = {
         id: showChildButtonId, name: 'Show Child'
@@ -130,6 +138,25 @@ export class BaseTableConfig<T extends BaseData> {
     getEntityByRow(originalRow: T, index: number, parent?: Row<T>) {
         let rowId = this.getRowId(originalRow, index, parent);
         return this.data.find(w => w.getId && w.getId(this.keys) == rowId);
+    }
+
+    _addRowEditing(id: string) {
+        if (id) {
+            if (!this.rowIdsEditing.includes(id)) {
+                this.rowIdsEditing.push(id);
+                tableEventEmitter.emit(rowIdsEditingChangeEvent, this.rowIdsEditing)
+            }
+        }
+    }
+    _removeRowEditing(id: string) {
+        if (id) {
+            this.rowIdsEditing = this.rowIdsEditing.filter(w => w != id);
+            tableEventEmitter.emit(rowIdsEditingChangeEvent, this.rowIdsEditing)
+        }
+    }
+    _clearRowEditing() {
+        this.rowIdsEditing = [];
+        tableEventEmitter.emit(rowIdsEditingChangeEvent, this.rowIdsEditing)
     }
 
     init() {

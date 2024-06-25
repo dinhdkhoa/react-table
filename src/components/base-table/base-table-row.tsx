@@ -14,6 +14,7 @@ import { DefaultValues, useForm } from "react-hook-form";
 import BaseDynamicControl from "../form-controls/base-dynamic-control-form";
 import { BaseForm } from "../ui/form";
 import { rowActionId, rowSelectionId } from "./base-table";
+import { cn } from "@/lib/utils";
 
 function TableSortLabel(props: {
     active: boolean,
@@ -52,8 +53,9 @@ export function BaseTableHeader<T extends BaseData>(props: {
             return (
                 <TableHead
                     key={header.id}
-                    className="border-r last:border-r-0"
                     style={{ ...getCommonPinningStyles(column) }}
+
+                    className={cn("border-r last:border-r-0", column.getIsPinned() ? "bg-background" : "")}
                     colSpan={header.colSpan}
                 >
                     {
@@ -111,9 +113,8 @@ export function BaseTableRow<T extends BaseData>(props: {
     row: Row<T>,
     tableConfig: BaseTableConfig<T>
 }) {
-
     const { ...baseFormProps } = useBaseForm<T>(
-        (props.tableConfig.getEntityByRow(props.row.original, props.row.index, props.row.getParentRow())!)
+        (props.tableConfig.getEntityByRow(props.row.original, props.row.index, props.row.getParentRow())!).clone()
     );
 
     return (
@@ -122,8 +123,9 @@ export function BaseTableRow<T extends BaseData>(props: {
                 <BaseForm {...baseFormProps}>
                     {props.row.getVisibleCells().map(cell => (
                         <TableCell key={cell.id}
-                            className="border-r  last:border-r-0"
-                            style={{ ...getCommonPinningStyles(cell.column) }}>
+                            style={{ ...getCommonPinningStyles(cell.column) }}
+                            className={cn("border-r last:border-r-0", cell.column.getIsPinned() ? "bg-background" : "")}
+                        >
                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                             {props.tableConfig.rowIdsEditing.includes(props.row.id)
                                 && ![rowSelectionId, rowActionId].includes(cell.column.id)

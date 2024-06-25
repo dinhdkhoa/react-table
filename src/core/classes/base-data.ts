@@ -1,4 +1,5 @@
 import { Guid } from "guid-typescript";
+import _ from 'lodash';
 
 export class BaseData {
     __id__?: string;
@@ -17,5 +18,8 @@ export class BaseData {
             return keyValues.join('_');
         }
         return this.__id__;
+    }
+    clone() {
+        return _.cloneDeep(this);
     }
 }

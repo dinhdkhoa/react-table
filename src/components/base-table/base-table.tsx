@@ -29,7 +29,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { TableBody, TableFooter, Table as ShadcnTable, TableHeader } from '@/components/ui/table'
 import { CheckedState } from '@radix-ui/react-checkbox'
-import { Input } from '@/components/ui/input'
 import { BaseData } from '@/core/classes/base-data'
 import { FormatColumnType, ModeType, RowSelectType } from './enums'
 import TableActionColumn from './base-table-action'
@@ -91,9 +90,10 @@ function handleRowsSelectionChange<T extends BaseData>(
 }
 
 
-function getActions<T extends BaseData>(
+function GetActions<T extends BaseData>(
     row: Row<T>,
-    props: TableProps<T>
+    props: TableProps<T>,
+    mode: ModeType
 ) {
     return (
         <TableActionColumn
@@ -104,7 +104,7 @@ function getActions<T extends BaseData>(
                 actions: props.tableConfig.getActions()
             }}
             menuList={props.tableConfig.isActionColumListType}
-            mode={props.tableConfig.mode}
+            mode={mode}
         />
     )
 }
@@ -137,7 +137,7 @@ export function BaseTable<T extends BaseData>(props: {
     data: Array<T>,
     tableConfig: BaseTableConfig<T>
 }) {
-    const [rowIdsEditing, setRowIdsEditing] = useState(() => [...props.tableConfig.rowIdsEditing]);
+    const [rowIdsEditing, setRowIdsEditing] = useState([...props.tableConfig.rowIdsEditing]);
     const [columnPinningState, setColumnPinningState] = useState<ColumnPinningState>({})
     const [data] = useState(() => [...props.data]);
     const [rowSelection, setRowSelection] = useState({});
@@ -190,7 +190,6 @@ export function BaseTable<T extends BaseData>(props: {
                                 }
                             />
                         </div>
-
                     ),
                     cell: ({ row }) => (
                         <div className='text-center px-0'>
@@ -225,7 +224,8 @@ export function BaseTable<T extends BaseData>(props: {
                     maxSize: 120,
                     header: () => 'action',
                     cell: ({ row }) => {
-                        return getActions(row, props)
+                        const mode = props.tableConfig.rowIdsEditing.includes(row.id) ? ModeType.Edit : ModeType.View;
+                        return GetActions(row, props, mode)
                     }
                 }
                 columnPinningState.right = [...props.tableConfig.colsFixRight, rowActionId];
@@ -249,17 +249,14 @@ export function BaseTable<T extends BaseData>(props: {
             return rowSelection
         })
 
-    }, [rowSelection])
+    }, [])
+
+    const handleRowsIdEditingChange = (newValue: Array<string>) => {
+        setRowIdsEditing([...newValue]);
+    }
 
     useEffect(() => {
-        const handleRowsIdEditingChange = (newValue: Array<string>) => {
-           console.log('newValue', newValue);
-           console.log('rowIdsEditing', rowIdsEditing);
-            setRowIdsEditing(newValue);
-        }
-
         tableEventEmitter.on(rowIdsEditingChangeEvent, handleRowsIdEditingChange);
-
         return () => {
             tableEventEmitter.off(rowIdsEditingChangeEvent, handleRowsIdEditingChange);
         };
@@ -300,7 +297,7 @@ export function BaseTable<T extends BaseData>(props: {
 
     return (
         <div className="max-w-7xl mx-auto mb-10 mt-5">
-            {JSON.stringify(rowIdsEditing)}
+            {/* {JSON.stringify(rowIdsEditing)} */}
             <div className="flex items-center ">
                 <h1 className="text-3xl font-bold leading-tight tracking-tighter md:text-4xl lg:leading-[1.1]">
                     Table

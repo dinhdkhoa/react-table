@@ -11,6 +11,7 @@ import { Toggle } from '@/components/ui/toggle';
 import { BaseData } from '@/core/classes/base-data';
 import { BaseRowAction, cancelButtonId, saveButtonId, showChildButtonId } from './base-table-config';
 import { ModeType } from './enums';
+// import { ModeType } from './enums';
 
 type ActionStateType = {
     isDisable: boolean | undefined,

@@ -68,7 +68,6 @@ const BaseTextInputItem = <TEntity extends FieldValues = FieldValues,>({ field, 
     }
   }, [disableFn, disabled, entity, field.name, form, validate, visibled])
 
-
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (setAfterDataChanged)
       setAfterDataChanged(form, field.name, e.target.value)
