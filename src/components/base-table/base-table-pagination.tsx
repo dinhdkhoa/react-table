@@ -20,7 +20,7 @@ interface DataTablePaginationProps<TData> {
   table: Table<TData>
 }
 
-export default function GridPagination<TData>({ table }: DataTablePaginationProps<TData>) {
+export default function BaseTablePagination<TData>({ table }: DataTablePaginationProps<TData>) {
   return (
     <div className="flex items-center justify-between px-2 ">
       <div className="flex-1 text-sm text-muted-foreground">

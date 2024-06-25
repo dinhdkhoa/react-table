@@ -1,7 +1,6 @@
 'use client'
 
 import * as React from 'react';
-import { BaseGridData, BaseRowAction, showChildButtonId } from "./types";
 import { useState } from 'react';
 import { ChevronsUpDown, MoreHorizontal } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -9,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
 import { Toggle } from '@/components/ui/toggle';
+import { BaseData } from '@/common/classes/base-data';
+import { BaseRowAction, showChildButtonId } from './base-table-config';
 
 type ActionStateType = {
     isDisable: boolean | undefined,
@@ -16,16 +17,15 @@ type ActionStateType = {
     allowAction: boolean | undefined,
 }
 
-
-function ExpandChildIcon<T extends BaseGridData>(gridAction: GridActionType<T>, data: T, action?: (data: T) => void, icon?: any) {
-    const [expanded, setExpanded] = useState(gridAction.isExpanded);
+function ExpandChildIcon<T extends BaseData>(tableAction: TableActionType<T>, data: T, action?: (data: T) => void, icon?: any) {
+    const [expanded, setExpanded] = useState(tableAction.isExpanded);
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
         if (action) {
             action(data);
         }
-        gridAction.toggleExpandedHandler();
+        tableAction.toggleExpandedHandler();
     };
 
     return (<Toggle
@@ -38,7 +38,7 @@ function ExpandChildIcon<T extends BaseGridData>(gridAction: GridActionType<T>, 
     </Toggle>)
 }
 
-function GetActionState<T extends BaseGridData>(data: T, action: BaseRowAction<T>): ActionStateType {
+function GetActionState<T extends BaseData>(data: T, action: BaseRowAction<T>): ActionStateType {
     const isDisable = action.disableFn && action.disableFn(data);
     const isVisible = !action.visibleFn || action.visibleFn(data);
     const allowAction = (action.action && !isDisable && isVisible);
@@ -46,26 +46,26 @@ function GetActionState<T extends BaseGridData>(data: T, action: BaseRowAction<T
     return { isDisable, isVisible, allowAction };
 }
 
-export type GridActionType<T extends BaseGridData> = {
+export type TableActionType<T extends BaseData> = {
     isExpanded: boolean,
     toggleExpandedHandler: () => void,
     data: T,
     actions: BaseRowAction<T>[],
 }
 
-export default function GridActionColumn<T extends BaseGridData>(props: {
-    gridAction: GridActionType<T>
+export default function TableActionColumn<T extends BaseData>(props: {
+    tableAction: TableActionType<T>
     menuList: boolean
 }) {
 
     if (props.menuList) {
-        return <GridMenuActionColumn gridAction={props.gridAction} />
+        return <TableMenuActionColumn tableAction={props.tableAction} />
     }
 
     return (
-        props.gridAction.actions.map(action => {
+        props.tableAction.actions.map(action => {
             const ac = { ...action };
-            const { isDisable, isVisible, allowAction } = GetActionState(props.gridAction.data, ac);
+            const { isDisable, isVisible, allowAction } = GetActionState(props.tableAction.data, ac);
 
             return (
                 isVisible ?
@@ -77,10 +77,10 @@ export default function GridActionColumn<T extends BaseGridData>(props: {
                                     disabled={isDisable}
                                     onClick={() => {
                                         if (allowAction) {
-                                            ac.action!(props.gridAction.data);
+                                            ac.action!(props.tableAction.data);
                                         }
                                         if (ac.id == showChildButtonId) {
-                                            props.gridAction.toggleExpandedHandler();
+                                            props.tableAction.toggleExpandedHandler();
                                         }
                                     }}>
                                     {ac.iconChild}
@@ -98,15 +98,15 @@ export default function GridActionColumn<T extends BaseGridData>(props: {
 }
 
 
-function GridMenuActionColumn<T extends BaseGridData>(props: { gridAction: GridActionType<T> }) {
-    const showChildButton = props.gridAction.actions.find(w => w.id == showChildButtonId);
-    const otherButton = props.gridAction.actions.filter(w => w.id != showChildButtonId);
+function TableMenuActionColumn<T extends BaseData>(props: { tableAction: TableActionType<T> }) {
+    const showChildButton = props.tableAction.actions.find(w => w.id == showChildButtonId);
+    const otherButton = props.tableAction.actions.filter(w => w.id != showChildButtonId);
 
     const childButton = () => {
         if (showChildButton) {
             const ac = { ...showChildButton };
 
-            return ExpandChildIcon(props.gridAction, props.gridAction.data, ac.action, ac.iconChild);
+            return ExpandChildIcon(props.tableAction, props.tableAction.data, ac.action, ac.iconChild);
         }
     }
 
@@ -125,14 +125,14 @@ function GridMenuActionColumn<T extends BaseGridData>(props: { gridAction: GridA
                     {
                         otherButton.map(action => {
                             const ac = { ...action };
-                            const { isDisable, isVisible, allowAction } = GetActionState(props.gridAction.data, ac);
+                            const { isDisable, isVisible, allowAction } = GetActionState(props.tableAction.data, ac);
 
                             return (
                                 isVisible ?
                                     <DropdownMenuItem key={action.id} disabled={isDisable}
                                         onClick={() => {
                                             if (allowAction) {
-                                                ac.action!(props.gridAction.data)
+                                                ac.action!(props.tableAction.data)
                                             }
                                         }}>
                                         {ac.iconChild}

@@ -1,13 +1,14 @@
 'use client'
 
 import { ColumnResizeMode, HeaderGroup, Row, SortDirection, flexRender } from "@tanstack/react-table";
-import { BaseGridConfig, BaseGridData } from "./types";
-import { Filter } from "./enode-grid-filter";
 import { TableCell, TableHead, TableRow } from "@/components/ui/table";
 import React from "react";
 import { ArrowDownNarrowWide, ArrowUpDown, ArrowUpNarrowWide } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BaseTableConfig } from "./base-table-config";
+import { BaseData } from "@/common/classes/base-data";
 import { getCommonPinningStyles } from "./styles";
+import { Filter } from "./base-table-filter";
 
 function TableSortLabel(props: {
     active: boolean,
@@ -33,10 +34,10 @@ function TableSortLabel(props: {
 
 }
 
-export function GridHeader<T extends BaseGridData>(props: {
+export function BaseTableHeader<T extends BaseData>(props: {
     headerGroup: HeaderGroup<T>,
     columnResizeMode: ColumnResizeMode,
-    gridConfig: BaseGridConfig<T>
+    tableConfig: BaseTableConfig<T>
 }) {
     return (<TableRow>
         {props.headerGroup.headers.map(header => {
@@ -85,9 +86,9 @@ export function GridHeader<T extends BaseGridData>(props: {
     )
 }
 
-export function GridRow<T extends BaseGridData>(props: {
+export function BaseTableRow<T extends BaseData>(props: {
     row: Row<T>,
-    gridConfig: BaseGridConfig<T>
+    tableConfig: BaseTableConfig<T>
 }) {
     return (
         <>
@@ -112,9 +113,9 @@ export function GridRow<T extends BaseGridData>(props: {
     )
 }
 
-export function GridFooter<T extends BaseGridData>(props: {
+export function BaseTableFooter<T extends BaseData>(props: {
     footerGroup: HeaderGroup<T>,
-    gridConfig: BaseGridConfig<T>
+    tableConfig: BaseTableConfig<T>
 }) {
     return (<TableRow>
         {props.footerGroup.headers.map(header => (

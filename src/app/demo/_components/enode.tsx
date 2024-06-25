@@ -1,12 +1,15 @@
 'use client'
 
 import { toast } from "sonner";
-import { ENodeGrid } from "./enode-grid";
-import { BaseGridConfig, FormatColumnType, Person, RowSelectType } from "./types";
 import { Delete } from "lucide-react";
+import { BaseTableConfig } from "@/components/base-table/base-table-config";
+import { FormatColumnType, RowSelectType } from "@/components/base-table/enums";
+import { Person } from "./types";
+import { BaseTable } from "@/components/base-table/base-table";
 
 const defaultData: Person[] = [
     {
+        id: '1',
         firstName: 'tanner',
         lastName: 'linsley',
         age: 24,
@@ -16,6 +19,7 @@ const defaultData: Person[] = [
         active: true,
     },
     {
+        id: '2',
         firstName: 'tandy',
         lastName: 'miller',
         age: 40,
@@ -26,6 +30,7 @@ const defaultData: Person[] = [
         active: false,
     },
     {
+        id: '3',
         firstName: 'joe',
         lastName: 'dirte',
         age: 1234567.89,
@@ -38,8 +43,8 @@ const defaultData: Person[] = [
 
 
 export default function ENode() {
-    const gridConfig = new BaseGridConfig<Person>();
-    gridConfig.cols.push(
+    const tableConfig = new BaseTableConfig<Person>(Person);
+    tableConfig.cols.push(
         {
             id: 'firstName',
             accessorKey: 'firstName',
@@ -84,26 +89,38 @@ export default function ENode() {
             }
         }
     )
-    gridConfig.colsFixLeft.push('age')
-    gridConfig.init()
+
+    let aa = new Person()
+    aa.id= '1',
+    aa.firstName= 'tanner',
+    aa.lastName= 'linsley',
+    aa.age=24,
+    aa.visits= 100,
+    aa.status= 'In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship',
+    aa.progress= 50,
+    aa.active= true,
+
+    
+    tableConfig.colsFixLeft.push('age');
+    tableConfig.init();
 
     // gridConfig.isActionColumListType = false;
-    gridConfig.isShowSelectionColumn = true;
-    gridConfig.isShowChild = true;
+    tableConfig.isShowSelectionColumn = true;
+    tableConfig.isShowChild = true;
 
-    gridConfig.editButton.action = (data) => {
+    tableConfig.editButton.action = (data) => {
         toast(`Edit ${JSON.stringify(data)}`)
     }
-    gridConfig.detailButton.action = (data) => {
+    tableConfig.detailButton.action = (data) => {
         toast(`Detail ${JSON.stringify(data)}`)
     }
-    gridConfig.deleteButton.action = (data) => {
+    tableConfig.deleteButton.action = (data) => {
         // console.log(gridConfig.table);
         toast(`Delete ${JSON.stringify(data)}`)
     }
 
-    gridConfig.deleteButton.disableFn = (data) => {
-        return gridConfig.table?.getSelectedRowModel().rows.some(w => w.original == data) ?? false;
+    tableConfig.deleteButton.disableFn = (data) => {
+        return tableConfig.table?.getSelectedRowModel().rows.some(w => w.original == data) ?? false;
     }
 
     // gridConfig.deleteButton.visibleFn = (data) => {
@@ -111,13 +128,13 @@ export default function ENode() {
     // }
 
     // eslint-disable-next-line react/jsx-no-undef
-    gridConfig.otherButton.push({ id: '_row_action_hehe', name: 'Hehe', iconChild: <Delete fontSize='inherit' /> });
+    tableConfig.otherButton.push({ id: '_row_action_hehe', name: 'Hehe', iconChild: <Delete fontSize='inherit' /> });
     // gridConfig.isSelectAllPages = true;
-    gridConfig.allowSelectRow = (data) => {
+    tableConfig.allowSelectRow = (data) => {
         return (data.lastName != 'dirte')
     }
 
-    gridConfig.onSelect = (checked, rowSelectType, data, id) => {
+    tableConfig.onSelect = (checked, rowSelectType, data, id) => {
 
         switch (rowSelectType) {
             case RowSelectType.Row:
@@ -139,7 +156,7 @@ export default function ENode() {
         // console.log(event, checked, rowSelectType, data, id);
     }
 
-    gridConfig.handleRowsSelectionChange = (checked, rows, arrData) => {
+    tableConfig.handleRowsSelectionChange = (checked, rows, arrData) => {
         // console.log(checked)
         // console.log(rows);
         // console.log(arrData);
@@ -147,7 +164,7 @@ export default function ENode() {
 
     return (
         <>
-            <ENodeGrid<Person> data={[...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData]} gridConfig={gridConfig} />
+            <BaseTable<Person> data={[...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData, ...defaultData]} tableConfig={tableConfig} />
         </>
 
     )
