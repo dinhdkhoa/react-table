@@ -1,40 +1,22 @@
-'use client'
+"use client"
 
-import * as React from 'react'
-import { Moon, Sun } from 'lucide-react'
-import { useTheme } from 'next-themes'
+import { MoonIcon, SunIcon } from "@radix-ui/react-icons"
+import { useTheme } from "next-themes"
+import { forwardRef } from "react"
 
-import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-
-export function ModeToggle() {
-  const { setTheme } = useTheme()
-
+const ModeToggle = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>((props, ref) => {
+  const { setTheme, theme } = useTheme()
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant='outline' size='icon'>
-          <Sun className='h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0' />
-          <Moon className='absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100' />
-          <span className='sr-only'>Toggle theme</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align='end'>
-        <DropdownMenuItem onClick={() => setTheme('light')}>
-          Light
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('dark')}>
-          Dark
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('system')}>
-          System
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <div
+      className="flex items-center focus:bg-accent hover:cursor-pointer text-sm px-2 py-1.5 hover:bg-accent"
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+    >
+      <MoonIcon className="w-4 h-4  mr-3 rotate-90 scale-0 text-muted-foreground transition-transform ease-in-out duration-500 dark:rotate-0 dark:scale-100" />
+      <SunIcon className="absolute w-4 h-4 mr-3  rotate-0 text-muted-foreground scale-1000 transition-transform ease-in-out duration-500 dark:-rotate-90 dark:scale-0" />
+      Switch Theme
+    </div>
   )
-}
+})
+
+export default ModeToggle
+

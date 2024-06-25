@@ -13,7 +13,7 @@ const AppContext = createContext<{
 });
 
 export const useAppContext = () => useContext(AppContext);
-export default function SeTSeesionToken({
+export default function SetSeesionToken({
   children,
   initialSessionToken = "",
   user : userProps = null,

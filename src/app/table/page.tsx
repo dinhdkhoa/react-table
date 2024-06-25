@@ -529,12 +529,7 @@ export default function TableDemo() {
   })
 
   return (
-    <div className="max-w-7xl mx-auto mb-10 mt-5">
-      <div className="flex items-center ">
-        <h1 className="text-3xl font-bold leading-tight tracking-tighter md:text-4xl lg:leading-[1.1]">
-          Table
-        </h1>
-      </div>
+    <div className=" mx-auto">
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter emails..."
@@ -587,7 +582,7 @@ export default function TableDemo() {
                     // cell nhỏ thêm px-2 py-0
                     <TableCell
                       key={cell.id}
-                      className="border-r  last:border-r-0"
+                      className="border-r  last:border-r-0 px-2 py-0"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
