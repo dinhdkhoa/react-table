@@ -4,22 +4,22 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-    useBaseFormContext
 } from "@/components/ui/form"
-import { MultipleSelectControl } from "@/core/anotations/hook-form-refac"
 import { useEffect, useMemo, useState } from "react"
 import { ControllerFieldState, ControllerRenderProps, FieldValues, Path, UseFormStateReturn } from "react-hook-form"
-import { FieldInputPropsType } from "./types"
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
-import { Button } from "../ui/button"
+import { BaseFormFieldPropsType } from "./types"
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover"
+import { Button } from "../../ui/button"
 import { Check, ChevronsUpDown, X } from "lucide-react"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../../ui/command"
 import { cn } from "@/lib/utils"
-import { Badge } from "../ui/badge"
+import { Badge } from "../../ui/badge"
+import { useBaseFormContext } from ".."
+import { MultipleSelectControl } from "@/core/types/control.types"
 
 const BaseMultipleSelectInput = <TEntity extends FieldValues = FieldValues>({
     name
-}: FieldInputPropsType<TEntity>) => {
+}: BaseFormFieldPropsType<TEntity>) => {
     const { form, rhf, entity } = useBaseFormContext<MultipleSelectControl, TEntity>()
     const { visibleFn } = rhf[name];
 

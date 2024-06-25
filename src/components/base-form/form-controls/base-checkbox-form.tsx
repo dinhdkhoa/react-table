@@ -4,18 +4,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  useBaseFormContext
 } from "@/components/ui/form"
-import { CheckboxControl } from "@/core/anotations/hook-form-refac"
 import { useEffect, useState } from "react"
 import { ControllerFieldState, ControllerRenderProps, FieldValues, Path, UseFormStateReturn } from "react-hook-form"
-import { FieldInputPropsType } from "./types"
-import { Checkbox } from "../ui/checkbox"
+import { BaseFormFieldPropsType } from "./types"
+import { Checkbox } from "../../ui/checkbox"
 import { CheckedState } from "@radix-ui/react-checkbox"
+import { useBaseFormContext } from ".."
+import { CheckboxControl } from "@/core/types/control.types"
 
 const BaseCheckboxInput = <TEntity extends FieldValues = FieldValues>({
   name
-}: FieldInputPropsType<TEntity>) => {
+}: BaseFormFieldPropsType<TEntity>) => {
   const { form, rhf, entity } = useBaseFormContext<CheckboxControl, TEntity>()
   const { visibleFn } = rhf[name];
 

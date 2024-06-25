@@ -4,23 +4,23 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  useBaseFormContext
 } from "@/components/ui/form"
-import { DateControl } from "@/core/anotations/hook-form-refac"
 import { useEffect, useState } from "react"
 import { ControllerFieldState, ControllerRenderProps, FieldValues, Path, UseFormStateReturn } from "react-hook-form"
-import { FieldInputPropsType } from "./types"
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
-import { Button } from "../ui/button"
+import { BaseFormFieldPropsType } from "./types"
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover"
+import { Button } from "../../ui/button"
 import { CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
-import { Calendar } from "../ui/calendar"
-import { TimePickerDemo } from "../ui/date-time-input.tsx/time-picker-demo"
+import { Calendar } from "../../ui/calendar"
+import { TimePickerDemo } from "../../ui/date-time-input.tsx/time-picker-demo"
 import { cn } from "@/lib/utils"
+import { useBaseFormContext } from ".."
+import { DateControl } from "@/core/types/control.types"
 
 const BaseDateTimeInput = <TEntity extends FieldValues = FieldValues>({
   name
-}: FieldInputPropsType<TEntity>) => {
+}: BaseFormFieldPropsType<TEntity>) => {
   const { form, rhf, entity } = useBaseFormContext<DateControl, TEntity>()
   const { visibleFn } = rhf[name];
 

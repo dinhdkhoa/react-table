@@ -4,18 +4,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  useBaseFormContext
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { TextControl } from "@/core/anotations/hook-form-refac"
 import { ChangeEvent, FocusEvent, useEffect, useState } from "react"
 import { ControllerFieldState, ControllerRenderProps, FieldValues, Path, UseFormStateReturn } from "react-hook-form"
-import { FieldInputPropsType } from "./types"
+import { BaseFormFieldPropsType } from "./types"
+import { useBaseFormContext } from ".."
+import { NumberControl } from "@/core/types/control.types"
 
-const BaseTextInput = <TEntity extends FieldValues = FieldValues>({
+const BaseNumberInput = <TEntity extends FieldValues = FieldValues>({
   name
-}: FieldInputPropsType<TEntity>) => {
-  const { form, rhf, entity } = useBaseFormContext<TextControl, TEntity>()
+}: BaseFormFieldPropsType<TEntity>) => {
+  const { form, rhf, entity } = useBaseFormContext<NumberControl, TEntity>()
   const { visibleFn } = rhf[name];
 
   const [visibled, setVisibled] = useState<boolean>(() => {
@@ -35,14 +35,14 @@ const BaseTextInput = <TEntity extends FieldValues = FieldValues>({
     <FormField
       control={form.control}
       name={name}
-      render={(params) => <BaseTextInputItem visibled={visibled} {...params} />}
+      render={(params) => <BaseNumberInputItem visibled={visibled} {...params} />}
     />
   )
 }
 
-const BaseTextInputItem = <TEntity extends FieldValues = FieldValues,>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
-  const { rhf, setAfterDataChanged, form, entity, onBlur } = useBaseFormContext<TextControl>()
-  const { placeholder, label, disableFn, validate, minLength, maxLength } = rhf[field.name];
+const BaseNumberInputItem = <TEntity extends FieldValues = FieldValues,>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
+  const { rhf, setAfterDataChanged, form, entity, onBlur } = useBaseFormContext<NumberControl>()
+  const { placeholder, label, disableFn, validate, min, max } = rhf[field.name];
 
   const [disabled, setDisabled] = useState<boolean>(() => {
     if (disableFn) {
@@ -68,6 +68,7 @@ const BaseTextInputItem = <TEntity extends FieldValues = FieldValues,>({ field, 
     }
   }, [disableFn, disabled, entity, field.name, form, validate, visibled])
 
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (setAfterDataChanged)
       setAfterDataChanged(form, field.name, e.target.value)
@@ -77,17 +78,18 @@ const BaseTextInputItem = <TEntity extends FieldValues = FieldValues,>({ field, 
       onBlur(form, field.name, e.target.value)
     }
   }
-  
+
   return (
     <FormItem>
       <FormLabel>{label}</FormLabel>
       <FormControl>
         <Input
           {...field}
-          placeholder={placeholder}
           disabled={disabled}
-          minLength={minLength}
-          maxLength={maxLength}
+          placeholder={placeholder}
+          type={'number'}
+          min={min}
+          max={max}
         />
       </FormControl>
       <FormMessage />
@@ -95,4 +97,4 @@ const BaseTextInputItem = <TEntity extends FieldValues = FieldValues,>({ field, 
   )
 }
 
-export default BaseTextInput
+export default BaseNumberInput

@@ -9,12 +9,12 @@ import { BaseTableConfig } from "./base-table-config";
 import { BaseData } from "@/core/classes/base-data";
 import { getCommonPinningStyles } from "./styles";
 import { Filter } from "./base-table-filter";
-import { RHF_FIELDS } from "@/core/anotations/hook-form-refac";
 import { DefaultValues, useForm } from "react-hook-form";
-import BaseDynamicControl from "../form-controls/base-dynamic-control-form";
-import { BaseForm } from "../ui/form";
+import BaseDynamicControl from "../base-form/form-controls/base-dynamic-control-form";
 import { rowActionId, rowSelectionId } from "./base-table";
 import { cn } from "@/lib/utils";
+import BaseForm from "../base-form";
+import { RHF_FIELDS } from "@/core/anotations/rhf-field";
 
 function TableSortLabel(props: {
     active: boolean,

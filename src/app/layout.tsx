@@ -1,4 +1,3 @@
-import Header from "@/components/header"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
 import type { Metadata } from "next"
@@ -8,8 +7,6 @@ import SetSeesionToken from "./app-provider"
 import "./globals.css"
 import SlideSession from "@/components/slide-session"
 import { AccountType } from "@/schemaValidations/account.schema"
-import { handleApiError } from "@/lib/utils"
-import MainLayout from "@/components/sidebar/main-layout"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -37,13 +34,12 @@ export default async function RootLayout({
         <Toaster richColors />
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
           <SetSeesionToken initialSessionToken={sessionToken} user={user}>
-            {/* <Header user={user} /> */}
-            <MainLayout>{children}</MainLayout>
+            {children}
             <SlideSession />
           </SetSeesionToken>
         </ThemeProvider>

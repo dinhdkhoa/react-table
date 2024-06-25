@@ -1,4 +1,4 @@
-import { Control, RHFField, SelectOption } from "@/core/anotations/hook-form-refac";
+import { Control, RHF, SelectOption } from "@/core/anotations/rhf";
 import { BaseEntityForm } from "@/core/classes/base-entity-form";
 import { BasicItem } from "@/core/classes/basic-item";
 
@@ -27,18 +27,18 @@ const statusSelectOption: SelectOption<BasicItem<string>, string> = {
 export class PersonEntity extends BaseEntityForm {
     // @Key
     id: string | undefined;
-    @RHFField({
+    @RHF({
         label: "First Name",
         type: Control.Text,
     })
     firstName?: string;
-    @RHFField({
+    @RHF({
         label: "Last Name",
         type: Control.Text
     })
     lastName?: string;
 
-    @RHFField({
+    @RHF({
         label: "Age",
         type: Control.Number,
         validate: {
@@ -51,33 +51,33 @@ export class PersonEntity extends BaseEntityForm {
     })
     age?: number;
 
-    @RHFField({
+    @RHF({
         label: "Visits",
         type: Control.Number
     })
     visits?: number;
 
-    @RHFField({
+    @RHF({
         label: "Status",
         type: Control.Combobox,
         selectOption: statusSelectOption,
     })
     status?: string;
 
-    @RHFField({
+    @RHF({
         label: "Progress",
         type: Control.Number
     })
     progress?: number;
 
-    @RHFField({
+    @RHF({
         label: "Date",
         type: Control.Date,
         includeTime: true,
     })
     date?: Date;
 
-    @RHFField({
+    @RHF({
         label: "Active",
         type: Control.Checkbox,
     })

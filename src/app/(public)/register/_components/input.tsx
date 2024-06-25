@@ -7,7 +7,7 @@ import {
   useBaseFormContext
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { TextControl } from "@/core/anotations/hook-form-refac"
+import { TextControl } from "@/core/anotations/rhf"
 import { ChangeEvent, FocusEvent, useEffect, useState } from "react"
 import { ControllerFieldState, ControllerRenderProps, FieldPath, FieldValues, Path, UseFormStateReturn } from "react-hook-form"
 
