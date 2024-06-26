@@ -75,7 +75,7 @@ export function filterNumber<T extends BaseData>(row: Row<T>, columnId: string, 
     }
 
     const value = row.getValue(columnId);
-    return value === filterValue;
+    return !isNaN(Number(filterValue)) && value === Number(filterValue);
 
     // if (row.original && columnId in row.original && !isNaN(Number(filterValue))) {
     //     // const value = row.original[columnId as keyof T] as (number | null | undefined);

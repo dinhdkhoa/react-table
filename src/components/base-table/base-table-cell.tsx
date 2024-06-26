@@ -115,7 +115,7 @@ export function Value<TData extends BaseData, TValue>(cellContext: CellContext<T
     if (colId && data) {
         const value = (data as any)[colId] as TValue;
 
-        if (value)
+        if (value !== undefined && value !== null)
             return value;
     }
 

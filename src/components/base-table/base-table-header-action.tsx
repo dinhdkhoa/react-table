@@ -18,7 +18,8 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { useState } from "react";
-export default function TableHeaderActions({ colspan, table }: { colspan: number, table: any }) {
+import { Table } from "@tanstack/react-table";
+export default function TableHeaderActions<T = unknown>({ colspan, table }: { colspan: number, table: Table<T> }) {
   const [dropDownOpen, setDropDownOpen] = useState(false)
   return (
     <TableRow className="bg-transparent h-10 hover:bg-transparent">
