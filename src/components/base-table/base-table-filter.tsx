@@ -25,51 +25,68 @@ type CheckBoxFilterType = string | null | undefined;
 type DateFilterType = Date | null | undefined;
 type StaticComboboxFilterType = string | number | null | undefined;
 
-export function filterOnDate<T extends BaseData>(row: Row<T>, columnId: string, filterValue: Date | null | undefined) {
+export function filterOnDate<T extends BaseData>(row: Row<T>, columnId: string, filterValue: DateFilterType) {
     if (!filterValue) {
         return true;
     }
 
-    if (row.original && columnId in row.original) {
-        const value = row.original[columnId as keyof T] as (Date | null | undefined);
-        if (!value) return false;
+    const value = row.getValue<DateFilterType>(columnId);
+    if (!value) return false;
 
-        const result = new Date(value.getFullYear(), value.getMonth(), value.getDate()).getTime() ===
-            new Date(filterValue.getFullYear(), filterValue.getMonth(), filterValue.getDate()).getTime();
+    const result = new Date(value.getFullYear(), value.getMonth(), value.getDate()).getTime() ===
+        new Date(filterValue.getFullYear(), filterValue.getMonth(), filterValue.getDate()).getTime();
 
-        return result;
-    }
+    return result;
 
-    return false;
+    // if (row.original && columnId in row.original) {
+    //     // const value = row.original[columnId as keyof T] as (DateFilterType);
+    //     const value = row.getValue<DateFilterType>(columnId);
+    //     if (!value) return false;
+
+    //     const result = new Date(value.getFullYear(), value.getMonth(), value.getDate()).getTime() ===
+    //         new Date(filterValue.getFullYear(), filterValue.getMonth(), filterValue.getDate()).getTime();
+
+    //     return result;
+    // }
+
+    // return false;
 }
 
-export function filterCheckbox<T extends BaseData>(row: Row<T>, columnId: string, filterValue: string | null | undefined) {
+export function filterCheckbox<T extends BaseData>(row: Row<T>, columnId: string, filterValue: CheckBoxFilterType) {
     if (filterValue === 'any') return true;
 
-    if (row.original && columnId in row.original) {
-        const filterValueBoolean = filterValue === 'true';
-        const value = row.original[columnId as keyof T] as (boolean | null | undefined);
+    const value = row.getValue(columnId);
+    const filterValueBoolean = filterValue === 'true';
+    return (value || false) === filterValueBoolean;
+    // row.getValue(columnId);
+    // if (row.original && columnId in row.original) {
+    //     const filterValueBoolean = filterValue === 'true';
+    //     // const value = row.original[columnId as keyof T] as (boolean | null | undefined);
+    //     const value = row.getValue(columnId);
+    //     return (value || false) === filterValueBoolean;
+    // }
 
-        return (value || false) === filterValueBoolean;
-    }
-
-    return false;
+    // return false;
 }
 
-export function filterNumber<T extends BaseData>(row: Row<T>, columnId: string, filterValue: string | number | null | undefined) {
+export function filterNumber<T extends BaseData>(row: Row<T>, columnId: string, filterValue: StaticComboboxFilterType) {
     if (!filterValue) {
         return true;
     }
 
-    if (row.original && columnId in row.original && !isNaN(Number(filterValue))) {
-        const value = row.original[columnId as keyof T] as (number | null | undefined);
-        const filterValueNum = Number(filterValue)
-        if (!value) return false;
+    const value = row.getValue(columnId);
+    return value === filterValue;
 
-        return value === filterValueNum;
-    }
+    // if (row.original && columnId in row.original && !isNaN(Number(filterValue))) {
+    //     // const value = row.original[columnId as keyof T] as (number | null | undefined);
+    //     const value = row.getValue(columnId);
+    //     const filterValueNum = Number(filterValue)
+    //     if (!value) return false;
 
-    return false;
+    //     return value === filterValueNum;
+    // }
+
+    // return false;
 }
 
 export function filterStaticCombobox<T extends BaseData>(row: Row<T>, columnId: string, filterValue: StaticComboboxFilterType) {
@@ -77,12 +94,16 @@ export function filterStaticCombobox<T extends BaseData>(row: Row<T>, columnId: 
         return true;
     }
 
-    if (row.original && columnId in row.original) {
-        const value = row.original[columnId as keyof T] as StaticComboboxFilterType;
-        return value === filterValue;
-    }
+    const value = row.getValue(columnId);
+    return value === filterValue;
 
-    return false;
+    // if (row.original && columnId in row.original) {
+    //     // const value = row.original[columnId as keyof T] as StaticComboboxFilterType;
+    //     const value = row.getValue(columnId);
+    //     return value === filterValue;
+    // }
+
+    // return false;
 }
 
 export function Filter({ column }: { column: Column<any, unknown> }) {
@@ -104,7 +125,7 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
 
     if (!formatColumnType || isNumberCol) {
         return (
-            
+
             <Input className="bg-background shadow-sm hover:bg-accent hover:text-accent-foreground" placeholder="Filter" onChange={value => { column.setFilterValue(value.currentTarget.value) }} type={isNumberCol ? 'number' : 'text'} />
         );
     }
