@@ -5,24 +5,17 @@ import { useForm } from "react-hook-form"
 
 import { Button } from "@/components/ui/button"
 import {
-  BaseForm,
-  Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-  useFormField
-} from "@/components/ui/form"
+  FormMessage} from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { RegisterBody, RegisterBodyType } from "@/schemaValidations/auth.schema"
-import { toast } from "sonner"
-import registerAPI from "./register.api"
 import { useRouter } from "next/navigation"
-import { handleApiError } from "@/lib/utils"
 import { useState } from "react"
-import TextInput from "./_components/input"
 import { LoginEntity } from "@/domain/entities/login-entity-refactor"
+import BaseForm from "@/components/base-form"
 let count = 0 
 
 export function RegisterForm() {
