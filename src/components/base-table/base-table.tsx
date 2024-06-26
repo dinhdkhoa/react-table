@@ -138,7 +138,7 @@ export function BaseTable<T extends BaseData>(props: {
     data: Array<T>,
     tableConfig: BaseTableConfig<T>
 }) {
-    const [rowsEditing, setRowsEditing] = useState<Record<string, T>>({...props.tableConfig.rowsEditing});
+    const [rowsEditing, setRowsEditing] = useState<Record<string, T>>({ ...props.tableConfig.rowsEditing });
     const [columnPinningState, setColumnPinningState] = useState<ColumnPinningState>({})
     const [data] = useState(() => [...props.data]);
     const [rowSelection, setRowSelection] = useState({});
@@ -245,7 +245,7 @@ export function BaseTable<T extends BaseData>(props: {
     }, [])
 
     const handleRowsIdEditingChange = (newValue: Record<string, T>) => {
-        setRowsEditing({...newValue});
+        setRowsEditing({ ...newValue });
     }
 
     useEffect(() => {

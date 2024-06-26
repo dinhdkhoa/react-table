@@ -89,7 +89,7 @@ export class BaseTableConfig<T extends BaseData> {
     saveButton: BaseRowAction<T> = {
         id: '_row_action_save', name: 'Save', iconChild: <Save className={BaseTableConfig.defaultIconSize} fontSize='inherit' />,
         action: (data) => {
-            this.removeRowEditing(data.getId(this.keys ?? '') || '', data, true);
+            this.setAfterSaveRow(data.getId(this.keys ?? '') || '', data);
         }
     };
     cancelButton: BaseRowAction<T> = {
@@ -135,6 +135,15 @@ export class BaseTableConfig<T extends BaseData> {
         return this.data.find(w => w.getId && w.getId(this.keys) == ids);
     }
 
+    updateRowValuesCache(rowId: string, newValues: T) {
+        if (this.table) {
+            const row = this.table!.getRow(rowId);
+            if (row) {
+                row._valuesCache = { ...row._valuesCache, ...newValues }
+            }
+        }
+    };
+
     addRowEditing(id: string, keepData: T) {
         if (id) {
             if (!this.rowsEditing[id]) {
@@ -165,6 +174,11 @@ export class BaseTableConfig<T extends BaseData> {
         tableEventEmitter.emit(rowIdsEditingChangeEvent, this.rowsEditing)
     }
 
+    setAfterSaveRow(id: string, data: T) {
+        this.removeRowEditing(id, data, true);
+        this.updateRowValuesCache(id, data);
+    }
+
     init() {
         this.cols.forEach(col => {
             if (col.meta?.formatColumnType) {
@@ -178,7 +192,7 @@ export class BaseTableConfig<T extends BaseData> {
                     if (isNumberColumn(col.meta!.formatColumnType!)) {
                         col.filterFn = filterNumber;
                     }
-                    if([FormatColumnType.StaticCombobox].includes(col.meta!.formatColumnType)){
+                    if ([FormatColumnType.StaticCombobox].includes(col.meta!.formatColumnType)) {
                         col.filterFn = filterStaticCombobox;
                     }
                 }
