@@ -7,7 +7,7 @@ import { FormatColumnType, RowSelectType } from "@/components/base-table/enums";
 
 import { BaseTable } from "@/components/base-table/base-table";
 import { createColumnHelper } from "@tanstack/react-table";
-import { PersonEntity } from "@/domain/entities/person-entity";
+import { PersonEntity, statusSelectOption } from "@/domain/entities/person-entity";
 
 // const defaultData: Person[] = [];
 const defaultData: PersonEntity[] = [
@@ -78,7 +78,11 @@ export default function ENode() {
             accessorKey: 'status',
             maxSize: 400,
             minSize: 400,
-            size: 400
+            size: 400,
+            meta: {
+                formatColumnType: FormatColumnType.StaticCombobox,
+                staticSelectOption: statusSelectOption
+            }
         },
         {
             id: 'date',

@@ -4,6 +4,8 @@ import { CellContext } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { BaseData } from "@/core/classes/base-data";
 import { FormatColumnType } from "./enums";
+import { RHFOptions, RHFSharedType, RHF_FIELDS } from "@/core/anotations/rhf-field";
+import { Control, ControlType, NumberControl, StaticComboboxControl } from "@/core/types/control.types";
 
 export function DefaultCell<TData extends BaseData>(cellContext: CellContext<TData, any>) {
     const { formatColumnType } = cellContext.column.columnDef.meta ?? {}
@@ -39,6 +41,8 @@ export function DefaultCell<TData extends BaseData>(cellContext: CellContext<TDa
             return DateTimeCell(cellContext);
         case FormatColumnType.Boolean:
             return BooleanCell(cellContext);
+        case FormatColumnType.StaticCombobox:
+            return StaticComboboxCell(cellContext);
         default:
             return Value<TData, any>(cellContext) || '';
     }
@@ -90,6 +94,19 @@ export function BooleanCell<TData extends BaseData>(
     return <div style={{ textAlign: 'center' }} >
         <Checkbox checked={value || false} disabled />
     </div>
+}
+
+export function StaticComboboxCell<TData extends BaseData>(
+    cellContext: CellContext<TData, string | number | null | undefined>) {
+    const { staticSelectOption } = cellContext.column.columnDef.meta ?? {}
+    if(staticSelectOption){
+        const value = Value<TData, string | number | null | undefined>(cellContext);
+        const findEntityCbo = staticSelectOption.data.find(w => staticSelectOption.value(w) == value)
+        if (findEntityCbo) { return staticSelectOption.display(findEntityCbo) }
+        return 'N/A';
+    }
+
+    return '';
 }
 
 export function Value<TData extends BaseData, TValue>(cellContext: CellContext<TData, TValue>) {

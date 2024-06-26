@@ -9,7 +9,7 @@ export enum Control {
     Number = "Number",
     Checkbox = "Checkbox",
     Switch = 'Switch',
-    Combobox = "Combobox",
+    StaticCombobox = "StaticCombobox",
     MultipleSelect = 'MultipleSelect',
     RadioGroup = 'RadioGroup',
     Date = "Date"
@@ -40,8 +40,8 @@ export type SelectOption<TEntity, TValue> = {
 }
 export type CheckboxControl = { type: Control.Checkbox, }
 export type SwitchControl = { type: Control.Switch, };
-export type ComboboxControl<TOption = unknown, TOptionValue = unknown> = {
-    type: Control.Combobox,
+export type StaticComboboxControl<TOption = unknown, TOptionValue = unknown> = {
+    type: Control.StaticCombobox,
     selectOption: SelectOption<TOption, TOptionValue>,
 }
 export type MultipleSelectControl<TOption = unknown, TOptionValue = unknown> = {
@@ -61,7 +61,7 @@ export type ControlType =
     | TextControl
     | TextAreaControl
     | NumberControl
-    | ComboboxControl
+    | StaticComboboxControl
     | DateControl
     | CheckboxControl
     | RadioGroupControl

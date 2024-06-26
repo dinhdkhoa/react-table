@@ -158,7 +158,7 @@ export class LoginEntity extends BaseEntityForm {
 
   @RHF({
     label: "Email Type",
-    type: Control.Combobox,
+    type: Control.StaticCombobox,
     selectOption: emailSelectOption,
     // visibleFn: (form: UseFormReturn, entity: LoginEntity) => {
     //   return !entity.abc;

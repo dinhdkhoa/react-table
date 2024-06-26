@@ -266,7 +266,7 @@ export function BaseTable<T extends BaseData>(props: {
             columnPinning: columnPinningState
         },
         defaultColumn: {
-            filterFn: filterFns.equals,
+            filterFn: filterFns.includesString,
             maxSize: 200,
             minSize: 100
         },

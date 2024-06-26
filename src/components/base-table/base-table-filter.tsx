@@ -11,15 +11,19 @@ import { Calendar } from "@/components/ui/calendar";
 import { BaseData } from "@/core/classes/base-data";
 import { isNumberColumn } from "./base-table-config";
 import { FormatColumnType } from "./enums";
+import { SelectOption } from "@/core/types/control.types";
+import { Input } from "../ui/input";
 
 declare module '@tanstack/react-table' {
     interface ColumnMeta<TData extends RowData, TValue> {
-        filterVariant?: 'text' | 'range' | 'select';
+        filterVariant?: 'text' | 'range' | 'select',
+        staticSelectOption?: SelectOption<any, any>,
     }
 }
 
-type checkBoxFilterType = string | null | undefined;
-type dateFilterType = Date | null | undefined;
+type CheckBoxFilterType = string | null | undefined;
+type DateFilterType = Date | null | undefined;
+type StaticComboboxFilterType = string | number | null | undefined;
 
 export function filterOnDate<T extends BaseData>(row: Row<T>, columnId: string, filterValue: Date | null | undefined) {
     if (!filterValue) {
@@ -68,6 +72,19 @@ export function filterNumber<T extends BaseData>(row: Row<T>, columnId: string, 
     return false;
 }
 
+export function filterStaticCombobox<T extends BaseData>(row: Row<T>, columnId: string, filterValue: StaticComboboxFilterType) {
+    if (!filterValue) {
+        return true;
+    }
+
+    if (row.original && columnId in row.original) {
+        const value = row.original[columnId as keyof T] as StaticComboboxFilterType;
+        return value === filterValue;
+    }
+
+    return false;
+}
+
 export function Filter({ column }: { column: Column<any, unknown> }) {
     const { filterVariant, formatColumnType } = column.columnDef.meta ?? {};
     const columnFilterValue = column.getFilterValue();
@@ -87,15 +104,21 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
 
     if (!formatColumnType || isNumberCol) {
         return (
-            <FilterAutocomplete
-                popOverContentWidth={buildWidthPopOver}
-                options={sortedUniqueValues}
-                onChange={value => {
-                    column.setFilterValue(value)
-                }}
-            />
+            
+            <Input className="bg-background shadow-sm hover:bg-accent hover:text-accent-foreground" placeholder="Filter" onChange={value => { column.setFilterValue(value.currentTarget.value) }} type={isNumberCol ? 'number' : 'text'} />
         );
     }
+
+    if ([FormatColumnType.StaticCombobox].includes(formatColumnType)) {
+        const { staticSelectOption } = column.columnDef.meta ?? {};
+        if (staticSelectOption) {
+            return <FilterStaticCombobox value={columnFilterValue as StaticComboboxFilterType} selectOption={staticSelectOption}
+                onChange={value => { column.setFilterValue(value) }} popOverContentWidth={buildWidthPopOver}
+            />
+        }
+        return null;
+    }
+
 
     if ([FormatColumnType.Boolean].includes(formatColumnType)) {
         return (
@@ -108,17 +131,17 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
     if ([FormatColumnType.Date, FormatColumnType.DateTime].includes(formatColumnType)) {
         return (
             <FilterDate
-                value={(columnFilterValue ?? null) as dateFilterType}
+                value={(columnFilterValue ?? null) as DateFilterType}
                 onChange={value => column.setFilterValue(value)}
             />
         );
     }
 }
 
-function FilterCheckbox({ onChange }: { onChange: (value: checkBoxFilterType) => void }) {
+function FilterCheckbox({ onChange }: { onChange: (value: CheckBoxFilterType) => void }) {
     const allValue = 'any';
     const [open, setOpen] = useState(false);
-    const [value, setValue] = useState<checkBoxFilterType>(allValue);
+    const [value, setValue] = useState<CheckBoxFilterType>(allValue);
 
     useEffect(() => {
         onChange(value);
@@ -163,8 +186,8 @@ function FilterCheckbox({ onChange }: { onChange: (value: checkBoxFilterType) =>
     );
 }
 
-function FilterDate({ value, onChange }: { value: dateFilterType, onChange: (value: dateFilterType) => void }) {
-    const [date, setDate] = useState<dateFilterType>(value);
+function FilterDate({ value, onChange }: { value: DateFilterType, onChange: (value: DateFilterType) => void }) {
+    const [date, setDate] = useState<DateFilterType>(value);
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
@@ -232,4 +255,94 @@ function FilterAutocomplete({ options, onChange, popOverContentWidth }: { option
             </PopoverContent>
         </Popover>
     );
+}
+
+function FilterStaticCombobox({ value, selectOption, onChange, popOverContentWidth }: { value: StaticComboboxFilterType, selectOption: SelectOption<any, any>, onChange: (value: any) => void, popOverContentWidth: string }) {
+    const placeholder = 'Filter'
+    const [open, setOpen] = useState(false)
+    const [currentValue, setCurrentValue] = useState(value);
+
+    const display = useMemo(() => {
+        const _value = currentValue;
+        if (_value) {
+            const findItem = selectOption.data.find((basicItem) => selectOption.value(basicItem) == _value);
+            if (findItem) {
+                return selectOption.display(findItem) || '';
+            }
+            return 'N/A';
+        }
+
+        return placeholder;
+    }, [currentValue, selectOption])
+
+
+    const getKey = (item: any) => {
+        return selectOption!.value(item)?.toString()
+    }
+
+    const getValue = (item: any) => {
+        const value = selectOption.value(item);
+        return value;
+    }
+
+    const getItemDisplay = (item: any) => {
+        const value = selectOption.display(item);
+        return value;
+    }
+
+    const handleChange = (e: any) => {
+        setCurrentValue(e);
+        onChange(e);
+    }
+
+    return (
+        <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+                <Button
+                    variant="outline"
+                    role="combobox"
+                    className={cn(
+                        "justify-between w-full"
+                    )}
+                >
+                    <span className="truncate">{currentValue
+                        ? display
+                        : placeholder}</span>
+                    {currentValue ? clearFilter(() => {
+                        handleChange(undefined);
+                    }) : <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />}
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className={cn("max-w-sm p-0", popOverContentWidth)}>
+                <Command>
+                    <CommandInput placeholder='Search...' />
+                    <CommandList>
+                        <CommandEmpty>{`No data found`}</CommandEmpty>
+                        <CommandGroup>
+                            {selectOption.data.map((item) => (
+                                <CommandItem
+                                    value={getItemDisplay(item)}
+                                    key={getKey(item)}
+                                    onSelect={() => {
+                                        const val = getValue(item);
+                                        handleChange(val)
+                                        setOpen(false)
+                                    }}
+                                >
+                                    <Check
+                                        className={cn("mr-2 min-h-4 min-w-4 h-4 w-4",
+                                            getValue(item) === currentValue
+                                                ? "opacity-100"
+                                                : "opacity-0"
+                                        )}
+                                    />
+                                    {selectOption!.display(item)}
+                                </CommandItem>
+                            ))}
+                        </CommandGroup>
+                    </CommandList>
+                </Command>
+            </PopoverContent>
+        </Popover>
+    )
 }

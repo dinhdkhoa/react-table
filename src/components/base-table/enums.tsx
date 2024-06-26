@@ -10,7 +10,8 @@ export enum FormatColumnType {
     Decimal = 'Decimal',
     Date = 'Date',
     DateTime = 'DateTime',
-    Boolean = 'Boolean'
+    Boolean = 'Boolean',
+    StaticCombobox = 'StaticCombobox'
 }
 
 export enum ModeType {

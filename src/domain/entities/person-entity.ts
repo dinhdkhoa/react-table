@@ -19,7 +19,7 @@ const statusData: BasicItem<string>[] = [
     }
 ]
 
-const statusSelectOption: SelectOption<BasicItem<string>, string> = {
+export const statusSelectOption: SelectOption<BasicItem<string>, string> = {
     data: statusData,
     value: (data) => data.value ?? '',
     valueString: (data) => (data.value ?? ''),
@@ -55,13 +55,16 @@ export class PersonEntity extends BaseEntityForm {
 
     @RHF({
         label: "Visits",
-        type: Control.Number
+        type: Control.Number,
+        disableFn: (form: UseFormReturn<PersonEntity>, entity: PersonEntity) => {
+            return entity.visits == 50;
+        }
     })
     visits?: number;
 
     @RHF({
         label: "Status",
-        type: Control.Combobox,
+        type: Control.StaticCombobox,
         selectOption: statusSelectOption,
     })
     status?: string;

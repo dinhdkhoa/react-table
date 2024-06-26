@@ -31,7 +31,7 @@ const BaseDynamicControl = <TEntity extends FieldValues = FieldValues,>(props: P
                 return <BaseCheckboxInput<TEntity> name={props.name as any} />
             case Control.Switch:
                 return <BaseSwitchInput<TEntity> name={props.name as any} />
-            case Control.Combobox:
+            case Control.StaticCombobox:
                 return <BaseComboboxInput<TEntity> name={props.name as any} />
             case Control.MultipleSelect:
                 return <BaseMultipleSelectInput<TEntity> name={props.name as any} />

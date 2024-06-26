@@ -14,12 +14,12 @@ import { Check, ChevronsUpDown, X } from "lucide-react"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../../ui/command"
 import { cn } from "@/lib/utils"
 import { useBaseFormContext } from ".."
-import { ComboboxControl } from "@/core/types/control.types"
+import { StaticComboboxControl } from "@/core/types/control.types"
 
 const BaseComboboxInput = <TEntity extends FieldValues = FieldValues>({
   name
 }: BaseFormFieldPropsType<TEntity>) => {
-  const { form, rhf, entity } = useBaseFormContext<ComboboxControl, TEntity>()
+  const { form, rhf, entity } = useBaseFormContext<StaticComboboxControl, TEntity>()
   const { visibleFn } = rhf[name];
 
   const [visibled, setVisibled] = useState<boolean>(() => {
@@ -50,7 +50,7 @@ const clearFilter = (onClick: () => void) => (
 );
 
 const BaseComboboxInputItem = <TEntity extends FieldValues = FieldValues>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
-  const { rhf, setAfterDataChanged, form, entity } = useBaseFormContext<ComboboxControl, TEntity>()
+  const { rhf, setAfterDataChanged, form, entity } = useBaseFormContext<StaticComboboxControl, TEntity>()
   const { placeholder, label, disableFn, selectOption, validate } = rhf[field.name];
   const [open, setOpen] = useState(false)
 

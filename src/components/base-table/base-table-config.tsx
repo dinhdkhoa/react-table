@@ -5,7 +5,7 @@ import { CheckedState } from "@radix-ui/react-checkbox";
 import { ColumnDef, Row, SortingFn, Table, createColumnHelper } from "@tanstack/react-table";
 import { FormatColumnType, ModeType, RowSelectType } from "./enums";
 import { Delete, List, Pencil, Save, X } from "lucide-react";
-import { filterCheckbox, filterNumber, filterOnDate } from "./base-table-filter";
+import { filterCheckbox, filterNumber, filterOnDate, filterStaticCombobox } from "./base-table-filter";
 import { DefaultCell } from "./base-table-cell";
 import { ReactNode } from "react";
 import tableEventEmitter from "./events";
@@ -169,14 +169,17 @@ export class BaseTableConfig<T extends BaseData> {
         this.cols.forEach(col => {
             if (col.meta?.formatColumnType) {
                 if (!col.filterFn) {
-                    if (isDateColumn(col.meta!.formatColumnType!)) {
-                        col.filterFn = filterOnDate
+                    if (isDateColumn(col.meta!.formatColumnType)) {
+                        col.filterFn = filterOnDate;
                     }
-                    if ([FormatColumnType.Boolean].includes(col.meta!.formatColumnType!)) {
-                        col.filterFn = filterCheckbox
+                    if ([FormatColumnType.Boolean].includes(col.meta!.formatColumnType)) {
+                        col.filterFn = filterCheckbox;
                     }
                     if (isNumberColumn(col.meta!.formatColumnType!)) {
-                        col.filterFn = filterNumber
+                        col.filterFn = filterNumber;
+                    }
+                    if([FormatColumnType.StaticCombobox].includes(col.meta!.formatColumnType)){
+                        col.filterFn = filterStaticCombobox;
                     }
                 }
                 if (!col.sortingFn) {

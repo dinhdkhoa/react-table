@@ -58,11 +58,6 @@ const BaseNumberInputItem = <TEntity extends FieldValues = FieldValues,>({ field
   }, [form.watch()]);
 
   useEffect(() => {
-    form.register(field.name, {
-      validate: !((disableFn ? disableFn(form, entity) : false) || !visibled) ? validate : undefined,
-      onChange: handleChange,
-      onBlur: handleBlur
-    })
     if (disabled) {
       form.clearErrors(field.name)
     }
@@ -85,6 +80,12 @@ const BaseNumberInputItem = <TEntity extends FieldValues = FieldValues,>({ field
       <FormControl>
         <Input
           {...field}
+          {...form.register(field.name, {
+            valueAsNumber: true,
+            validate: !((disableFn ? disableFn(form, entity) : false) || !visibled) ? validate : undefined,
+            onChange: handleChange,
+            onBlur: handleBlur
+          })}
           disabled={disabled}
           placeholder={placeholder}
           type={'number'}
