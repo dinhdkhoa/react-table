@@ -1,5 +1,6 @@
 import { Guid } from "guid-typescript";
-import _ from 'lodash';
+import { IActivator } from "../interfaces/activator";
+// import cloneDeep from 'lodash/cloneDeep';
 
 export class BaseData {
     __id__?: string;
@@ -19,7 +20,24 @@ export class BaseData {
         }
         return this.__id__;
     }
-    clone() {
-        return _.cloneDeep(this);
+
+    clonePropToKeepData() {
+        const clone = Object.create(Object.getPrototypeOf(this));
+        Object.keys(this).forEach(key => {
+            console.log(typeof (this as any)[key]);
+            if (typeof (this as any)[key] !== 'function') {
+                clone[key] = (this as any)[key];
+            }
+        })
+        return clone;
+    }
+
+    assignValue<T>(source: T) {
+        Object.keys(source as any).forEach(key => {
+            console.log(typeof (source as any)[key]);
+            if (typeof (source as any)[key] !== 'function') {
+                (this as any)[key] = (source as any)[key];
+            }
+        })
     }
 }

@@ -1,6 +1,7 @@
 import { Control, RHFField, SelectOption } from "@/core/anotations/hook-form-refac";
-import { BaseEntityForm } from "@/core/classes/base-entity-form";
+import { BaseEntityForm, onChangeFun } from "@/core/classes/base-entity-form";
 import { BasicItem } from "@/core/classes/basic-item";
+import { UseFormReturn } from "react-hook-form";
 
 const statusData: BasicItem<string>[] = [
     {
@@ -102,6 +103,13 @@ export class PersonEntity extends BaseEntityForm {
         this.progress = progress;
         this.date = date;
         this.active = active;
+    }
+
+    onChange: onChangeFun = (form: UseFormReturn, fieldName: string | undefined, value: any) => {
+        console.log('fieldName', fieldName)
+        console.log('value', value)
+        console.log('form', form.getValues())
+        console.log('entity', this)
     }
 }
 

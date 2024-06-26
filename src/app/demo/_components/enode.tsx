@@ -62,7 +62,8 @@ export default function ENode() {
             id: 'age',
             accessorKey: 'age',
             meta: {
-                formatColumnType: FormatColumnType.Decimal
+                formatColumnType: FormatColumnType.Decimal,
+                editable: false
             }
         },
         {
@@ -183,8 +184,6 @@ export default function ENode() {
     }
 
     tableConfig.setData([...defaultData,]);
-    const a = [...defaultData]
-    a[0].age = 1111;
 
     return (
         <>

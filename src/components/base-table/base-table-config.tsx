@@ -37,7 +37,7 @@ export class BaseTableConfig<T extends BaseData> {
     static defaultIconSize = "h-4 w-4";
     keys: string[] = [];
     data: T[] = [];
-    rowIdsEditing: string[] = [];
+    rowsEditing: Record<string, T> = {}
 
     constructor(classT: IActivator<T>) {
         const t = new classT();
@@ -81,7 +81,7 @@ export class BaseTableConfig<T extends BaseData> {
     editButton: BaseRowAction<T> = {
         id: '_row_action_edit', name: 'Edit', iconChild: <Pencil className={BaseTableConfig.defaultIconSize} fontSize='inherit' />,
         action: (data) => {
-            this._addRowEditing(data.getId(this.keys ?? '') || '');
+            this._addRowEditing(data.getId(this.keys ?? '') || '', data);
         }
     };
     detailButton: BaseRowAction<T> = { id: '_row_action_detail', name: 'Detail', iconChild: <List className={BaseTableConfig.defaultIconSize} fontSize='inherit' /> };
@@ -90,13 +90,13 @@ export class BaseTableConfig<T extends BaseData> {
     saveButton: BaseRowAction<T> = {
         id: '_row_action_save', name: 'Save', iconChild: <Save className={BaseTableConfig.defaultIconSize} fontSize='inherit' />,
         action: (data) => {
-            this._removeRowEditing(data.getId(this.keys ?? '') || '')
+            this._removeRowEditing(data.getId(this.keys ?? '') || '', data, true);
         }
     };
     cancelButton: BaseRowAction<T> = {
         id: '_row_action_cancel', name: 'Cancel', iconChild: <X className={BaseTableConfig.defaultIconSize} fontSize='inherit' />,
         action: (data) => {
-            this._removeRowEditing(data.getId(this.keys ?? '') || '')
+            this._removeRowEditing(data.getId(this.keys ?? '') || '', data, false)
         }
     };
 
@@ -140,23 +140,32 @@ export class BaseTableConfig<T extends BaseData> {
         return this.data.find(w => w.getId && w.getId(this.keys) == rowId);
     }
 
-    _addRowEditing(id: string) {
+    _addRowEditing(id: string, keepData: T) {
         if (id) {
-            if (!this.rowIdsEditing.includes(id)) {
-                this.rowIdsEditing.push(id);
-                tableEventEmitter.emit(rowIdsEditingChangeEvent, this.rowIdsEditing)
+            if (!this.rowsEditing[id]) {
+                this.rowsEditing[id] = keepData.clonePropToKeepData();
+                tableEventEmitter.emit(rowIdsEditingChangeEvent, this.rowsEditing)
             }
         }
     }
-    _removeRowEditing(id: string) {
+    _removeRowEditing(id: string, entity: T, saveData?: boolean) {
         if (id) {
-            this.rowIdsEditing = this.rowIdsEditing.filter(w => w != id);
-            tableEventEmitter.emit(rowIdsEditingChangeEvent, this.rowIdsEditing)
+            if(!saveData && this.rowsEditing[id]){
+                entity.assignValue(this.rowsEditing[id]);
+            }
+            delete this.rowsEditing[id];
+            tableEventEmitter.emit(rowIdsEditingChangeEvent, this.rowsEditing)
         }
     }
     _clearRowEditing() {
-        this.rowIdsEditing = [];
-        tableEventEmitter.emit(rowIdsEditingChangeEvent, this.rowIdsEditing)
+        const keys = Object.keys(this.rowsEditing);
+        keys.forEach(key => {
+            const entity = this.data.find(w=>w.getId(this.keys) == key);
+            if(entity){
+                this._removeRowEditing(key, entity, false);
+            }
+        })
+        tableEventEmitter.emit(rowIdsEditingChangeEvent, this.rowsEditing)
     }
 
     init() {

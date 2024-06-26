@@ -44,7 +44,8 @@ declare module '@tanstack/react-table' {
 
     // allows us to define custom properties for our columns
     interface ColumnMeta<TData extends RowData, TValue> {
-        formatColumnType?: FormatColumnType
+        formatColumnType?: FormatColumnType,
+        editable?: boolean
     }
 }
 
@@ -137,7 +138,7 @@ export function BaseTable<T extends BaseData>(props: {
     data: Array<T>,
     tableConfig: BaseTableConfig<T>
 }) {
-    const [rowIdsEditing, setRowIdsEditing] = useState([...props.tableConfig.rowIdsEditing]);
+    const [rowsEditing, setRowsEditing] = useState<Record<string, T>>({...props.tableConfig.rowsEditing});
     const [columnPinningState, setColumnPinningState] = useState<ColumnPinningState>({})
     const [data] = useState(() => [...props.data]);
     const [rowSelection, setRowSelection] = useState({});
@@ -176,6 +177,9 @@ export function BaseTable<T extends BaseData>(props: {
                     minSize: 40,
                     maxSize: 40,
                     enableResizing: false,
+                    meta: {
+                        editable: false
+                    },
                     header: ({ table }) => (
                         <div className='text-center px-0'>
                             <Checkbox
@@ -222,9 +226,12 @@ export function BaseTable<T extends BaseData>(props: {
                     size: 120,
                     minSize: 120,
                     maxSize: 120,
+                    meta: {
+                        editable: false
+                    },
                     header: () => 'action',
                     cell: ({ row }) => {
-                        const mode = props.tableConfig.rowIdsEditing.includes(row.id) ? ModeType.Edit : ModeType.View;
+                        const mode = props.tableConfig.rowsEditing[row.id] !== undefined ? ModeType.Edit : ModeType.View;
                         return GetActions(row, props, mode)
                     }
                 }
@@ -251,8 +258,8 @@ export function BaseTable<T extends BaseData>(props: {
 
     }, [])
 
-    const handleRowsIdEditingChange = (newValue: Array<string>) => {
-        setRowIdsEditing([...newValue]);
+    const handleRowsIdEditingChange = (newValue: Record<string, T>) => {
+        setRowsEditing({...newValue});
     }
 
     useEffect(() => {

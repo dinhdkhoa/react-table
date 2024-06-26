@@ -67,7 +67,7 @@ export default function TableActionColumn<T extends BaseData>(props: {
             const ac = { ...action };
             const { isDisable, isVisible, allowAction } = GetActionState(props.tableAction.data, ac);
             return (
-                isVisible ?
+                isVisible &&
                     <TooltipProvider key={action.id}>
                         <Tooltip>
                             <TooltipTrigger asChild>
@@ -90,14 +90,12 @@ export default function TableActionColumn<T extends BaseData>(props: {
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
-                    : <></>
             )
         }))
     }
 
     if (props.menuList) {
         return <TableMenuActionColumn tableAction={props.tableAction} />
-
     }
 
     return (
@@ -106,7 +104,7 @@ export default function TableActionColumn<T extends BaseData>(props: {
             const { isDisable, isVisible, allowAction } = GetActionState(props.tableAction.data, ac);
 
             return (
-                isVisible ?
+                isVisible &&
                     <TooltipProvider key={action.id}>
                         <Tooltip>
                             <TooltipTrigger asChild>
@@ -129,7 +127,6 @@ export default function TableActionColumn<T extends BaseData>(props: {
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
-                    : <></>
             )
         })
     )
@@ -163,10 +160,10 @@ function TableMenuActionColumn<T extends BaseData>(props: { tableAction: TableAc
                     {
                         otherButton.map(action => {
                             const ac = { ...action };
-                            if ([saveButtonId, cancelButtonId].includes(ac.id)) return <></>
+                            if ([saveButtonId, cancelButtonId].includes(ac.id)) return null
                             const { isDisable, isVisible, allowAction } = GetActionState(props.tableAction.data, ac);
                             return (
-                                isVisible ?
+                                isVisible &&
                                     <DropdownMenuItem key={action.id} disabled={isDisable}
                                         onClick={() => {
                                             if (allowAction) {
@@ -176,7 +173,6 @@ function TableMenuActionColumn<T extends BaseData>(props: { tableAction: TableAc
                                         {ac.iconChild}
                                         <span className="ml-4">{ac.name || ''}</span>
                                     </DropdownMenuItem>
-                                    : <></>
                             )
                         })
                     }

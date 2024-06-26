@@ -1,6 +1,6 @@
 'use client'
 
-import { ColumnResizeMode, HeaderGroup, Row, SortDirection, flexRender } from "@tanstack/react-table";
+import { Cell, ColumnResizeMode, HeaderGroup, Row, SortDirection, flexRender } from "@tanstack/react-table";
 import { TableCell, TableHead, TableRow } from "@/components/ui/table";
 import React, { useEffect, useState } from "react";
 import { ArrowDownNarrowWide, ArrowUpDown, ArrowUpNarrowWide } from "lucide-react";
@@ -113,10 +113,19 @@ export function BaseTableRow<T extends BaseData>(props: {
     row: Row<T>,
     tableConfig: BaseTableConfig<T>
 }) {
+    const [entity, setEntity] = useState<T>(() => (props.tableConfig.getEntityByRow(props.row.original, props.row.index, props.row.getParentRow())!));
     const { ...baseFormProps } = useBaseForm<T>(
-        (props.tableConfig.getEntityByRow(props.row.original, props.row.index, props.row.getParentRow())!).clone()
+        entity
     );
 
+    const buildCell = (cell: Cell<T, unknown>) => {
+        const { editable } = cell.column.columnDef.meta ?? {};
+
+        return (props.tableConfig.rowsEditing[(props.row.id)] !== undefined
+            && (editable ?? true))
+            ? <BaseDynamicControl name={cell.column.id} />
+            : flexRender(cell.column.columnDef.cell, cell.getContext())
+    }
     return (
         <>
             <TableRow>
@@ -126,10 +135,7 @@ export function BaseTableRow<T extends BaseData>(props: {
                             style={{ ...getCommonPinningStyles(cell.column) }}
                             className={cn("border-r last:border-r-0", cell.column.getIsPinned() ? "bg-background" : "")}
                         >
-                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                            {props.tableConfig.rowIdsEditing.includes(props.row.id)
-                                && ![rowSelectionId, rowActionId].includes(cell.column.id)
-                                ? <BaseDynamicControl name={cell.column.id} /> : flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            {buildCell(cell)}
                         </TableCell>
                     ))}
                 </BaseForm>
