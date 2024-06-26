@@ -151,20 +151,6 @@ export function BaseTable<T extends BaseData>(props: {
     })
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
-
-    function getRowId(originalRow: T, index: number, parent?: Row<T>): string {
-        let keys = props.tableConfig.keys;
-        if (keys && Array.isArray(keys) && keys.length > 0) {
-            let keyValues: string[] = [];
-            keys.forEach(k => {
-                keyValues.push(((originalRow as any)[k] ?? 'null').toString());
-            })
-            return keyValues.join('_');
-        }
-
-        return originalRow.__id__ || index.toString()
-    }
-
     const columns = useMemo<ColumnDef<T, any>[]>(
         () => {
             if (props.tableConfig.isShowSelectionColumn) {
@@ -223,9 +209,9 @@ export function BaseTable<T extends BaseData>(props: {
                     enableSorting: false,
                     enableColumnFilter: false,
                     enableResizing: false,
-                    size: 120,
-                    minSize: 120,
-                    maxSize: 120,
+                    size: 100,
+                    minSize: 100,
+                    maxSize: 100,
                     meta: {
                         editable: false
                     },
@@ -289,7 +275,7 @@ export function BaseTable<T extends BaseData>(props: {
         enableRowSelection: (row) => { return props.tableConfig.allowSelectRow(row.original) },
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
-        getRowId: getRowId,
+        getRowId: props.tableConfig.getRowId,
         getFilteredRowModel: getFilteredRowModel(),
         getFacetedRowModel: getFacetedRowModel(),
         getFacetedUniqueValues: getFacetedUniqueValues(),

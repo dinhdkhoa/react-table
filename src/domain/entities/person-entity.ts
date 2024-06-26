@@ -1,20 +1,21 @@
-import { Control, RHFField, SelectOption } from "@/core/anotations/hook-form-refac";
+import { RHF } from "@/core/anotations/rhf-field";
 import { BaseEntityForm, onChangeFun } from "@/core/classes/base-entity-form";
 import { BasicItem } from "@/core/classes/basic-item";
+import { Control, SelectOption } from "@/core/types/control.types";
 import { UseFormReturn } from "react-hook-form";
 
 const statusData: BasicItem<string>[] = [
     {
-        value: "gmail",
-        text: "xxx.Gmail.com",
+        value: "InRelationship",
+        text: "In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship",
     },
     {
-        value: "itlvn",
-        text: "xxx.itlvn.com",
+        value: "Single",
+        text: "Single",
     },
     {
-        value: "yahoo",
-        text: "xxx.yahoo.com",
+        value: "Complicated",
+        text: "Complicated",
     }
 ]
 
@@ -28,18 +29,18 @@ const statusSelectOption: SelectOption<BasicItem<string>, string> = {
 export class PersonEntity extends BaseEntityForm {
     // @Key
     id: string | undefined;
-    @RHFField({
+    @RHF({
         label: "First Name",
         type: Control.Text,
     })
     firstName?: string;
-    @RHFField({
+    @RHF({
         label: "Last Name",
         type: Control.Text
     })
     lastName?: string;
 
-    @RHFField({
+    @RHF({
         label: "Age",
         type: Control.Number,
         validate: {
@@ -52,33 +53,33 @@ export class PersonEntity extends BaseEntityForm {
     })
     age?: number;
 
-    @RHFField({
+    @RHF({
         label: "Visits",
         type: Control.Number
     })
     visits?: number;
 
-    @RHFField({
+    @RHF({
         label: "Status",
         type: Control.Combobox,
         selectOption: statusSelectOption,
     })
     status?: string;
 
-    @RHFField({
+    @RHF({
         label: "Progress",
         type: Control.Number
     })
     progress?: number;
 
-    @RHFField({
+    @RHF({
         label: "Date",
         type: Control.Date,
         includeTime: true,
     })
     date?: Date;
 
-    @RHFField({
+    @RHF({
         label: "Active",
         type: Control.Checkbox,
     })

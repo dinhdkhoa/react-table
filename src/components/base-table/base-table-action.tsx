@@ -74,6 +74,7 @@ export default function TableActionColumn<T extends BaseData>(props: {
                                 <Button
                                     variant="ghost"
                                     disabled={isDisable}
+                                    className="h-8 w-8 p-0"
                                     onClick={() => {
                                         if (allowAction) {
                                             ac.action!(props.tableAction.data);
@@ -111,6 +112,7 @@ export default function TableActionColumn<T extends BaseData>(props: {
                                 <Button
                                     variant="ghost"
                                     disabled={isDisable}
+                                    className="h-8 w-8 p-0"
                                     onClick={() => {
                                         if (allowAction) {
                                             ac.action!(props.tableAction.data);

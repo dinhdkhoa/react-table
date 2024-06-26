@@ -4,21 +4,21 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  useBaseFormContext
 } from "@/components/ui/form"
-import { ComboboxControl } from "@/core/anotations/hook-form-refac"
 import { useEffect, useMemo, useState } from "react"
 import { ControllerFieldState, ControllerRenderProps, FieldValues, Path, UseFormStateReturn } from "react-hook-form"
-import { FieldInputPropsType } from "./types"
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
-import { Button } from "../ui/button"
+import { BaseFormFieldPropsType } from "./types"
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover"
+import { Button } from "../../ui/button"
 import { Check, ChevronsUpDown, X } from "lucide-react"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../../ui/command"
 import { cn } from "@/lib/utils"
+import { useBaseFormContext } from ".."
+import { ComboboxControl } from "@/core/types/control.types"
 
 const BaseComboboxInput = <TEntity extends FieldValues = FieldValues>({
   name
-}: FieldInputPropsType<TEntity>) => {
+}: BaseFormFieldPropsType<TEntity>) => {
   const { form, rhf, entity } = useBaseFormContext<ComboboxControl, TEntity>()
   const { visibleFn } = rhf[name];
 
@@ -121,7 +121,7 @@ const BaseComboboxInputItem = <TEntity extends FieldValues = FieldValues>({ fiel
               variant="outline"
               role="combobox"
               className={cn(
-                "justify-between",
+                "justify-between w-full",
                 !form.getValues(field.name) && "text-muted-foreground"
               )}
             >

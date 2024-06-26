@@ -1,4 +1,4 @@
-// import { Control, DefaultCheckboxControl, DefaultDateControl, DefaultNumberControl, DefaultTextControl, RHFField, SelectOption, ZodValidation } from "@/core/anotations/hook-form";
+// import { Control, DefaultCheckboxControl, DefaultDateControl, DefaultNumberControl, DefaultTextControl, RHF, SelectOption, ZodValidation } from "@/core/anotations/hook-form";
 // import { BaseEntityForm } from "@/core/classes/base-entity-form";
 // import { BasicItem } from "@/core/classes/basic-item";
 // import { UseFormReturn } from "react-hook-form";
@@ -57,7 +57,7 @@
 // }
 
 // export class LoginEntity extends BaseEntityForm<LoginEntity> {
-//   @RHFField({
+//   @RHF({
 //     index: 0,
 //     label: "Email",
 //     type: DefaultTextControl,
@@ -69,7 +69,7 @@
 //   @ZodValidation(z.string().trim().min(1, "This field is required").transform(value => value.trim()))
 //   username: string;
 
-//   @RHFField({
+//   @RHF({
 //     index: 1,
 //     label: "Password",
 //     type: DefaultTextControl,
@@ -86,7 +86,7 @@
 //   @ZodValidation(z.string().trim().min(2, "This field is required").transform(value => value.trim()))
 //   password: string;
 
-//   @RHFField({
+//   @RHF({
 //     index: 2,
 //     label: "Your Name",
 //     type: DefaultTextControl
@@ -94,7 +94,7 @@
 //   @ZodValidation(z.string().max(5, 'Max length is 5'))
 //   yourName: string | undefined;
 
-//   @RHFField({
+//   @RHF({
 //     index: 3,
 //     label: "Email Type",
 //     placeholder: 'Email Type',
@@ -106,7 +106,7 @@
 //   @ZodValidation(z.string().email())
 //   emailType: string | undefined;
 
-//   @RHFField({
+//   @RHF({
 //     index: 4,
 //     label: "Age Range",
 //     type: { type: Control.Combobox, selectOption: ageSelectOption },
@@ -134,7 +134,7 @@
 //   @ZodValidation(z.number().optional().transform(value => Number(value)))
 //   ageRange?: number;
 
-//   @RHFField({
+//   @RHF({
 //     index: 5,
 //     label: "Age",
 //     type: {
@@ -146,7 +146,7 @@
 //   @ZodValidation(z.number().transform(value => Number(value)))
 //   age?: number;
 
-//   @RHFField({
+//   @RHF({
 //     index: 5,
 //     label: "Sex",
 //     type: DefaultCheckboxControl
@@ -154,7 +154,7 @@
 //   @ZodValidation(z.boolean())
 //   sex?: boolean;
 
-//   @RHFField({
+//   @RHF({
 //     index: 6,
 //     label: "Date of Birth",
 //     type: {

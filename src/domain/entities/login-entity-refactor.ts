@@ -1,6 +1,7 @@
-import { Control, RHFField, SelectOption, TextControl } from "@/core/anotations/hook-form-refac";
+import { RHF } from "@/core/anotations/rhf-field";
 import { BaseEntityForm } from "@/core/classes/base-entity-form";
 import { BasicItem } from "@/core/classes/basic-item";
+import { Control, SelectOption } from "@/core/types/control.types";
 import { UseFormReturn } from "react-hook-form";
 
 const emailTypeData: BasicItem<string>[] = [
@@ -85,7 +86,7 @@ const weightSelectOption: SelectOption<BasicItem<number | undefined>, number | u
 
 export class LoginEntity extends BaseEntityForm {
 
-  @RHFField({
+  @RHF({
     label: "Email",
     type: Control.Text,
     placeholder: 'Email',
@@ -99,7 +100,7 @@ export class LoginEntity extends BaseEntityForm {
   })
   username: string;
 
-  @RHFField({
+  @RHF({
     label: "Password",
     type: Control.Text,
     placeholder: 'Password',
@@ -109,11 +110,12 @@ export class LoginEntity extends BaseEntityForm {
     disableFn: (form: UseFormReturn<LoginEntity>, entity: LoginEntity) => {
       // console.log('disableFn', entity, form.getValues());
       return entity.abc;
-    }
+    },
+
   })
   password: string;
 
-  @RHFField({
+  @RHF({
     label: "Age",
     type: Control.Number,
     placeholder: 'Age',
@@ -127,7 +129,7 @@ export class LoginEntity extends BaseEntityForm {
   })
   age?: number;
 
-  @RHFField({
+  @RHF({
     label: "Date of Birth",
     type: Control.Date,
     includeTime: true,
@@ -141,7 +143,7 @@ export class LoginEntity extends BaseEntityForm {
   })
   dob?: Date;
 
-  @RHFField({
+  @RHF({
     label: "Male",
     type: Control.Checkbox,
     // visibleFn: (form: UseFormReturn, entity: LoginEntity) => {
@@ -154,7 +156,7 @@ export class LoginEntity extends BaseEntityForm {
   })
   male?: boolean;
 
-  @RHFField({
+  @RHF({
     label: "Email Type",
     type: Control.Combobox,
     selectOption: emailSelectOption,
@@ -168,7 +170,7 @@ export class LoginEntity extends BaseEntityForm {
   })
   emailType?: string;
 
-  @RHFField({
+  @RHF({
     label: "Weight Range",
     type: Control.RadioGroup,
     selectOption: weightSelectOption,
@@ -182,7 +184,7 @@ export class LoginEntity extends BaseEntityForm {
   })
   weightRange?: number;
 
-  @RHFField({
+  @RHF({
     index: 8,
     label: "Homeless",
     type: Control.Switch,
@@ -193,7 +195,7 @@ export class LoginEntity extends BaseEntityForm {
   })
   homeLess?: boolean;
 
-  @RHFField({
+  @RHF({
     index: 8,
     label: "Your Profile",
     type: Control.Switch,
@@ -204,7 +206,7 @@ export class LoginEntity extends BaseEntityForm {
   })
   yourProfile?: string;
 
-  @RHFField({
+  @RHF({
     index: 4,
     label: "Multiple Age Range",
     type: Control.MultipleSelect, selectOption: ageSelectOption,

@@ -4,18 +4,18 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-    useBaseFormContext
 } from "@/components/ui/form"
-import { TextAreaControl } from "@/core/anotations/hook-form-refac"
 import { ChangeEvent, FocusEvent, useEffect, useState } from "react"
 import { ControllerFieldState, ControllerRenderProps, FieldValues, Path, UseFormStateReturn } from "react-hook-form"
-import { FieldInputPropsType } from "./types"
+import { BaseFormFieldPropsType } from "./types"
 import { cn } from "@/lib/utils"
-import { Textarea } from "../ui/textarea"
+import { Textarea } from "../../ui/textarea"
+import { useBaseFormContext } from ".."
+import { TextAreaControl } from "@/core/types/control.types"
 
 const BaseTextAreaInput = <TEntity extends FieldValues = FieldValues>({
     name
-}: FieldInputPropsType<TEntity>) => {
+}: BaseFormFieldPropsType<TEntity>) => {
     const { form, rhf, entity } = useBaseFormContext<TextAreaControl, TEntity>()
     const { visibleFn } = rhf[name];
 

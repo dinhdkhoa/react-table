@@ -180,7 +180,7 @@ function FilterDate({ value, onChange }: { value: dateFilterType, onChange: (val
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">
-                <Calendar mode="single" selected={date || undefined} onSelect={(e) => {setDate(e); setOpen(false)}} initialFocus />
+                <Calendar mode="single" selected={date || undefined} onSelect={(e) => { setDate(e); setOpen(false) }} initialFocus />
             </PopoverContent>
         </Popover>
     );

@@ -4,23 +4,23 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  useBaseFormContext
 } from "@/components/ui/form"
-import { DateControl } from "@/core/anotations/hook-form-refac"
 import { useEffect, useState } from "react"
 import { ControllerFieldState, ControllerRenderProps, FieldValues, Path, UseFormStateReturn } from "react-hook-form"
-import { FieldInputPropsType } from "./types"
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
-import { Button } from "../ui/button"
+import { BaseFormFieldPropsType } from "./types"
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover"
+import { Button } from "../../ui/button"
 import { CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
-import { Calendar } from "../ui/calendar"
-import { TimePickerDemo } from "../ui/date-time-input.tsx/time-picker-demo"
+import { Calendar } from "../../ui/calendar"
+import { TimePickerDemo } from "../../ui/date-time-input.tsx/time-picker-demo"
 import { cn } from "@/lib/utils"
+import { useBaseFormContext } from ".."
+import { DateControl } from "@/core/types/control.types"
 
 const BaseDateTimeInput = <TEntity extends FieldValues = FieldValues>({
   name
-}: FieldInputPropsType<TEntity>) => {
+}: BaseFormFieldPropsType<TEntity>) => {
   const { form, rhf, entity } = useBaseFormContext<DateControl, TEntity>()
   const { visibleFn } = rhf[name];
 
@@ -89,16 +89,16 @@ const BaseDateTimeInputItem = <TEntity extends FieldValues = FieldValues,>({ fie
               disabled={disabled}
               variant="outline"
               className={cn(
-                "justify-start text-left font-normal",
+                "justify-start text-left font-normal w-full",
                 !form.getValues(field.name) && "text-muted-foreground"
               )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {form.getValues(field.name) ? (
+              <span className="truncate">{form.getValues(field.name) ? (
                 format(form.getValues(field.name), "PPP HH:mm:ss")
               ) : (
-                <span>{placeholder}</span>
-              )}
+                placeholder
+              )}</span>
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0">

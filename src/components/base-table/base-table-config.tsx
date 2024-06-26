@@ -1,6 +1,6 @@
 import { getKeys } from "@/core/anotations/key";
 import { BaseData } from "@/core/classes/base-data";
-import { IActivator } from "@/core/interfaces/activator";
+import { IActivator } from "@/core/types/activator.types";
 import { CheckedState } from "@radix-ui/react-checkbox";
 import { ColumnDef, Row, SortingFn, Table, createColumnHelper } from "@tanstack/react-table";
 import { FormatColumnType, ModeType, RowSelectType } from "./enums";
@@ -81,25 +81,23 @@ export class BaseTableConfig<T extends BaseData> {
     editButton: BaseRowAction<T> = {
         id: '_row_action_edit', name: 'Edit', iconChild: <Pencil className={BaseTableConfig.defaultIconSize} fontSize='inherit' />,
         action: (data) => {
-            this._addRowEditing(data.getId(this.keys ?? '') || '', data);
+            this.addRowEditing(data.getId(this.keys ?? '') || '', data);
         }
     };
     detailButton: BaseRowAction<T> = { id: '_row_action_detail', name: 'Detail', iconChild: <List className={BaseTableConfig.defaultIconSize} fontSize='inherit' /> };
     deleteButton: BaseRowAction<T> = { id: '_row_action_delete', name: 'Delete', iconChild: <Delete className={BaseTableConfig.defaultIconSize} fontSize='inherit' /> };
-
     saveButton: BaseRowAction<T> = {
         id: '_row_action_save', name: 'Save', iconChild: <Save className={BaseTableConfig.defaultIconSize} fontSize='inherit' />,
         action: (data) => {
-            this._removeRowEditing(data.getId(this.keys ?? '') || '', data, true);
+            this.removeRowEditing(data.getId(this.keys ?? '') || '', data, true);
         }
     };
     cancelButton: BaseRowAction<T> = {
         id: '_row_action_cancel', name: 'Cancel', iconChild: <X className={BaseTableConfig.defaultIconSize} fontSize='inherit' />,
         action: (data) => {
-            this._removeRowEditing(data.getId(this.keys ?? '') || '', data, false)
+            this.removeRowEditing(data.getId(this.keys ?? '') || '', data, false)
         }
     };
-
     showChildButton: BaseRowAction<T> = {
         id: showChildButtonId, name: 'Show Child'
     };
@@ -125,14 +123,7 @@ export class BaseTableConfig<T extends BaseData> {
     }
 
     getRowId(originalRow: T, index: number, parent?: Row<T>): string {
-        if (this.keys && Array.isArray(this.keys) && this.keys.length > 0) {
-            let keyValues: string[] = [];
-            this.keys.forEach(k => {
-                keyValues.push(((originalRow as any)[k] ?? 'null').toString());
-            })
-            return keyValues.join('_');
-        }
-        return originalRow.__id__ || index.toString()
+        return originalRow.getId(this.keys) || index.toString();
     }
 
     getEntityByRow(originalRow: T, index: number, parent?: Row<T>) {
@@ -140,7 +131,11 @@ export class BaseTableConfig<T extends BaseData> {
         return this.data.find(w => w.getId && w.getId(this.keys) == rowId);
     }
 
-    _addRowEditing(id: string, keepData: T) {
+    getEntityByIds(ids: string) {
+        return this.data.find(w => w.getId && w.getId(this.keys) == ids);
+    }
+
+    addRowEditing(id: string, keepData: T) {
         if (id) {
             if (!this.rowsEditing[id]) {
                 this.rowsEditing[id] = keepData.clonePropToKeepData();
@@ -148,21 +143,23 @@ export class BaseTableConfig<T extends BaseData> {
             }
         }
     }
-    _removeRowEditing(id: string, entity: T, saveData?: boolean) {
+
+    removeRowEditing(id: string, entity: T, saveData?: boolean) {
         if (id) {
-            if(!saveData && this.rowsEditing[id]){
+            if (!saveData && this.rowsEditing[id]) {
                 entity.assignValue(this.rowsEditing[id]);
             }
             delete this.rowsEditing[id];
             tableEventEmitter.emit(rowIdsEditingChangeEvent, this.rowsEditing)
         }
     }
-    _clearRowEditing() {
+
+    clearRowEditing() {
         const keys = Object.keys(this.rowsEditing);
         keys.forEach(key => {
-            const entity = this.data.find(w=>w.getId(this.keys) == key);
-            if(entity){
-                this._removeRowEditing(key, entity, false);
+            const entity = this.getEntityByIds(key);
+            if (entity) {
+                this.removeRowEditing(key, entity, false);
             }
         })
         tableEventEmitter.emit(rowIdsEditingChangeEvent, this.rowsEditing)

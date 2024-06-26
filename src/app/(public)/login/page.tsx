@@ -1,5 +1,3 @@
-"use client"
-
 import {
   Card,
   CardContent,
@@ -7,20 +5,12 @@ import {
   CardHeader,
   CardTitle
 } from "@/components/ui/card"
-// import { LoginForm } from "@/ui/Login/login-form"
-import { LoginForm } from "./login-form"
 import { LoginForm3 } from "./login-form-refactored"
-// import { LoginForm2 } from "./login-form copy"
-
-let count = 0;
 
 export default function Login() {
-  count++;
   return (
-    <div className="items-center pt-20">
-      <Card className="mx-auto max-w-md">
+      <Card className="mx-auto max-w-md mt-56">
         <CardHeader>
-          
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>
             Enter your infomation below to login your account
@@ -30,6 +20,5 @@ export default function Login() {
           <LoginForm3 />
         </CardContent>
       </Card>
-    </div>
   )
 }

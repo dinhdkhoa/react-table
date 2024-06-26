@@ -17,7 +17,7 @@ const defaultData: PersonEntity[] = [
         'linsley',
         24,
         100,
-        'In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship',
+        'InRelationship',
         50, undefined,
         true,
     ),
@@ -145,7 +145,7 @@ export default function ENode() {
 
     // eslint-disable-next-line react/jsx-no-undef
     tableConfig.otherButton.push({
-        id: '_row_action_hehe', name: 'Hehe', iconChild: <Delete className={BaseTableConfig.defaultIconSize} fontSize='inherit' />, action: (data) => {
+        id: '_row_action_hehe', name: 'Hehe', iconChild: <Delete className="h-4 w-4" fontSize='inherit' />, action: (data) => {
         }
     });
 

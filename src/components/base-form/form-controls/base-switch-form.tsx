@@ -4,17 +4,17 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-    useBaseFormContext
 } from "@/components/ui/form"
-import { SwitchControl } from "@/core/anotations/hook-form-refac"
 import { useEffect, useState } from "react"
 import { ControllerFieldState, ControllerRenderProps, FieldValues, Path, UseFormStateReturn } from "react-hook-form"
-import { FieldInputPropsType } from "./types"
-import { Switch } from "../ui/switch"
+import { BaseFormFieldPropsType } from "./types"
+import { Switch } from "../../ui/switch"
+import { useBaseFormContext } from ".."
+import { SwitchControl } from "@/core/types/control.types"
 
 const BaseSwitchInput = <TEntity extends FieldValues = FieldValues>({
     name
-}: FieldInputPropsType<TEntity>) => {
+}: BaseFormFieldPropsType<TEntity>) => {
     const { form, rhf, entity } = useBaseFormContext<SwitchControl, TEntity>()
     const { visibleFn } = rhf[name];
 

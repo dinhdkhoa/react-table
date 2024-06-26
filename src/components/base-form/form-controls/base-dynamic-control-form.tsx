@@ -1,5 +1,3 @@
-import { Control, ControlType } from "@/core/anotations/hook-form-refac"
-import { useBaseFormContext } from "../ui/form"
 import { FieldValues } from "react-hook-form"
 import BaseTextInput from "./base-text-input-form"
 import BaseTextAreaInput from "./base-text-area-input-form"
@@ -10,6 +8,8 @@ import BaseMultipleSelectInput from "./base-multiple-select-form"
 import BaseRadioGroupInput from "./base-radio-group-form"
 import BaseDateTimeInput from "./base-date-time-form"
 import BaseComboboxInput from "./base-combobox-form"
+import { Control, ControlType } from "@/core/types/control.types"
+import { useBaseFormContext } from ".."
 
 type Props = {
     name: string

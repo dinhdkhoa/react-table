@@ -4,21 +4,21 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-    useBaseFormContext
 } from "@/components/ui/form"
-import { Direction, RadioGroupControl } from "@/core/anotations/hook-form-refac"
 import { useEffect, useState } from "react"
 import { ControllerFieldState, ControllerRenderProps, FieldValues, Path, UseFormStateReturn } from "react-hook-form"
-import { FieldInputPropsType } from "./types"
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group"
+import { BaseFormFieldPropsType } from "./types"
+import { RadioGroup, RadioGroupItem } from "../../ui/radio-group"
 import { cn } from "@/lib/utils"
+import { Direction, RadioGroupControl } from "@/core/types/control.types"
+import { useBaseFormContext } from ".."
 
 const directionCol = 'flex-col space-y-1';
 const directionRow = 'flex-row';
 
 const BaseRadioGroupInput = <TEntity extends FieldValues = FieldValues>({
     name
-}: FieldInputPropsType<TEntity>) => {
+}: BaseFormFieldPropsType<TEntity>) => {
     const { form, rhf, entity } = useBaseFormContext<RadioGroupControl, TEntity>()
     const { visibleFn } = rhf[name];
 
