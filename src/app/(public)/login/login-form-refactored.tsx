@@ -21,7 +21,7 @@ export function LoginForm3() {
       <BaseForm {...props}>
         <form onSubmit={onSubmit} className="space-y-2 w-full max-w-[400px]">
           <BaseTextInput<LoginEntity> name="username" />
-          <BaseTextInput<LoginEntity> name="password" />
+          <BaseTextInput<LoginEntity> name="password"/>
           {/* <BaseNumberInput<LoginEntity> name="age" />
           <BaseDateTimeInput<LoginEntity> name="dob"/>
           <BaseCheckboxInput<LoginEntity> name="male"/>

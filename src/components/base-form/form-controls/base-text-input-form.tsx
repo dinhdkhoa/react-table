@@ -17,13 +17,44 @@ import {
 import { BaseFormFieldPropsType } from "./types"
 import { useBaseFormContext } from ".."
 import { TextControl } from "@/core/types/control.types"
+import { cva, type VariantProps } from "class-variance-authority"
+import { cn } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button"
+import { SharedVariantProps, SharedVariants } from "./shared-variants"
+
+
+const baseTextInputVariants = cva(
+  null,
+  {
+    variants: {
+      variant: {
+        default:
+          "",
+      },
+    },
+    defaultVariants: {
+      variant: "default"
+    }
+  }
+)
+type BaseTextInputVariantsProps = VariantProps<typeof baseTextInputVariants>
+type BaseTextInputItemsProps<TEntity extends FieldValues = FieldValues> = {
+  field: ControllerRenderProps<TEntity, Path<TEntity>>
+  fieldState: ControllerFieldState
+  formState: UseFormStateReturn<TEntity>
+  visibled?: boolean
+} & SharedVariantProps &
+  BaseTextInputVariantsProps
 
 const BaseTextInput = <TEntity extends FieldValues = FieldValues>({
-  name
-}: BaseFormFieldPropsType<TEntity>) => {
+  name,
+  variant,
+  labelVariant
+}: BaseFormFieldPropsType<TEntity> &
+  SharedVariantProps &
+  BaseTextInputVariantsProps) => {
   const { form, rhf, entity } = useBaseFormContext<TextControl, TEntity>()
   const { visibleFn } = rhf[name]
-
   const [visibled, setVisibled] = useState<boolean>(() => {
     if (visibleFn) {
       return visibleFn(form, entity)
@@ -43,24 +74,27 @@ const BaseTextInput = <TEntity extends FieldValues = FieldValues>({
         control={form.control}
         name={name}
         render={(params) => (
-          <BaseTextInputItem visibled={visibled} {...params} />
+          <BaseTextInputItem
+            visibled={visibled}
+            {...params}
+            variant={variant}
+            labelVariant={labelVariant}
+          />
         )}
       />
     )
   )
 }
 
-const BaseTextInputItem = <TEntity extends FieldValues = FieldValues>({
-  field,
-  fieldState,
-  formState,
-  visibled = true
-}: {
-  field: ControllerRenderProps<TEntity, Path<TEntity>>
-  fieldState: ControllerFieldState
-  formState: UseFormStateReturn<TEntity>
-  visibled?: boolean
-}) => {
+const BaseTextInputItem = <TEntity extends FieldValues = FieldValues>(props: BaseTextInputItemsProps<TEntity>) => {
+  const {
+    field,
+    fieldState,
+    formState,
+    variant,
+    labelVariant,
+    visibled = true
+  } = props
   const { rhf, setAfterDataChanged, form, entity, onBlur } =
     useBaseFormContext<TextControl>()
   const { placeholder, label, disableFn, validate, minLength, maxLength } =
@@ -104,7 +138,9 @@ const BaseTextInputItem = <TEntity extends FieldValues = FieldValues>({
 
   return (
     <FormItem>
-      <FormLabel>{label}</FormLabel>
+      <FormLabel className={cn(SharedVariants({ labelVariant }))}>
+        {label}
+      </FormLabel>
       <FormControl>
         <Input
           {...field}
