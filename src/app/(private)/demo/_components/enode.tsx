@@ -109,7 +109,6 @@ export default function ENode() {
         footer: info => info.column.id,
     });
 
-
     let aa = new PersonEntity()
     aa.id = '1',
         aa.firstName = 'tanner',

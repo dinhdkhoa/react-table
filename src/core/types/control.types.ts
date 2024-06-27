@@ -33,16 +33,17 @@ export type NumberControl = {
     max?: number,
 }
 export type SelectOption<TEntity, TValue> = {
-    data: Array<TEntity>;
-    value: (data: TEntity) => TValue;
-    valueString: (data: TEntity) => string
-    display: (data: TEntity) => string;
+    data: Array<TEntity>,
+    value: (data: TEntity) => TValue,
+    valueString: (data: TEntity) => string,
+    display: (data: TEntity) => string,
 }
 export type CheckboxControl = { type: Control.Checkbox, }
 export type SwitchControl = { type: Control.Switch, };
 export type StaticComboboxControl<TOption = unknown, TOptionValue = unknown> = {
     type: Control.StaticCombobox,
     selectOption: SelectOption<TOption, TOptionValue>,
+    filterSelectOption?: (value: TOption, entity: any) => boolean
 }
 export type MultipleSelectControl<TOption = unknown, TOptionValue = unknown> = {
     type: Control.MultipleSelect,

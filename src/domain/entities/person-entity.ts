@@ -1,7 +1,7 @@
 import { RHF } from "@/core/anotations/rhf-field";
 import { BaseEntityForm, onChangeFun } from "@/core/classes/base-entity-form";
 import { BasicItem } from "@/core/classes/basic-item";
-import { Control, SelectOption } from "@/core/types/control.types";
+import { Control, SelectOption, StaticComboboxControl } from "@/core/types/control.types";
 import { UseFormReturn } from "react-hook-form";
 
 const statusData: BasicItem<string>[] = [
@@ -66,6 +66,10 @@ export class PersonEntity extends BaseEntityForm {
         label: "Status",
         type: Control.StaticCombobox,
         selectOption: statusSelectOption,
+        filterSelectOption: (item: BasicItem<string>, entity: PersonEntity) => {
+            if (entity.firstName == 'tandy' || entity.firstName == 'hao') return false;
+            return true;
+        }
     })
     status?: string;
 

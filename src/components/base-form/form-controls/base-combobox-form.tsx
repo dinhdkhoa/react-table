@@ -14,7 +14,7 @@ import { Check, ChevronsUpDown, X } from "lucide-react"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../../ui/command"
 import { cn } from "@/lib/utils"
 import { useBaseFormContext } from ".."
-import { StaticComboboxControl } from "@/core/types/control.types"
+import { SelectOption, StaticComboboxControl } from "@/core/types/control.types"
 
 const BaseComboboxInput = <TEntity extends FieldValues = FieldValues>({
   name
@@ -51,8 +51,19 @@ const clearFilter = (onClick: () => void) => (
 
 const BaseComboboxInputItem = <TEntity extends FieldValues = FieldValues>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
   const { rhf, setAfterDataChanged, form, entity } = useBaseFormContext<StaticComboboxControl, TEntity>()
-  const { placeholder, label, disableFn, selectOption, validate } = rhf[field.name];
-  const [open, setOpen] = useState(false)
+  const { placeholder, label, disableFn, selectOption, validate, filterSelectOption } = rhf[field.name];
+  const [open, setOpen] = useState(false);
+  const [inprocessData, setInprocessData] = useState(false);
+  const [dataFiltered, setDataFiltered] = useState(() => {
+    if (filterSelectOption) {
+      setInprocessData(true);
+      const filtered = selectOption.data.filter(w => filterSelectOption(w, entity));
+      setInprocessData(false);
+      return filtered;
+    }
+    setInprocessData(false);
+    return selectOption.data;
+  })
 
   const [disabled, setDisabled] = useState<boolean>(() => {
     if (disableFn) {
@@ -66,6 +77,19 @@ const BaseComboboxInputItem = <TEntity extends FieldValues = FieldValues>({ fiel
       setDisabled(disableFn(form, entity));
     }
   }, [form.watch()]);
+
+  useEffect(() => {
+    if (filterSelectOption) {
+      setInprocessData(true)
+      const filtered = selectOption.data.filter(w => filterSelectOption(w, entity));
+      setDataFiltered(filtered);
+      setInprocessData(false)
+    }
+    else {
+      setDataFiltered(selectOption.data);
+      setInprocessData(false)
+    }
+  }, [entity, filterSelectOption, open, selectOption.data])
 
   useEffect(() => {
     form.register(field.name, {
@@ -112,7 +136,7 @@ const BaseComboboxInputItem = <TEntity extends FieldValues = FieldValues>({ fiel
 
   return (
     <FormItem>
-      <FormLabel>{label}</FormLabel>
+      <FormLabel id={field.name}>{label}</FormLabel>
       <FormControl>
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
@@ -138,8 +162,9 @@ const BaseComboboxInputItem = <TEntity extends FieldValues = FieldValues>({ fiel
               <CommandInput placeholder={`Search ${label}`} />
               <CommandList>
                 <CommandEmpty>{`No ${label} found`}</CommandEmpty>
+                {inprocessData && <span>Data is inprocess...</span>}
                 <CommandGroup>
-                  {selectOption.data.map((item) => (
+                  {!inprocessData && dataFiltered.map((item) => (
                     <CommandItem
                       value={getItemDisplay(item)}
                       key={getKey(item)}
