@@ -4,6 +4,7 @@ import { clientSessionToken } from "./common/https";
 import { HttpMethodType } from "./common/types";
 import { prepareFileData } from "./models/requests/file-request.model";
 
+const defaultPath = 'Gateway'
 
 export type BaseRequest = {
     query?: any;
@@ -16,6 +17,96 @@ export type BaseRequest = {
 }
 
 export type GateWayRequest = BaseRequest & { method: HttpMethodType }
+
+export type RequestFunction = <T,>(request: BaseRequest) => Promise<GatewayResponseModel<T>>
+
+// export type BaseServiceType<T> = {
+//     get: RequestFunction<T>,
+//     put(request: BaseRequest): Promise<GatewayResponseModel<T>>;
+//     del(request: BaseRequest): Promise<GatewayResponseModel<T>>;
+//     post(request: BaseRequest): Promise<GatewayResponseModel<T>>;
+//     postFile(request: BaseRequest): Promise<GatewayResponseModel<T>>;
+// }
+
+export async function callGateWay<T>({ path, request }: { path: string, request: GateWayRequest }): Promise<GatewayResponseModel<T>> {
+    const { query,
+        data,
+        endPointCode,
+        serviceCode,
+        extRoute,
+        method,
+        file,
+        apiVersion } = request;
+
+    const objReq = createGateWayRequestModel(method, apiVersion ?? 1, query, data, endPointCode, serviceCode);
+    if (file && query) {
+        try {
+            objReq.requestData = await prepareFileData(file, query);
+        } catch (error) {
+            throw new Error('Failed to prepare file data');
+        }
+    }
+
+    const baseHeader = {
+        'Content-Type': 'application/json',
+        Authorization: clientSessionToken.value
+            ? `Bearer ${clientSessionToken.value}`
+            : ''
+    }
+
+    let url = ApiPath(path);
+    if (extRoute) {
+        url += `?route=${extRoute}`;
+    }
+    try {
+        const res = await fetch(url,
+            {
+                headers: baseHeader,
+                body: JSON.stringify(objReq),
+                method: 'POST'
+            }
+        )
+        if (res.ok) {
+            const payload: GatewayResponseModel<T> = await res.json();
+            return payload;
+        }
+        else {
+            return Promise.reject(res);
+        }
+    } catch (error) {
+        return Promise.reject(error)
+    }
+}
+export async function getFn<T>({ path, request }: { path?: string, request: BaseRequest }): Promise<GatewayResponseModel<T>> {
+    return callGateWay<T>({
+        path: path || defaultPath,
+        request: { ...request, method: "GET" }
+    })
+}
+export async function postFn<T>({ path, request }: { path?: string, request: BaseRequest }): Promise<GatewayResponseModel<T>> {
+    return callGateWay<T>({
+        path: path || defaultPath,
+        request: { ...request, method: "POST" }
+    })
+}
+export async function putFn<T>({ path, request }: { path?: string, request: BaseRequest }): Promise<GatewayResponseModel<T>> {
+    return callGateWay<T>({
+        path: path || defaultPath,
+        request: { ...request, method: "PUT" }
+    })
+}
+export async function delFn<T>({ path, request }: { path?: string, request: BaseRequest }): Promise<GatewayResponseModel<T>> {
+    return callGateWay<T>({
+        path: path || defaultPath,
+        request: { ...request, method: "DELETE" }
+    })
+}
+export async function postFileFn<T>({ path, request }: { path?: string, request: BaseRequest }): Promise<GatewayResponseModel<T>> {
+    return callGateWay<T>({
+        path: path || defaultPath,
+        request: { ...request, method: "POST"}
+    })
+}
 
 export abstract class BaseService {
     path = "Gateway";

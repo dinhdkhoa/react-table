@@ -16,7 +16,7 @@ export function LoginForm3() {
 
   const onSubmit = props.form.handleSubmit(async (data) => {
     loginAction({ username: props.entity.username || '', password: props.entity.passwordEncode }).then(handleState => {
-      if(handleState.isSuccess){
+      if(!handleState.isError){
         toast.success(`Login successful ${handleState.value?.token}`)
       }
       else{
