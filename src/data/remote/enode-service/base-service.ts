@@ -6,27 +6,22 @@ import { prepareFileData } from "./models/requests/file-request.model";
 
 const defaultPath = 'Gateway'
 
-export type BaseRequest = {
-    query?: any;
-    data?: any;
+export type BaseRequestCode = {
     endPointCode?: any;
     serviceCode?: any;
     extRoute?: any;
+}
+
+export type BaseRequest = {
+    query?: any;
+    data?: any;
     file?: File;
     apiVersion?: number;
-}
+} & BaseRequestCode
 
 export type GateWayRequest = BaseRequest & { method: HttpMethodType }
 
-export type RequestFunction = <T,>(request: BaseRequest) => Promise<GatewayResponseModel<T>>
-
-// export type BaseServiceType<T> = {
-//     get: RequestFunction<T>,
-//     put(request: BaseRequest): Promise<GatewayResponseModel<T>>;
-//     del(request: BaseRequest): Promise<GatewayResponseModel<T>>;
-//     post(request: BaseRequest): Promise<GatewayResponseModel<T>>;
-//     postFile(request: BaseRequest): Promise<GatewayResponseModel<T>>;
-// }
+export type RequestFunction = <T, >(request: BaseRequest) => Promise<GatewayResponseModel<T>>
 
 export async function callGateWay<T>({ path, request }: { path: string, request: GateWayRequest }): Promise<GatewayResponseModel<T>> {
     const { query,
@@ -104,10 +99,12 @@ export async function delFn<T>({ path, request }: { path?: string, request: Base
 export async function postFileFn<T>({ path, request }: { path?: string, request: BaseRequest }): Promise<GatewayResponseModel<T>> {
     return callGateWay<T>({
         path: path || defaultPath,
-        request: { ...request, method: "POST"}
+        request: { ...request, method: "POST" }
     })
 }
 
+///
+///Ví dụ này chỉ dùng cho "use client", không phải "server action"
 export abstract class BaseService {
     path = "Gateway";
     apiVerson = 1;
