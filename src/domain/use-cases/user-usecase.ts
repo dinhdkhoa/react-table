@@ -1,6 +1,7 @@
+import { LoginRequestModel } from "@/data/remote/enode-service/models/requests/login-request.model";
 import { UserService } from "@/data/remote/enode-service/user-services";
 
-export async function loginUsecase({ username, password }: { username: string, password: string }) {
+export async function loginUsecase(request: LoginRequestModel) {
     const service = new UserService()
-    return await service.login({ email: username, password })
+    return await service.login(request)
 }

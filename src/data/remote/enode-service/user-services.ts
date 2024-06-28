@@ -10,11 +10,13 @@ export class UserService extends BaseService {
   }
 
   async login(request: LoginRequestModel) {
-    const handleState = new HandleState<UserEntity, UserLoginResponseModel>();
+    const handleState = new HandleState<UserEntity, UserLoginResponseModel>(UserLoginResponseModel);
     try {
-      let response = await this.post<UserLoginResponseModel>({ data: request });
+      let response = await this.post<UserLoginResponseModel>({ data: request, extRoute: 'LoginEOMS', endPointCode: 'ENP002', serviceCode: 'SVC001' });
       return handleState.byResponse(response);
-    } catch (error) { }
+    } catch (error) {
+      console.log(error);
+    }
     return handleState;
   }
 }

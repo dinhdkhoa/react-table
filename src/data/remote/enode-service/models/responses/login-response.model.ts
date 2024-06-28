@@ -17,6 +17,7 @@ export class UserLoginResponseModel implements BaseResponse<UserEntity> {
 
     toEntity(): UserEntity {
         const entity = new UserEntity();
+        Object.assign(entity, this);
 
         return entity;
     }
