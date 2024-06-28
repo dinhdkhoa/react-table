@@ -16,8 +16,8 @@ type Props = {
 }
 
 const BaseDynamicControl = <TEntity extends FieldValues = FieldValues,>(props: Props) => {
-    const { rhf } = useBaseFormContext<ControlType, TEntity>()
-    const { type } = rhf[props.name] ?? {};
+    const { rhf } = useBaseFormContext<ControlType, TEntity>();
+    const { type } = (rhf ?? {})[props.name] ?? {};
 
     const createControl = () => {
         switch (type) {
@@ -40,7 +40,7 @@ const BaseDynamicControl = <TEntity extends FieldValues = FieldValues,>(props: P
             case Control.Date:
                 return <BaseDateTimeInput<TEntity> name={props.name as any} />
             default:
-                return <></>
+                return null;
         }
     }
     return createControl();

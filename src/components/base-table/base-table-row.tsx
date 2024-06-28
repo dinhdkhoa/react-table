@@ -11,7 +11,6 @@ import { getCommonPinningStyles } from "./styles";
 import { Filter } from "./base-table-filter";
 import { DefaultValues, useForm } from "react-hook-form";
 import BaseDynamicControl from "../base-form/form-controls/base-dynamic-control-form";
-import { rowActionId, rowSelectionId } from "./base-table";
 import { cn } from "@/lib/utils";
 import BaseForm from "../base-form";
 import { RHF_FIELDS } from "@/core/anotations/rhf-field";
@@ -118,9 +117,10 @@ export function BaseTableRow<T extends BaseData>(props: {
 
     const buildCell = (cell: Cell<T, unknown>) => {
         const { editable } = cell.column.columnDef.meta ?? {};
+        const anyField = (baseFormProps.rhf && baseFormProps.rhf[cell.column.id]);
 
         return (props.tableConfig.rowsEditing[(props.row.id)] !== undefined
-            && (editable ?? true))
+            && (editable ?? true)) && anyField
             ? <BaseDynamicControl name={cell.column.id} />
             : flexRender(cell.column.columnDef.cell, cell.getContext())
     }
