@@ -16,7 +16,9 @@ function useBaseForm<TEntity extends IBaseEntityForm<TEntity>>(entity: TEntity) 
     const [formFields] = useState<Record<string, RHFOptions<TEntity>>>(() => {
         const rhfs: Record<string, RHFOptions<TEntity>> = {};
         if (entity.__formfields__ && entity.__formfields__.length > 0) {
-            entity.__formfields__.forEach(field => rhfs[field.fieldName as string] = field);
+            entity.__formfields__.forEach(field => {
+                field.placeholder = field.placeholder || field.label
+                rhfs[field.fieldName as string] = field});
         }
         return rhfs;
     })
