@@ -8,7 +8,7 @@ import { DefaultCell } from "./base-table-cell";
 import { ReactNode } from "react";
 import tableEventEmitter from "./events";
 import { FieldValues, UseFormReturn } from "react-hook-form";
-import { FieldNameString, FieldNames } from "@/core/helper/helper";
+import { FieldNames } from "@/core/helper/helper";
 
 
 export const showChildButtonId = '_row_action_show_child';
@@ -39,9 +39,8 @@ export class BaseTableConfig<T extends IBaseData<T>> {
     data: T[] = [];
     rowsEditing: Record<string, T> = {}
 
-    constructor() {
-        // const t = new classT();
-        // this.keys.push(...getKeys(t))
+    constructor(keys: FieldNames<T>[]) {
+        this.keys = keys;
     }
 
     setData(data: T[]) {
