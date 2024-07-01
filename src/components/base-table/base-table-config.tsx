@@ -35,12 +35,14 @@ export const isDateColumn = (columnType: FormatColumnType | undefined) => {
 
 export class BaseTableConfig<T extends IBaseData<T>> {
     static defaultIconSize = "h-4 w-4";
-    keys: FieldNames<T>[] = [];
+    keys: FieldNames<T>[] = ['__id__'];
     data: T[] = [];
     rowsEditing: Record<string, T> = {}
 
-    constructor(keys: FieldNames<T>[]) {
-        this.keys = keys;
+    constructor(keys?: FieldNames<T>[]) {
+        if (keys && keys.length > 0) {
+            this.keys = keys
+        };
     }
 
     setData(data: T[]) {

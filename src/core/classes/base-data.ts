@@ -1,5 +1,5 @@
 import { Guid } from "guid-typescript";
-import { FieldNameString, FieldNames } from "../helper/helper";
+import { FieldNames } from "../helper/helper";
 
 export type GetIdFn = <TData>(data: TData, keys: string[], defaultKey: string) => string;
 export type ClonePropToKeepDataFn = <TData>(data: TData) => TData;
@@ -7,7 +7,7 @@ export type AssignValueFn = <TData>(origin: TData, source: TData) => void;
 
 export interface IBaseData<TEntity> {
     __id__: string;
-    __keys__?: FieldNameString<TEntity>[];
+    __keys__?: FieldNames<TEntity>[];
     // __getId__?:  GetIdFn;
     // __clonePropToKeepData__?: ClonePropToKeepDataFn;
     // __assignValue__?: AssignValueFn;
