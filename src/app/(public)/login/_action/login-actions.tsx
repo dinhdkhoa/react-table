@@ -5,6 +5,6 @@ import { UserService } from "@/data/remote/enode-service/user-services";
 import { loginUsecase } from "@/domain/use-cases/user-usecase";
 
 export async function loginAction(value: LoginRequestModel) {
-    return UserService.login(value);
-    // return loginUsecase(value);
-  }
+  return UserService.login(value);
+  // return loginUsecase(value);
+}

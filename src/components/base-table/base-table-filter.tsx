@@ -8,7 +8,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
-import { BaseData } from "@/core/classes/base-data";
+import { IBaseData } from "@/core/classes/base-data";
 import { isNumberColumn } from "./base-table-config";
 import { FormatColumnType } from "./enums";
 import { SelectOption } from "@/core/types/control.types";
@@ -25,7 +25,7 @@ type CheckBoxFilterType = string | null | undefined;
 type DateFilterType = Date | null | undefined;
 type StaticComboboxFilterType = string | number | null | undefined;
 
-export function filterOnDate<T extends BaseData>(row: Row<T>, columnId: string, filterValue: DateFilterType) {
+export function filterOnDate<T extends IBaseData<T>>(row: Row<T>, columnId: string, filterValue: DateFilterType) {
     if (!filterValue) {
         return true;
     }
@@ -52,7 +52,7 @@ export function filterOnDate<T extends BaseData>(row: Row<T>, columnId: string, 
     // return false;
 }
 
-export function filterCheckbox<T extends BaseData>(row: Row<T>, columnId: string, filterValue: CheckBoxFilterType) {
+export function filterCheckbox<T extends IBaseData<T>>(row: Row<T>, columnId: string, filterValue: CheckBoxFilterType) {
     if (filterValue === 'any') return true;
 
     const value = row.getValue(columnId);
@@ -69,7 +69,7 @@ export function filterCheckbox<T extends BaseData>(row: Row<T>, columnId: string
     // return false;
 }
 
-export function filterNumber<T extends BaseData>(row: Row<T>, columnId: string, filterValue: StaticComboboxFilterType) {
+export function filterNumber<T extends IBaseData<T>>(row: Row<T>, columnId: string, filterValue: StaticComboboxFilterType) {
     if (!filterValue) {
         return true;
     }
@@ -89,7 +89,7 @@ export function filterNumber<T extends BaseData>(row: Row<T>, columnId: string, 
     // return false;
 }
 
-export function filterStaticCombobox<T extends BaseData>(row: Row<T>, columnId: string, filterValue: StaticComboboxFilterType) {
+export function filterStaticCombobox<T extends IBaseData<T>>(row: Row<T>, columnId: string, filterValue: StaticComboboxFilterType) {
     if (!filterValue) {
         return true;
     }

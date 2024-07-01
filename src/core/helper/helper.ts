@@ -14,5 +14,16 @@ export type ExcludeMethods<T> = {
 
 export type EntityFields<TEntity> = Pick<TEntity, ExcludeMethods<TEntity>>;
 
+// export type WithFieldName<T extends {[K in keyof T] : string }> = {
+//     fieldName: T[K];
+// };
+
+export type FieldNames<T> = {
+    [K in keyof T]: K;
+  }[keyof T];
+
+  export type FieldNameString<T> = {
+    [K in keyof T]: string;
+  }[keyof T];
 
 export type ConvertResponseModelToEntityFieldsFunc<TResModel, TEntity> = (res: TResModel) => EntityFields<TEntity>;

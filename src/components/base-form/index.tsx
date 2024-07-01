@@ -1,74 +1,66 @@
 import * as React from "react"
 import {
-    ControllerProps,
-    FieldPath,
-    FieldValues,
-    UseFormReturn
+  ControllerProps,
+  FieldPath,
+  FieldValues,
+  UseFormReturn
 } from "react-hook-form"
 
 
 import { Form } from "../ui/form"
-import { ControlType } from "@/core/types/control.types"
 import { RHFOptions } from "@/core/anotations/rhf-field"
+import { IBaseEntityFormBehavior } from "@/core/classes/base-entity-form"
 
 type BaseFormPropsType<
-  TEntity extends FieldValues = FieldValues,
-  TControlType extends ControlType = ControlType
+  TEntity extends FieldValues = FieldValues
 > = {
   form: UseFormReturn<TEntity>
-  rhf: Record<string, RHFOptions<TEntity, TControlType>>
-  entity: TEntity
+  rhf: Record<string, RHFOptions<TEntity>>
   children?: React.ReactNode
-}
+} & IBaseEntityFormBehavior<TEntity>
 
 const createBaseFormContext = <
-  TEntity extends FieldValues = FieldValues,
-  TControlType extends ControlType = ControlType
+  TEntity extends FieldValues = FieldValues
 >() =>
-  React.createContext<BaseFormPropsType<TEntity, TControlType>>(
-    {} as BaseFormPropsType<TEntity, TControlType>
+  React.createContext<BaseFormPropsType<TEntity>>(
+    {} as BaseFormPropsType<TEntity>
   )
 
-const BaseFormContext = createBaseFormContext()
+const BaseFormContext = createBaseFormContext();
 
 const useBaseFormContext = <
-  TControlType extends ControlType,
   TEntity extends FieldValues = FieldValues
 >() => {
   const baseFormContext = React.useContext<
-    BaseFormPropsType<TEntity, TControlType>
+    BaseFormPropsType<TEntity>
   >(BaseFormContext as any)
 
   if (!baseFormContext) {
     throw new Error("useBaseFormContext should be used within <BaseForm>")
   }
 
-  const { rhf, form, entity } = baseFormContext
+  const { rhf, form, __onChange__, __onBlur__} = baseFormContext
 
   return {
-    setAfterDataChanged: entity?.onChange ?? null,
+    setAfterDataChanged: __onChange__,
     form,
     rhf,
-    entity,
-    onBlur: entity?.onBlur
+    onBlur: __onBlur__
   }
 }
 
 const BaseForm = <
-  TEntity extends FieldValues = FieldValues,
-  TControlType extends ControlType = ControlType,
-  TFieldValues extends FieldValues = FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+  TEntity extends FieldValues = FieldValues
 >({
   ...props
-}: BaseFormPropsType<TEntity, TControlType> &
-  Partial<ControllerProps<TFieldValues, TName>>) => {
+}: BaseFormPropsType<TEntity>) => {
   return (
     <BaseFormContext.Provider
       value={{
         form: props.form as any,
         rhf: props.rhf as any,
-        entity: props.entity
+        __onChange__: props.__onChange__ as any,
+        __onBlur__: props.__onChange__ as any,
       }}
     >
       <Form {...props.form}>{props.children}</Form>

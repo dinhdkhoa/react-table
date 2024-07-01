@@ -15,19 +15,19 @@ import { SwitchControl } from "@/core/types/control.types"
 const BaseSwitchInput = <TEntity extends FieldValues = FieldValues>({
     name
 }: BaseFormFieldPropsType<TEntity>) => {
-    const { form, rhf, entity } = useBaseFormContext<SwitchControl, TEntity>()
+    const { form, rhf } = useBaseFormContext<TEntity>()
     const { visibleFn } = rhf[name];
 
     const [visibled, setVisibled] = useState<boolean>(() => {
         if (visibleFn) {
-            return visibleFn(form, entity);
+            return visibleFn(form, form.getValues());
         }
         return true;
     });
 
     useEffect(() => {
         if (visibleFn) {
-            setVisibled(visibleFn(form, entity));
+            setVisibled(visibleFn(form, form.getValues()));
         }
     }, [form.watch()]);
 
@@ -40,37 +40,37 @@ const BaseSwitchInput = <TEntity extends FieldValues = FieldValues>({
     )
 }
 
-const BaseSwitchItem = <TEntity extends FieldValues = FieldValues,>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
-    const { rhf, setAfterDataChanged, form, entity } = useBaseFormContext<SwitchControl>()
+const BaseSwitchItem = <TEntity extends FieldValues = FieldValues, TControlType extends SwitchControl = SwitchControl>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
+    const { rhf, setAfterDataChanged, form } = useBaseFormContext<TEntity>()
     const { label, disableFn, validate } = rhf[field.name];
 
     const [disabled, setDisabled] = useState<boolean>(() => {
         if (disableFn) {
-            return disableFn(form, entity);
+            return disableFn(form, form.getValues());
         }
         return false;
     });
 
     useEffect(() => {
         if (disableFn) {
-            setDisabled(disableFn(form, entity));
+            setDisabled(disableFn(form, form.getValues()));
         }
     }, [form.watch()]);
 
     useEffect(() => {
         form.register(field.name, {
-            validate: !((disableFn ? disableFn(form, entity) : false) || !visibled) ? validate : undefined
+            validate: !((disableFn ? disableFn(form, form.getValues()) : false) || !visibled) ? validate : undefined
         })
         if (disabled) {
             form.clearErrors(field.name)
         }
-    }, [disableFn, disabled, entity, field.name, form, validate, visibled])
+    }, [disableFn, disabled, field.name, form, validate, visibled])
 
 
     const handleChange = (e: boolean) => {
         form.setValue(field.name, e as any);
         if (setAfterDataChanged)
-            setAfterDataChanged(form, field.name, e)
+            setAfterDataChanged(form, field.name, e, form.getValues())
     }
 
     return (

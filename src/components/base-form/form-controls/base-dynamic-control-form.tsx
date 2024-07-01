@@ -16,7 +16,7 @@ type Props = {
 }
 
 const BaseDynamicControl = <TEntity extends FieldValues = FieldValues,>(props: Props) => {
-    const { rhf } = useBaseFormContext<ControlType, TEntity>();
+    const { rhf } = useBaseFormContext<TEntity>();
     const { type } = (rhf ?? {})[props.name] ?? {};
 
     const createControl = () => {

@@ -1,14 +1,14 @@
-import { getKeys } from "@/core/anotations/key";
-import { BaseData } from "@/core/classes/base-data";
-import { IActivator } from "@/core/types/activator.types";
+import { IBaseData, assignValue, clonePropToKeepData, getId } from "@/core/classes/base-data";
 import { CheckedState } from "@radix-ui/react-checkbox";
 import { ColumnDef, Row, SortingFn, Table, createColumnHelper } from "@tanstack/react-table";
-import { FormatColumnType, ModeType, RowSelectType } from "./enums";
+import { FormatColumnType, RowSelectType } from "./enums";
 import { Delete, List, Pencil, Save, X } from "lucide-react";
 import { filterCheckbox, filterNumber, filterOnDate, filterStaticCombobox } from "./base-table-filter";
 import { DefaultCell } from "./base-table-cell";
 import { ReactNode } from "react";
 import tableEventEmitter from "./events";
+import { FieldValues, UseFormReturn } from "react-hook-form";
+import { FieldNameString, FieldNames } from "@/core/helper/helper";
 
 
 export const showChildButtonId = '_row_action_show_child';
@@ -16,13 +16,13 @@ export const saveButtonId = '_row_action_save';
 export const cancelButtonId = '_row_action_cancel';
 export const rowIdsEditingChangeEvent = 'rowsIdsEditingChange'
 
-export interface BaseRowAction<BaseData> {
+export interface BaseRowAction<IBaseData extends FieldValues = FieldValues> {
     id: string,
     name: string,
     iconChild?: ReactNode,
-    action?: (data: BaseData) => void,
-    disableFn?: (data: BaseData) => boolean,
-    visibleFn?: (data: BaseData) => boolean,
+    action?: (data: IBaseData, form?: UseFormReturn<IBaseData>) => void,
+    disableFn?: (data: IBaseData) => boolean,
+    visibleFn?: (data: IBaseData) => boolean,
 }
 
 export const isNumberColumn = (columnType: FormatColumnType | undefined) => {
@@ -33,15 +33,15 @@ export const isDateColumn = (columnType: FormatColumnType | undefined) => {
     return columnType && [FormatColumnType.Date, FormatColumnType.DateTime].includes(columnType);
 }
 
-export class BaseTableConfig<T extends BaseData> {
+export class BaseTableConfig<T extends IBaseData<T>> {
     static defaultIconSize = "h-4 w-4";
-    keys: string[] = [];
+    keys: FieldNameString<T>[] = [];
     data: T[] = [];
     rowsEditing: Record<string, T> = {}
 
-    constructor(classT: IActivator<T>) {
-        const t = new classT();
-        this.keys.push(...getKeys(t))
+    constructor() {
+        // const t = new classT();
+        // this.keys.push(...getKeys(t))
     }
 
     setData(data: T[]) {
@@ -81,27 +81,34 @@ export class BaseTableConfig<T extends BaseData> {
     editButton: BaseRowAction<T> = {
         id: '_row_action_edit', name: 'Edit', iconChild: <Pencil className={BaseTableConfig.defaultIconSize} fontSize='inherit' />,
         action: (data) => {
-            this.addRowEditing(data.getId(this.keys ?? '') || '', data);
+            this.addRowEditing(getId(data, this.getKeys(data, this.keys), data.__id__) || '', data);
         }
     };
     detailButton: BaseRowAction<T> = { id: '_row_action_detail', name: 'Detail', iconChild: <List className={BaseTableConfig.defaultIconSize} fontSize='inherit' /> };
     deleteButton: BaseRowAction<T> = { id: '_row_action_delete', name: 'Delete', iconChild: <Delete className={BaseTableConfig.defaultIconSize} fontSize='inherit' /> };
     saveButton: BaseRowAction<T> = {
         id: '_row_action_save', name: 'Save', iconChild: <Save className={BaseTableConfig.defaultIconSize} fontSize='inherit' />,
-        action: (data) => {
-            this.setAfterSaveRow(data.getId(this.keys ?? '') || '', data);
+        action: (data, form) => {
+            if (form) {
+                this.setAfterSaveRow(getId(data, this.getKeys(data, this.keys), data.__id__) || '', data, form);
+            }
+
         }
     };
     cancelButton: BaseRowAction<T> = {
         id: '_row_action_cancel', name: 'Cancel', iconChild: <X className={BaseTableConfig.defaultIconSize} fontSize='inherit' />,
         action: (data) => {
-            this.removeRowEditing(data.getId(this.keys ?? '') || '', data, false)
+            this.removeRowEditing(getId(data, this.getKeys(data, this.keys), data.__id__) || '', data, false)
         }
     };
     showChildButton: BaseRowAction<T> = {
         id: showChildButtonId, name: 'Show Child'
     };
     otherButton: Array<BaseRowAction<T>> = [];
+
+    getKeys(data?: T, keys?: Array<string>) {
+        return keys || data?.__keys__ || [];
+    }
 
     getActions() {
         let actions = [this.editButton,
@@ -123,16 +130,18 @@ export class BaseTableConfig<T extends BaseData> {
     }
 
     getRowId(originalRow: T, index: number, parent?: Row<T>): string {
-        return originalRow.getId(this.keys) || index.toString();
+        const keys = this.getKeys(originalRow, this.keys);
+        console.log('keys', keys);
+        return getId(originalRow, keys, originalRow.__id__) || index.toString();
     }
 
     getEntityByRow(originalRow: T, index: number, parent?: Row<T>) {
         let rowId = this.getRowId(originalRow, index, parent);
-        return this.data.find(w => w.getId && w.getId(this.keys) == rowId);
+        return this.data.find(w => getId(w, this.getKeys(originalRow, this.keys), w.__id__) == rowId);
     }
 
     getEntityByIds(ids: string) {
-        return this.data.find(w => w.getId && w.getId(this.keys) == ids);
+        return this.data.find(w => getId(w, this.getKeys(w, this.keys), w.__id__) == ids);
     }
 
     updateRowValuesCache(rowId: string, newValues: T) {
@@ -147,7 +156,7 @@ export class BaseTableConfig<T extends BaseData> {
     addRowEditing(id: string, keepData: T) {
         if (id) {
             if (!this.rowsEditing[id]) {
-                this.rowsEditing[id] = keepData.clonePropToKeepData();
+                this.rowsEditing[id] = clonePropToKeepData(keepData);
                 tableEventEmitter.emit(rowIdsEditingChangeEvent, this.rowsEditing)
             }
         }
@@ -155,9 +164,6 @@ export class BaseTableConfig<T extends BaseData> {
 
     removeRowEditing(id: string, entity: T, saveData?: boolean) {
         if (id) {
-            if (!saveData && this.rowsEditing[id]) {
-                entity.assignValue(this.rowsEditing[id]);
-            }
             delete this.rowsEditing[id];
             tableEventEmitter.emit(rowIdsEditingChangeEvent, this.rowsEditing)
         }
@@ -174,7 +180,8 @@ export class BaseTableConfig<T extends BaseData> {
         tableEventEmitter.emit(rowIdsEditingChangeEvent, this.rowsEditing)
     }
 
-    setAfterSaveRow(id: string, data: T) {
+    setAfterSaveRow(id: string, data: T, form: UseFormReturn<T>) {
+        assignValue(data, form.getValues());
         this.removeRowEditing(id, data, true);
         this.updateRowValuesCache(id, data);
     }

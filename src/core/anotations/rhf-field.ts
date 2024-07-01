@@ -4,10 +4,13 @@ import {
   ValidateResult
 } from "react-hook-form"
 import "reflect-metadata"
+import { ControlType } from "../types/control.types"
+import { FieldNames } from "../helper/helper"
 
 export const RHF_FIELDS = "rhf:fields"
 
-export type RHFSharedType<TEntity extends FieldValues, ControlType> = {
+export type RHFSharedType<TEntity extends FieldValues, TControlType extends ControlType = ControlType> = TControlType & {
+  fieldName: FieldNames<TEntity>
   required?: boolean
   label?: string
   placeholder?: string
@@ -16,15 +19,16 @@ export type RHFSharedType<TEntity extends FieldValues, ControlType> = {
   visibleFn?: (form: UseFormReturn<TEntity>, entity: TEntity) => boolean
   validate?: Record<
     string,
-    (value: any, formValue: TEntity) => ValidateResult | Promise<ValidateResult>
+    (fieldValue: any, formValue: TEntity) => ValidateResult | Promise<ValidateResult>
   >
-} & ControlType
+}
 
-export type RHFOptions<TEntity extends FieldValues, ControlType> = RHFSharedType<TEntity, ControlType>
+export type RHFOptions<TEntity extends FieldValues = FieldValues, TControlType extends ControlType = ControlType> = RHFSharedType<TEntity, TControlType>
+
 
 // Decorator factory for react-hook-form
-export function RHF<TEntity extends FieldValues, ControlType>(
-  options: RHFOptions<TEntity, ControlType>
+export function RHF<TEntity extends FieldValues>(
+  options: RHFOptions<TEntity>
 ) {
   return function (target: any, propertyKey: keyof TEntity & string) {
     const fields = Reflect.getMetadata(RHF_FIELDS, target) || {}

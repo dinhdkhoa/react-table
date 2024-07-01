@@ -12,23 +12,24 @@ import { cn } from "@/lib/utils"
 import { Textarea } from "../../ui/textarea"
 import { useBaseFormContext } from ".."
 import { TextAreaControl } from "@/core/types/control.types"
+import { RHFOptions } from "@/core/anotations/rhf-field"
 
 const BaseTextAreaInput = <TEntity extends FieldValues = FieldValues>({
     name
 }: BaseFormFieldPropsType<TEntity>) => {
-    const { form, rhf, entity } = useBaseFormContext<TextAreaControl, TEntity>()
+    const { form, rhf } = useBaseFormContext<TEntity>()
     const { visibleFn } = rhf[name];
 
     const [visibled, setVisibled] = useState<boolean>(() => {
         if (visibleFn) {
-            return visibleFn(form, entity);
+            return visibleFn(form, form.getValues());
         }
         return true;
     });
 
     useEffect(() => {
         if (visibleFn) {
-            setVisibled(visibleFn(form, entity));
+            setVisibled(visibleFn(form, form.getValues()));
         }
     }, [form.watch()]);
 
@@ -41,42 +42,42 @@ const BaseTextAreaInput = <TEntity extends FieldValues = FieldValues>({
     )
 }
 
-const BaseTextAreaInputItem = <TEntity extends FieldValues = FieldValues,>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
-    const { rhf, setAfterDataChanged, form, entity, onBlur } = useBaseFormContext<TextAreaControl>()
-    const { placeholder, label, disableFn, validate, minLength, maxLength, resize } = rhf[field.name];
+const BaseTextAreaInputItem = <TEntity extends FieldValues = FieldValues, TControlType extends TextAreaControl = TextAreaControl>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
+    const { rhf, setAfterDataChanged, form, onBlur } = useBaseFormContext<TEntity>()
+    const { placeholder, label, disableFn, validate, minLength, maxLength, resize } = rhf[field.name] as RHFOptions<TEntity, TControlType>;
 
     const [disabled, setDisabled] = useState<boolean>(() => {
         if (disableFn) {
-            return disableFn(form, entity);
+            return disableFn(form, form.getValues());
         }
         return false;
     });
 
     useEffect(() => {
         if (disableFn) {
-            setDisabled(disableFn(form, entity));
+            setDisabled(disableFn(form, form.getValues()));
         }
     }, [form.watch()]);
 
     useEffect(() => {
         form.register(field.name, {
-            validate: !((disableFn ? disableFn(form, entity) : false) || !visibled) ? validate : undefined,
+            validate: !((disableFn ? disableFn(form, form.getValues()) : false) || !visibled) ? validate : undefined,
             onChange: handleChange,
             onBlur: handleBlur
         })
         if (disabled) {
             form.clearErrors(field.name)
         }
-    }, [disableFn, disabled, entity, field.name, form, validate, visibled])
+    }, [disableFn, disabled, field.name, form, validate, visibled])
 
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (setAfterDataChanged)
-            setAfterDataChanged(form, field.name, e.target.value)
+            setAfterDataChanged(form, field.name, e.target.value, form.getValues())
     }
     const handleBlur = (e: FocusEvent<HTMLInputElement, Element>) => {
         if (onBlur) {
-            onBlur(form, field.name, e.target.value)
+            onBlur(form, field.name, e.target.value, form.getValues())
         }
     }
 

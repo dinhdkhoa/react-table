@@ -23,7 +23,7 @@ export type TextControl = {
 }
 export type TextAreaControl = {
     type: Control.TextArea,
-    resize: boolean,
+    resize?: boolean,
     minLength?: number,
     maxLength?: number,
 }
@@ -40,18 +40,18 @@ export type SelectOption<TEntity, TValue> = {
 }
 export type CheckboxControl = { type: Control.Checkbox, }
 export type SwitchControl = { type: Control.Switch, };
-export type StaticComboboxControl<TOption = unknown, TOptionValue = unknown> = {
+export type StaticComboboxControl<TOption = any, TOptionValue = any> = {
     type: Control.StaticCombobox,
-    selectOption: SelectOption<TOption, TOptionValue>,
+        selectOption: SelectOption<TOption, TOptionValue>,
     filterSelectOption?: (value: TOption, entity: any) => boolean
 }
-export type MultipleSelectControl<TOption = unknown, TOptionValue = unknown> = {
+export type MultipleSelectControl<TOption = any, TOptionValue = any> = {
     type: Control.MultipleSelect,
     selectOption: SelectOption<TOption, TOptionValue>
 }
-export type RadioGroupControl<TOption = unknown, TOptionValue = unknown> = {
+export type RadioGroupControl<TOption = any, TOptionValue = any> = {
     type: Control.RadioGroup,
-    direction: Direction,
+    direction?: Direction,
     selectOption: SelectOption<TOption, TOptionValue>,
 }
 export type DateControl = {

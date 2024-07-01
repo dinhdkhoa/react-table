@@ -8,9 +8,10 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
 import { Toggle } from '@/components/ui/toggle';
-import { BaseData } from '@/core/classes/base-data';
+import { IBaseData } from '@/core/classes/base-data';
 import { BaseRowAction, cancelButtonId, saveButtonId, showChildButtonId } from './base-table-config';
 import { ModeType } from './enums';
+import { useBaseFormContext } from '../base-form';
 // import { ModeType } from './enums';
 
 type ActionStateType = {
@@ -19,7 +20,7 @@ type ActionStateType = {
     allowAction: boolean | undefined,
 }
 
-function ExpandChildIcon<T extends BaseData>(tableAction: TableActionType<T>, data: T, action?: (data: T) => void, icon?: any) {
+function ExpandChildIcon<T extends IBaseData<T>>(tableAction: TableActionType<T>, data: T, action?: (data: T) => void, icon?: any) {
     const [expanded, setExpanded] = useState(tableAction.isExpanded);
 
     const handleExpandClick = () => {
@@ -40,7 +41,7 @@ function ExpandChildIcon<T extends BaseData>(tableAction: TableActionType<T>, da
     </Toggle>)
 }
 
-function GetActionState<T extends BaseData>(data: T, action: BaseRowAction<T>): ActionStateType {
+function GetActionState<T extends IBaseData<T>>(data: T, action: BaseRowAction<T>): ActionStateType {
     const isDisable = action.disableFn && action.disableFn(data);
     const isVisible = !action.visibleFn || action.visibleFn(data);
     const allowAction = (action.action && !isDisable && isVisible);
@@ -48,20 +49,21 @@ function GetActionState<T extends BaseData>(data: T, action: BaseRowAction<T>): 
     return { isDisable, isVisible, allowAction };
 }
 
-export type TableActionType<T extends BaseData> = {
+export type TableActionType<T extends IBaseData<T>> = {
     isExpanded: boolean,
     toggleExpandedHandler: () => void,
     data: T,
     actions: BaseRowAction<T>[],
 }
 
-export default function TableActionColumn<T extends BaseData>(props: {
+export default function TableActionColumn<T extends IBaseData<T>>(props: {
     tableAction: TableActionType<T>
     menuList: boolean,
     mode: ModeType
 }) {
-
+    const {form} = useBaseFormContext<T>() ?? {}
     if (props.mode == ModeType.Edit) {
+        
         let saveAndCancelButton = props.tableAction.actions.filter(w => [saveButtonId, cancelButtonId].includes(w.id));
         return (saveAndCancelButton.map(action => {
             const ac = { ...action };
@@ -77,7 +79,7 @@ export default function TableActionColumn<T extends BaseData>(props: {
                                     className="h-8 w-8 p-0"
                                     onClick={() => {
                                         if (allowAction) {
-                                            ac.action!(props.tableAction.data);
+                                            ac.action!(props.tableAction.data, form);
                                         }
                                         if (ac.id == showChildButtonId) {
                                             props.tableAction.toggleExpandedHandler();
@@ -135,7 +137,7 @@ export default function TableActionColumn<T extends BaseData>(props: {
 }
 
 
-function TableMenuActionColumn<T extends BaseData>(props: { tableAction: TableActionType<T> }) {
+function TableMenuActionColumn<T extends IBaseData<T>>(props: { tableAction: TableActionType<T> }) {
     const showChildButton = props.tableAction.actions.find(w => w.id == showChildButtonId);
     const otherButton = props.tableAction.actions.filter(w => w.id != showChildButtonId);
 

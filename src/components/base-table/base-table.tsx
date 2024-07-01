@@ -29,12 +29,12 @@ import { useEffect, useMemo, useState } from 'react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { TableBody, TableFooter, Table as ShadcnTable, TableHeader } from '@/components/ui/table'
 import { CheckedState } from '@radix-ui/react-checkbox'
-import { BaseData } from '@/core/classes/base-data'
+import { IBaseData } from '@/core/classes/base-data'
 import { FormatColumnType, ModeType, RowSelectType } from './enums'
 import TableActionColumn from './base-table-action'
 import { BaseTableConfig, rowIdsEditingChangeEvent } from './base-table-config'
 import TableHeaderActions from './base-table-header-action'
-import { BaseTableFooter, BaseTableHeader, BaseTableRow } from './base-table-row'
+import { BaseTableFooter, BaseTableFormRow, BaseTableHeader } from './base-table-row'
 import BaseTablePagination from './base-table-pagination'
 
 export const rowActionId = 'rowAction';
@@ -49,11 +49,11 @@ declare module '@tanstack/react-table' {
     }
 }
 
-type TableProps<T extends BaseData> = {
+type TableProps<T extends IBaseData<T>> = {
     data: Array<T>
     tableConfig: BaseTableConfig<T>
 }
-function handleRowsSelectionChange<T extends BaseData>(
+function handleRowsSelectionChange<T extends IBaseData<T>>(
     oldState: RowSelectionState,
     newState: RowSelectionState,
     props: TableProps<T>
@@ -91,7 +91,7 @@ function handleRowsSelectionChange<T extends BaseData>(
 }
 
 
-function GetActions<T extends BaseData>(
+function GetActions<T extends IBaseData<T>>(
     row: Row<T>,
     props: TableProps<T>,
     mode: ModeType
@@ -110,7 +110,7 @@ function GetActions<T extends BaseData>(
     )
 }
 
-function handleSelection<T extends BaseData>(
+function handleSelection<T extends IBaseData<T>>(
     checked: CheckedState,
     rowSelectType: RowSelectType,
     row?: Row<T>,
@@ -134,7 +134,7 @@ function handleSelection<T extends BaseData>(
     }
 }
 
-export function BaseTable<T extends BaseData>(props: {
+export function BaseTable<T extends IBaseData<T>>(props: {
     data: Array<T>,
     tableConfig: BaseTableConfig<T>
 }) {
@@ -322,7 +322,7 @@ export function BaseTable<T extends BaseData>(props: {
                     </TableHeader>
                     <TableBody className="border-r-0">
                         {props.tableConfig.table.getRowModel().rows.map(row => (
-                            <BaseTableRow key={row.id} row={row} tableConfig={props.tableConfig} />
+                            <BaseTableFormRow key={row.id} row={row} tableConfig={props.tableConfig} />
                         ))}
                     </TableBody>
                     <TableFooter>

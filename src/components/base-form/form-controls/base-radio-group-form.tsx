@@ -12,6 +12,7 @@ import { RadioGroup, RadioGroupItem } from "../../ui/radio-group"
 import { cn } from "@/lib/utils"
 import { Direction, RadioGroupControl } from "@/core/types/control.types"
 import { useBaseFormContext } from ".."
+import { RHFOptions } from "@/core/anotations/rhf-field"
 
 const directionCol = 'flex-col space-y-1';
 const directionRow = 'flex-row';
@@ -19,19 +20,19 @@ const directionRow = 'flex-row';
 const BaseRadioGroupInput = <TEntity extends FieldValues = FieldValues>({
     name
 }: BaseFormFieldPropsType<TEntity>) => {
-    const { form, rhf, entity } = useBaseFormContext<RadioGroupControl, TEntity>()
+    const { form, rhf } = useBaseFormContext<TEntity>()
     const { visibleFn } = rhf[name];
 
     const [visibled, setVisibled] = useState<boolean>(() => {
         if (visibleFn) {
-            return visibleFn(form, entity);
+            return visibleFn(form, form.getValues());
         }
         return true;
     });
 
     useEffect(() => {
         if (visibleFn) {
-            setVisibled(visibleFn(form, entity));
+            setVisibled(visibleFn(form, form.getValues()));
         }
     }, [form.watch()]);
 
@@ -44,9 +45,9 @@ const BaseRadioGroupInput = <TEntity extends FieldValues = FieldValues>({
     )
 }
 
-const BaseRadioGroupItem = <TEntity extends FieldValues = FieldValues,>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
-    const { rhf, setAfterDataChanged, form, entity } = useBaseFormContext<RadioGroupControl>()
-    const { label, disableFn, validate, direction, selectOption } = rhf[field.name];
+const BaseRadioGroupItem = <TEntity extends FieldValues = FieldValues, TControlType extends RadioGroupControl = RadioGroupControl>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
+    const { rhf, setAfterDataChanged, form } = useBaseFormContext<TEntity>()
+    const { label, disableFn, validate, direction, selectOption } = rhf[field.name] as RHFOptions<TEntity, TControlType>;
     const [directionItem] = useState(() => {
         if (direction == Direction.Column)
             return directionCol;
@@ -55,7 +56,7 @@ const BaseRadioGroupItem = <TEntity extends FieldValues = FieldValues,>({ field,
 
     const [disabled, setDisabled] = useState<boolean>(() => {
         if (disableFn) {
-            return disableFn(form, entity);
+            return disableFn(form, form.getValues());
         }
         return false;
     });
@@ -63,7 +64,7 @@ const BaseRadioGroupItem = <TEntity extends FieldValues = FieldValues,>({ field,
     const handleChange = (e: string) => {
         form.setValue(field.name, getValue(e) as any);
         if (setAfterDataChanged)
-            setAfterDataChanged(form, field.name, e)
+            setAfterDataChanged(form, field.name, e, form.getValues())
     }
 
     const getKey = (item: any) => {
@@ -86,18 +87,18 @@ const BaseRadioGroupItem = <TEntity extends FieldValues = FieldValues,>({ field,
 
     useEffect(() => {
         if (disableFn) {
-            setDisabled(disableFn(form, entity));
+            setDisabled(disableFn(form, form.getValues()));
         }
     }, [form.watch()]);
 
     useEffect(() => {
         form.register(field.name, {
-            validate: !((disableFn ? disableFn(form, entity) : false) || !visibled) ? validate : undefined
+            validate: !((disableFn ? disableFn(form, form.getValues()) : false) || !visibled) ? validate : undefined
         })
         if (disabled) {
             form.clearErrors(field.name)
         }
-    }, [disableFn, disabled, entity, field.name, form, validate, visibled]);
+    }, [disableFn, disabled, field.name, form, validate, visibled]);
 
     return (
         <FormItem>

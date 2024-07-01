@@ -19,8 +19,8 @@ import { useBaseFormContext } from ".."
 import { TextControl } from "@/core/types/control.types"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
 import { SharedVariantProps, SharedVariants } from "./shared-variants"
+import { RHFOptions } from "@/core/anotations/rhf-field"
 
 
 const baseTextInputVariants = cva(
@@ -53,18 +53,18 @@ const BaseTextInput = <TEntity extends FieldValues = FieldValues>({
 }: BaseFormFieldPropsType<TEntity> &
   SharedVariantProps &
   BaseTextInputVariantsProps) => {
-  const { form, rhf, entity } = useBaseFormContext<TextControl, TEntity>()
+  const { form, rhf } = useBaseFormContext<TEntity>()
   const { visibleFn } = rhf[name]
   const [visibled, setVisibled] = useState<boolean>(() => {
     if (visibleFn) {
-      return visibleFn(form, entity)
+      return visibleFn(form, form.getValues())
     }
     return true
   })
 
   useEffect(() => {
     if (visibleFn) {
-      setVisibled(visibleFn(form, entity))
+      setVisibled(visibleFn(form, form.getValues()))
     }
   }, [form.watch()])
 
@@ -86,7 +86,7 @@ const BaseTextInput = <TEntity extends FieldValues = FieldValues>({
   )
 }
 
-const BaseTextInputItem = <TEntity extends FieldValues = FieldValues>(props: BaseTextInputItemsProps<TEntity>) => {
+const BaseTextInputItem = <TEntity extends FieldValues = FieldValues, TControlType extends TextControl = TextControl>(props: BaseTextInputItemsProps<TEntity>) => {
   const {
     field,
     fieldState,
@@ -95,27 +95,25 @@ const BaseTextInputItem = <TEntity extends FieldValues = FieldValues>(props: Bas
     labelVariant,
     visibled = true
   } = props
-  const { rhf, setAfterDataChanged, form, entity, onBlur } =
-    useBaseFormContext<TextControl>()
-  const { placeholder, label, disableFn, validate, minLength, maxLength } =
-    rhf[field.name]
+  const { rhf, setAfterDataChanged, form, onBlur } = useBaseFormContext<TEntity>();
+  const { placeholder, label, disableFn, validate, minLength, maxLength } = rhf[field.name] as RHFOptions<TEntity, TControlType>;
 
   const [disabled, setDisabled] = useState<boolean>(() => {
     if (disableFn) {
-      return disableFn(form, entity)
+      return disableFn(form, form.getValues())
     }
     return false
   })
 
   useEffect(() => {
     if (disableFn) {
-      setDisabled(disableFn(form, entity))
+      setDisabled(disableFn(form, form.getValues()))
     }
   }, [form.watch()])
 
   useEffect(() => {
     form.register(field.name, {
-      validate: !((disableFn ? disableFn(form, entity) : false) || !visibled)
+      validate: !((disableFn ? disableFn(form, form.getValues()) : false) || !visibled)
         ? validate
         : undefined,
       onChange: handleChange,
@@ -124,15 +122,15 @@ const BaseTextInputItem = <TEntity extends FieldValues = FieldValues>(props: Bas
     if (disabled) {
       form.clearErrors(field.name)
     }
-  }, [disableFn, disabled, entity, field.name, form, validate, visibled])
+  }, [disableFn, disabled, field.name, form, validate, visibled])
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (setAfterDataChanged)
-      setAfterDataChanged(form, field.name, e.target.value)
+      setAfterDataChanged(form, field.name, e.target.value, form.getValues())
   }
   const handleBlur = (e: FocusEvent<HTMLInputElement, Element>) => {
     if (onBlur) {
-      onBlur(form, field.name, e.target.value)
+      onBlur(form, field.name, e.target.value, form.getValues())
     }
   }
 

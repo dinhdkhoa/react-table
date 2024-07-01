@@ -7,46 +7,53 @@ import { FormatColumnType, RowSelectType } from "@/components/base-table/enums";
 
 import { BaseTable } from "@/components/base-table/base-table";
 import { createColumnHelper } from "@tanstack/react-table";
-import { PersonEntity, statusSelectOption } from "@/domain/entities/person-entity";
+import { PersonEntity, PersonEntityFields, PersonEntityOnChange, statusSelectOption } from "@/domain/entities/person-entity";
 
 // const defaultData: Person[] = [];
 const defaultData: PersonEntity[] = [
-    new PersonEntity(
-        '1',
-        'tanner',
-        'linsley',
-        24,
-        100,
-        'InRelationship',
-        50, undefined,
-        true,
-    ),
-    new PersonEntity(
-        '2',
-        'tandy',
-        'miller',
-        40,
-        1234567,
-        'Single',
-        80,
-        new Date(),
-        false,
-    ),
-    new PersonEntity(
-        '3',
-        'joe',
-        'dirte',
-        1234567.89,
-        20,
-        'Complicated',
-        10,
-        new Date(2024, 5, 26),
-    ),
+    {
+        __id__: '1',
+        firstName: 'tanner',
+        lastName: 'linsley',
+        age: 24,
+        visits: 100,
+        status: 'InRelationship',
+        progress: 50,
+        date: undefined,
+        active: true,
+        __onChange__: PersonEntityOnChange,
+        __formfields__: PersonEntityFields,
+    },
+    {
+        __id__: '2',
+        firstName: 'tandy',
+        lastName: 'miller',
+        age: 40,
+        visits: 1234567,
+        status: 'Single',
+        progress: 80,
+        date: new Date(),
+        active: false,
+        __onChange__: PersonEntityOnChange,
+        __formfields__: PersonEntityFields,
+    },
+    {
+        __id__: '3',
+        firstName: 'joe',
+        lastName: 'dirte',
+        age: 1234567.89,
+        visits: 20,
+        status: 'Complicated',
+        progress: 10,
+        date: new Date(2024, 5, 26),
+        __onChange__: PersonEntityOnChange,
+        __formfields__: PersonEntityFields,
+    },
 ]
 
 
 export default function ENode() {
-    const tableConfig = new BaseTableConfig<PersonEntity>(PersonEntity);
+    const tableConfig = new BaseTableConfig<PersonEntity>();
 
 
     tableConfig.cols.push(
@@ -109,18 +116,7 @@ export default function ENode() {
         footer: info => info.column.id,
     });
 
-    let aa = new PersonEntity()
-    aa.id = '1',
-        aa.firstName = 'tanner',
-        aa.lastName = 'linsley',
-        aa.age = 24,
-        aa.visits = 100,
-        aa.status = 'In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship',
-        aa.progress = 50,
-        aa.active = true,
-
-
-        tableConfig.colsFixLeft.push('age');
+    tableConfig.colsFixLeft.push('age');
     tableConfig.init();
 
     // gridConfig.isActionColumListType = false;

@@ -11,23 +11,24 @@ import { ControllerFieldState, ControllerRenderProps, FieldValues, Path, UseForm
 import { BaseFormFieldPropsType } from "./types"
 import { useBaseFormContext } from ".."
 import { NumberControl } from "@/core/types/control.types"
+import { RHFOptions } from "@/core/anotations/rhf-field"
 
 const BaseNumberInput = <TEntity extends FieldValues = FieldValues>({
   name
 }: BaseFormFieldPropsType<TEntity>) => {
-  const { form, rhf, entity } = useBaseFormContext<NumberControl, TEntity>()
+  const { form, rhf } = useBaseFormContext<TEntity>()
   const { visibleFn } = rhf[name];
 
   const [visibled, setVisibled] = useState<boolean>(() => {
     if (visibleFn) {
-      return visibleFn(form, entity);
+      return visibleFn(form, form.getValues());
     }
     return true;
   });
 
   useEffect(() => {
     if (visibleFn) {
-      setVisibled(visibleFn(form, entity));
+      setVisibled(visibleFn(form, form.getValues()));
     }
   }, [form.watch()]);
 
@@ -40,20 +41,20 @@ const BaseNumberInput = <TEntity extends FieldValues = FieldValues>({
   )
 }
 
-const BaseNumberInputItem = <TEntity extends FieldValues = FieldValues,>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
-  const { rhf, setAfterDataChanged, form, entity, onBlur } = useBaseFormContext<NumberControl>()
-  const { placeholder, label, disableFn, validate, min, max } = rhf[field.name];
+const BaseNumberInputItem = <TEntity extends FieldValues = FieldValues, TControlType extends NumberControl = NumberControl>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
+  const { rhf, setAfterDataChanged, form, onBlur } = useBaseFormContext<TEntity>()
+  const { placeholder, label, disableFn, validate, min, max } = rhf[field.name] as RHFOptions<TEntity, TControlType>;
 
   const [disabled, setDisabled] = useState<boolean>(() => {
     if (disableFn) {
-      return disableFn(form, entity);
+      return disableFn(form, form.getValues());
     }
     return false;
   });
 
   useEffect(() => {
     if (disableFn) {
-      setDisabled(disableFn(form, entity));
+      setDisabled(disableFn(form, form.getValues()));
     }
   }, [form.watch()]);
 
@@ -61,16 +62,16 @@ const BaseNumberInputItem = <TEntity extends FieldValues = FieldValues,>({ field
     if (disabled) {
       form.clearErrors(field.name)
     }
-  }, [disableFn, disabled, entity, field.name, form, validate, visibled])
+  }, [disableFn, disabled, field.name, form, validate, visibled])
 
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (setAfterDataChanged)
-      setAfterDataChanged(form, field.name, e.target.value)
+      setAfterDataChanged(form, field.name, e.target.value, form.getValues())
   }
   const handleBlur = (e: FocusEvent<HTMLInputElement, Element>) => {
     if (onBlur) {
-      onBlur(form, field.name, e.target.value)
+      onBlur(form, field.name, e.target.value, form.getValues())
     }
   }
 
@@ -82,13 +83,13 @@ const BaseNumberInputItem = <TEntity extends FieldValues = FieldValues,>({ field
           {...field}
           {...form.register(field.name, {
             valueAsNumber: true,
-            validate: !((disableFn ? disableFn(form, entity) : false) || !visibled) ? validate : undefined,
+            validate: !((disableFn ? disableFn(form, form.getValues()) : false) || !visibled) ? validate : undefined,
             onChange: handleChange,
             onBlur: handleBlur
           })}
           disabled={disabled}
           placeholder={placeholder}
-          type={'number'}
+          type='number'
           min={min}
           max={max}
         />

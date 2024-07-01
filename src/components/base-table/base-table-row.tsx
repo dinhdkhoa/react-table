@@ -6,14 +6,14 @@ import React, { useEffect, useState } from "react";
 import { ArrowDownNarrowWide, ArrowUpDown, ArrowUpNarrowWide } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BaseTableConfig } from "./base-table-config";
-import { BaseData } from "@/core/classes/base-data";
+import { IBaseData } from "@/core/classes/base-data";
 import { getCommonPinningStyles } from "./styles";
 import { Filter } from "./base-table-filter";
-import { DefaultValues, useForm } from "react-hook-form";
 import BaseDynamicControl from "../base-form/form-controls/base-dynamic-control-form";
 import { cn } from "@/lib/utils";
 import BaseForm from "../base-form";
-import { RHF_FIELDS } from "@/core/anotations/rhf-field";
+import useBaseForm from "@/core/hooks/useBaseForm";
+import { IBaseEntityForm } from "@/core/classes/base-entity-form";
 
 function TableSortLabel(props: {
     active: boolean,
@@ -39,7 +39,7 @@ function TableSortLabel(props: {
 
 }
 
-export function BaseTableHeader<T extends BaseData>(props: {
+export function BaseTableHeader<T extends IBaseData<T>>(props: {
     headerGroup: HeaderGroup<T>,
     columnResizeMode: ColumnResizeMode,
     tableConfig: BaseTableConfig<T>
@@ -92,27 +92,27 @@ export function BaseTableHeader<T extends BaseData>(props: {
     )
 }
 
-function useBaseForm<TEntity>(
-    entity: TEntity & Object
-) {
-    const [state] = useState(entity)
+// function useBaseForm<TEntity>(
+//     entity: TEntity & Object
+// ) {
+//     const [state] = useState(entity)
 
-    const rhf = Reflect.getMetadata(RHF_FIELDS, entity)
-    const form = useForm({
-        defaultValues: entity as DefaultValues<TEntity>
-    })
-    return {
-        rhf: rhf,
-        form,
-        entity: state
-    }
-}
+//     const rhf = Reflect.getMetadata(RHF_FIELDS, entity)
+//     const form = useForm({
+//         defaultValues: entity as DefaultValues<TEntity>
+//     })
+//     return {
+//         rhf: rhf,
+//         form,
+//         entity: state
+//     }
+// }
 
-export function BaseTableRow<T extends BaseData>(props: {
+export function BaseTableFormRow<T extends IBaseEntityForm<T>>(props: {
     row: Row<T>,
     tableConfig: BaseTableConfig<T>
 }) {
-    const [entity, setEntity] = useState<T>(() => (props.tableConfig.getEntityByRow(props.row.original, props.row.index, props.row.getParentRow())!));
+    const [entity] = useState<T>(() => (props.tableConfig.getEntityByRow(props.row.original, props.row.index, props.row.getParentRow())!));
     const { ...baseFormProps } = useBaseForm<T>(entity);
 
     const buildCell = (cell: Cell<T, unknown>) => {
@@ -127,7 +127,7 @@ export function BaseTableRow<T extends BaseData>(props: {
     return (
         <>
             <TableRow>
-                <BaseForm {...baseFormProps}>
+                <BaseForm<T> {...baseFormProps}>
                     {props.row.getVisibleCells().map(cell => (
                         <TableCell key={cell.id}
                             style={{ ...getCommonPinningStyles(cell.column) }}
@@ -150,7 +150,35 @@ export function BaseTableRow<T extends BaseData>(props: {
     )
 }
 
-export function BaseTableFooter<T extends BaseData>(props: {
+// export function BaseTableRow<T extends IBaseData>(props: {
+//     row: Row<T>,
+//     tableConfig: BaseTableConfig<T>
+// }) {
+//     return (
+//         <>
+//             <TableRow>
+//                 {props.row.getVisibleCells().map(cell => (
+//                     <TableCell key={cell.id}
+//                         style={{ ...getCommonPinningStyles(cell.column) }}
+//                         className={cn("border-r last:border-r-0", cell.column.getIsPinned() ? "bg-background" : "")}
+//                     >
+//                         flexRender(cell.column.columnDef.cell, cell.getContext())
+//                     </TableCell>
+//                 ))}
+
+//             </TableRow>
+//             {props.row.getIsExpanded() && (
+//                 <TableRow>
+//                     <TableCell colSpan={props.row.getVisibleCells().length}>
+//                         {JSON.stringify(props.row.original)}
+//                     </TableCell>
+//                 </TableRow>
+//             )}
+//         </>
+//     )
+// }
+
+export function BaseTableFooter<T extends IBaseData<T>>(props: {
     footerGroup: HeaderGroup<T>,
     tableConfig: BaseTableConfig<T>
 }) {

@@ -14,24 +14,25 @@ import { Check, ChevronsUpDown, X } from "lucide-react"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../../ui/command"
 import { cn } from "@/lib/utils"
 import { useBaseFormContext } from ".."
-import { SelectOption, StaticComboboxControl } from "@/core/types/control.types"
+import { StaticComboboxControl } from "@/core/types/control.types"
+import { RHFOptions } from "@/core/anotations/rhf-field"
 
 const BaseComboboxInput = <TEntity extends FieldValues = FieldValues>({
   name
 }: BaseFormFieldPropsType<TEntity>) => {
-  const { form, rhf, entity } = useBaseFormContext<StaticComboboxControl, TEntity>()
+  const { form, rhf } = useBaseFormContext<TEntity>()
   const { visibleFn } = rhf[name];
 
   const [visibled, setVisibled] = useState<boolean>(() => {
     if (visibleFn) {
-      return visibleFn(form, entity);
+      return visibleFn(form, form.getValues());
     }
     return true;
   });
 
   useEffect(() => {
     if (visibleFn) {
-      setVisibled(visibleFn(form, entity));
+      setVisibled(visibleFn(form, form.getValues()));
     }
   }, [form.watch()]);
 
@@ -49,15 +50,15 @@ const clearFilter = (onClick: () => void) => (
   <X onClick={e => { e.stopPropagation(); onClick(); }} className="ml-2 h-4 w-4 shrink-0" />
 );
 
-const BaseComboboxInputItem = <TEntity extends FieldValues = FieldValues>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
-  const { rhf, setAfterDataChanged, form, entity } = useBaseFormContext<StaticComboboxControl, TEntity>()
-  const { placeholder, label, disableFn, selectOption, validate, filterSelectOption } = rhf[field.name];
+const BaseComboboxInputItem = <TEntity extends FieldValues = FieldValues, TControlType extends StaticComboboxControl = StaticComboboxControl>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
+  const { rhf, setAfterDataChanged, form } = useBaseFormContext<TEntity>()
+  const { placeholder, label, disableFn, selectOption, validate, filterSelectOption } = rhf[field.name] as RHFOptions<TEntity, TControlType>;
   const [open, setOpen] = useState(false);
   const [inprocessData, setInprocessData] = useState(false);
   const [dataFiltered, setDataFiltered] = useState(() => {
     if (filterSelectOption) {
       setInprocessData(true);
-      const filtered = selectOption.data.filter(w => filterSelectOption(w, entity));
+      const filtered = selectOption.data.filter(w => filterSelectOption(w, form.getValues()));
       setInprocessData(false);
       return filtered;
     }
@@ -67,21 +68,21 @@ const BaseComboboxInputItem = <TEntity extends FieldValues = FieldValues>({ fiel
 
   const [disabled, setDisabled] = useState<boolean>(() => {
     if (disableFn) {
-      return disableFn(form, entity);
+      return disableFn(form, form.getValues());
     }
     return false;
   });
 
   useEffect(() => {
     if (disableFn) {
-      setDisabled(disableFn(form, entity));
+      setDisabled(disableFn(form, form.getValues()));
     }
   }, [form.watch()]);
 
   useEffect(() => {
     if (filterSelectOption) {
       setInprocessData(true)
-      const filtered = selectOption.data.filter(w => filterSelectOption(w, entity));
+      const filtered = selectOption.data.filter(w => filterSelectOption(w, form.getValues()));
       setDataFiltered(filtered);
       setInprocessData(false)
     }
@@ -89,22 +90,22 @@ const BaseComboboxInputItem = <TEntity extends FieldValues = FieldValues>({ fiel
       setDataFiltered(selectOption.data);
       setInprocessData(false)
     }
-  }, [entity, filterSelectOption, open, selectOption.data])
+  }, [filterSelectOption, form, open, selectOption.data])
 
   useEffect(() => {
     form.register(field.name, {
-      validate: !((disableFn ? disableFn(form, entity) : false) || !visibled) ? validate : undefined,
+      validate: !((disableFn ? disableFn(form, form.getValues()) : false) || !visibled) ? validate : undefined,
     })
     if (disabled) {
       form.clearErrors(field.name)
     }
-  }, [disableFn, disabled, entity, field.name, form, validate, visibled])
+  }, [disableFn, disabled, field.name, form, validate, visibled])
 
 
   const handleChange = (e: any) => {
     form.setValue(field.name, e);
     if (setAfterDataChanged)
-      setAfterDataChanged(form, field.name, e)
+      setAfterDataChanged(form, field.name, e, form.getValues())
   }
 
   const display = useMemo(() => {
