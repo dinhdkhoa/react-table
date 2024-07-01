@@ -8,6 +8,9 @@ export type AssignValueFn = <TData>(origin: TData, source: TData) => void;
 export interface IBaseData<TEntity> {
     __id__: string;
     __keys__?: FieldNameString<TEntity>[];
+    // __getId__?:  GetIdFn;
+    // __clonePropToKeepData__?: ClonePropToKeepDataFn;
+    // __assignValue__?: AssignValueFn;
     // getId: GetIdFn,
     // clonePropToKeepData: ClonePropToKeepDataFn,
     // assignValue: AssignValueFn,

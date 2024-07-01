@@ -22,8 +22,4 @@ export type FieldNames<T> = {
     [K in keyof T]: K;
   }[keyof T];
 
-  export type FieldNameString<T> = {
-    [K in keyof T]: string;
-  }[keyof T];
-
 export type ConvertResponseModelToEntityFieldsFunc<TResModel, TEntity> = (res: TResModel) => EntityFields<TEntity>;

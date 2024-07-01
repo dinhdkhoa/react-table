@@ -35,7 +35,7 @@ export const isDateColumn = (columnType: FormatColumnType | undefined) => {
 
 export class BaseTableConfig<T extends IBaseData<T>> {
     static defaultIconSize = "h-4 w-4";
-    keys: FieldNameString<T>[] = [];
+    keys: FieldNames<T>[] = [];
     data: T[] = [];
     rowsEditing: Record<string, T> = {}
 
@@ -106,8 +106,9 @@ export class BaseTableConfig<T extends IBaseData<T>> {
     };
     otherButton: Array<BaseRowAction<T>> = [];
 
-    getKeys(data?: T, keys?: Array<string>) {
-        return keys || data?.__keys__ || [];
+    getKeys(data?: T, keys?: FieldNames<T>[]): string[] {
+        const _keys = (keys || data?.__keys__ || []) as string[];
+        return _keys;
     }
 
     getActions() {

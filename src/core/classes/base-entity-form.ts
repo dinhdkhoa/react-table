@@ -6,7 +6,7 @@ export type onChangeFun<TEnity extends FieldValues = FieldValues> = (form: UseFo
 export type onBlurFun<TEnity extends FieldValues = FieldValues> = (form: UseFormReturn<TEnity>, fieldName: string | undefined, value: any, formGetValues: TEnity) => void;
 
 export interface IBaseEntityForm<TEntity extends FieldValues> extends IBaseData<TEntity>, IBaseEntityFormBehavior<TEntity> {
-    __formfields__?: RHFOptions<TEntity>[];
+    __formfields__: RHFOptions<TEntity>[];
 }
 
 export interface IBaseEntityFormBehavior<TEntity extends FieldValues> {

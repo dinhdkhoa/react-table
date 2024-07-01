@@ -29,7 +29,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { TableBody, TableFooter, Table as ShadcnTable, TableHeader } from '@/components/ui/table'
 import { CheckedState } from '@radix-ui/react-checkbox'
-import { IBaseData } from '@/core/classes/base-data'
+import { IBaseData, getId } from '@/core/classes/base-data'
 import { FormatColumnType, ModeType, RowSelectType } from './enums'
 import TableActionColumn from './base-table-action'
 import { BaseTableConfig, rowIdsEditingChangeEvent } from './base-table-config'
@@ -255,6 +255,11 @@ export function BaseTable<T extends IBaseData<T>>(props: {
         };
     }, []);
 
+    function getRowId(originalRow: T, index: number, parent?: Row<T>): string {
+        let keys = props.tableConfig.getKeys(originalRow, props.tableConfig.keys);
+        return getId(originalRow, keys, originalRow.__id__);
+    }
+
     props.tableConfig.table = useReactTable({
 
         data,
@@ -275,7 +280,7 @@ export function BaseTable<T extends IBaseData<T>>(props: {
         enableRowSelection: (row) => { return props.tableConfig.allowSelectRow(row.original) },
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
-        getRowId: props.tableConfig.getRowId,
+        getRowId: getRowId,
         getFilteredRowModel: getFilteredRowModel(),
         getFacetedRowModel: getFacetedRowModel(),
         getFacetedUniqueValues: getFacetedUniqueValues(),

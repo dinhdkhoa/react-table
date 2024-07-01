@@ -54,7 +54,10 @@ const defaultData: PersonEntity[] = [
 
 export default function ENode() {
     const tableConfig = new BaseTableConfig<PersonEntity>();
-
+    tableConfig.keys = [
+        "__id__",
+        "age",
+    ]
 
     tableConfig.cols.push(
         {
