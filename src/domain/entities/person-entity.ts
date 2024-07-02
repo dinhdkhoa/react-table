@@ -81,7 +81,7 @@ export const PersonEntityFields: RHFOptions<PersonEntity>[] = [
     {
         fieldName: 'active',
         label: "Active",
-        type: Control.Checkbox,
+        type: Control.Switch,
     }
 ]
 

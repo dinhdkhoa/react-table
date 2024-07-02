@@ -162,7 +162,7 @@ const BaseMultipleSelectInputItem = <TEntity extends FieldValues = FieldValues, 
                             variant="outline"
                             role="combobox"
                             className={cn(
-                                "flex h-auto justify-between hover:bg-secondary/30",
+                                "flex h-auto justify-between bg-transparent hover:bg-secondary/30",
                             )}
                         >
                             {itemSelected.length > 0 ? display : placeholder}

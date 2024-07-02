@@ -11,6 +11,7 @@ import { BaseFormFieldPropsType } from "./types"
 import { Switch } from "../../ui/switch"
 import { useBaseFormContext } from ".."
 import { SwitchControl } from "@/core/types/control.types"
+import { cn } from "@/lib/utils"
 
 const BaseSwitchInput = <TEntity extends FieldValues = FieldValues>({
     name
@@ -77,7 +78,7 @@ const BaseSwitchItem = <TEntity extends FieldValues = FieldValues, TControlType 
         <FormItem>
             {showLabel && <FormLabel>{label}</FormLabel>}
             <FormControl>
-                <div className="flex items-center space-x-2">
+                <div className={cn("flex items-center space-x-2", showLabel ? "" : "place-content-center")}>
                     <Switch id={field.name} {...field} onCheckedChange={handleChange} disabled={disabled} checked={form.getValues(field.name)} />
                     {showLabel && <label
                         htmlFor={field.name}

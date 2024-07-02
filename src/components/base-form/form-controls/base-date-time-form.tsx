@@ -105,7 +105,7 @@ const BaseDateTimeInputItem = <TEntity extends FieldValues = FieldValues, TContr
               disabled={disabled}
               variant="outline"
               className={cn(
-                "justify-start text-left font-normal w-full",
+                "justify-start text-left font-normal w-full bg-transparent",
                 !form.getValues(field.name) && "text-muted-foreground"
               )}
             >

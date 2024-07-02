@@ -126,7 +126,7 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
     if (!formatColumnType || isNumberCol) {
         return (
 
-            <Input className="bg-background shadow-sm hover:bg-accent hover:text-accent-foreground" placeholder="Filter" onChange={value => { column.setFilterValue(value.currentTarget.value) }} type={isNumberCol ? 'number' : 'text'} />
+            <Input placeholder="Filter" onChange={value => { column.setFilterValue(value.currentTarget.value) }} type={isNumberCol ? 'number' : 'text'} />
         );
     }
 
@@ -177,7 +177,7 @@ function FilterCheckbox({ onChange }: { onChange: (value: CheckBoxFilterType) =>
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-                <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">
+                <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between bg-transparent">
                     <span className="truncate">{value ? checkState.find(state => state.value === value)?.label : "Filter"}</span>
                     {value !== allValue ? clearFilter(() => setValue(allValue)) : <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />}
                 </Button>
@@ -218,7 +218,7 @@ function FilterDate({ value, onChange }: { value: DateFilterType, onChange: (val
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-between">
+                <Button variant="outline" className="w-full justify-between bg-transparent">
                     <span className="truncate">{date ? date.toLocaleDateString() : "Filter"}</span>
                     {value ? clearFilter(() => setDate(null)) : <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />}
                 </Button>
@@ -323,7 +323,7 @@ function FilterStaticCombobox({ value, selectOption, onChange, popOverContentWid
                     variant="outline"
                     role="combobox"
                     className={cn(
-                        "justify-between w-full"
+                        "justify-between w-full bg-transparent"
                     )}
                 >
                     <span className="truncate">{currentValue

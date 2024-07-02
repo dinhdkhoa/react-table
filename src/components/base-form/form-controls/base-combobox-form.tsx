@@ -146,7 +146,7 @@ const BaseComboboxInputItem = <TEntity extends FieldValues = FieldValues, TContr
               variant="outline"
               role="combobox"
               className={cn(
-                "justify-between w-full",
+                "justify-between w-full bg-transparent",
                 !form.getValues(field.name) && "text-muted-foreground"
               )}
             >
