@@ -80,7 +80,7 @@ export function DateTimeCell<TData extends IBaseData<TData>>(
     const value = Value<TData, Date | null | undefined>(cellContext);
 
     return value?.toLocaleString(undefined, {
-        dateStyle: 'short',
+        dateStyle: 'medium',
         timeStyle: 'short'
     }) || ''
 }

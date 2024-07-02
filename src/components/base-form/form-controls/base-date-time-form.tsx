@@ -48,7 +48,7 @@ const BaseDateTimeInput = <TEntity extends FieldValues = FieldValues>({
 }
 
 const BaseDateTimeInputItem = <TEntity extends FieldValues = FieldValues, TControlType extends DateControl = DateControl>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
-  const { rhf, setAfterDataChanged, form } = useBaseFormContext<TEntity>()
+  const { rhf, setAfterDataChanged, form, showLabel } = useBaseFormContext<TEntity>()
   const { placeholder, label, disableFn, validate, includeTime } = rhf[field.name] as RHFOptions<TEntity, TControlType>;
 
   const [disabled, setDisabled] = useState<boolean>(() => {
@@ -80,9 +80,24 @@ const BaseDateTimeInputItem = <TEntity extends FieldValues = FieldValues, TContr
       setAfterDataChanged(form, field.name, e, form.getValues())
   }
 
+  const display = () => {
+    const _value = form.getValues(field.name);
+    if(_value){
+      if ((_value as any) instanceof Date) {
+        return _value?.toLocaleString(undefined, {
+          dateStyle: 'medium',
+          timeStyle: 'short'
+      })
+    }
+      
+    }
+    
+    return placeholder;
+  }
+
   return (
     <FormItem>
-      <FormLabel>{label}</FormLabel>
+      {showLabel && <FormLabel>{label}</FormLabel>}
       <FormControl>
         <Popover>
           <PopoverTrigger asChild>
@@ -95,11 +110,7 @@ const BaseDateTimeInputItem = <TEntity extends FieldValues = FieldValues, TContr
               )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              <span className="truncate">{form.getValues(field.name) ? (
-                format(form.getValues(field.name), "PPP HH:mm:ss")
-              ) : (
-                placeholder
-              )}</span>
+              <span className="truncate">{display()}</span>
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0">

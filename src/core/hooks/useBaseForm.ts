@@ -7,7 +7,7 @@ import { IBaseEntityForm } from "../classes/base-entity-form"
 import { RHFOptions } from "../anotations/rhf-field"
 
 
-function useBaseForm<TEntity extends IBaseEntityForm<TEntity>>(entity: TEntity) {
+function useBaseForm<TEntity extends IBaseEntityForm<TEntity>>(entity: TEntity, showLabel: boolean = true) {
     const [state] = useState(entity)
     const form = useForm({
         defaultValues: entity as DefaultValues<TEntity>
@@ -18,7 +18,8 @@ function useBaseForm<TEntity extends IBaseEntityForm<TEntity>>(entity: TEntity) 
         if (entity.__formfields__ && entity.__formfields__.length > 0) {
             entity.__formfields__.forEach(field => {
                 field.placeholder = field.placeholder || field.label
-                rhfs[field.fieldName as string] = field});
+                rhfs[field.fieldName as string] = field
+            });
         }
         return rhfs;
     })
@@ -26,6 +27,7 @@ function useBaseForm<TEntity extends IBaseEntityForm<TEntity>>(entity: TEntity) 
     return {
         rhf: formFields,
         form,
+        showLabel,
         __onChange__: entity?.__onChange__,
         __onBlur__: entity?.__onBlur__,
     }

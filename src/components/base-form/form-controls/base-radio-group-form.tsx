@@ -46,7 +46,7 @@ const BaseRadioGroupInput = <TEntity extends FieldValues = FieldValues>({
 }
 
 const BaseRadioGroupItem = <TEntity extends FieldValues = FieldValues, TControlType extends RadioGroupControl = RadioGroupControl>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
-    const { rhf, setAfterDataChanged, form } = useBaseFormContext<TEntity>()
+    const { rhf, setAfterDataChanged, form, showLabel } = useBaseFormContext<TEntity>()
     const { label, disableFn, validate, direction, selectOption } = rhf[field.name] as RHFOptions<TEntity, TControlType>;
     const [directionItem] = useState(() => {
         if (direction == Direction.Column)
@@ -102,7 +102,7 @@ const BaseRadioGroupItem = <TEntity extends FieldValues = FieldValues, TControlT
 
     return (
         <FormItem>
-            <FormLabel>{label}</FormLabel>
+            {showLabel && <FormLabel>{label}</FormLabel>}
             <FormControl>
                 <RadioGroup
                     disabled={disabled}

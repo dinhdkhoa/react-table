@@ -34,7 +34,7 @@ import { FormatColumnType, ModeType, RowSelectType } from './enums'
 import TableActionColumn from './base-table-action'
 import { BaseTableConfig, rowIdsEditingChangeEvent } from './base-table-config'
 import TableHeaderActions from './base-table-header-action'
-import { BaseTableFooter, BaseTableFormRow, BaseTableHeader } from './base-table-row'
+import { BaseTableFooter, BaseTableFormRow, BaseTableHeader, BaseTableRow } from './base-table-row'
 import BaseTablePagination from './base-table-pagination'
 
 export const rowActionId = 'rowAction';
@@ -295,22 +295,6 @@ export function BaseTable<T extends IBaseData<T>>(props: {
 
     return (
         <div className="max-w-7xl mx-auto mb-10 mt-5">
-            {/* {JSON.stringify(rowIdsEditing)} */}
-            <div className="flex items-center ">
-                <h1 className="text-3xl font-bold leading-tight tracking-tighter md:text-4xl lg:leading-[1.1]">
-                    Table
-                </h1>
-            </div>
-            {/* <div className="flex items-center py-4">
-                <Input
-                    placeholder="Filtebr emails..."
-                    value={(props.tableConfig.table!.getColumn("email")?.getFilterValue() as string) ?? ""}
-                    onChange={(event) =>
-                        props.tableConfig.table!.getColumn("email")?.setFilterValue(event.target.value)
-                    }
-                    className="max-w-sm"
-                />
-            </div> */}
             <div className="rounded-md border mb-4">
                 <ShadcnTable {...{
                     style: {
@@ -319,7 +303,6 @@ export function BaseTable<T extends IBaseData<T>>(props: {
                 }}>
 
                     <TableHeader className='b primary'>
-                        <TableHeaderActions colspan={columns.length} table={props.tableConfig.table!} />
                         {props.tableConfig.table.getHeaderGroups().map(headerGroup => (
                             <BaseTableHeader key={headerGroup.id} headerGroup={headerGroup} tableConfig={props.tableConfig} columnResizeMode={columnResizeMode} />
                         ))}
@@ -327,7 +310,7 @@ export function BaseTable<T extends IBaseData<T>>(props: {
                     </TableHeader>
                     <TableBody className="border-r-0">
                         {props.tableConfig.table.getRowModel().rows.map(row => (
-                            <BaseTableFormRow key={row.id} row={row} tableConfig={props.tableConfig} />
+                            <BaseTableRow key={row.id} row={row} tableConfig={props.tableConfig} />
                         ))}
                     </TableBody>
                     <TableFooter>

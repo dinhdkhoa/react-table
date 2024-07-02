@@ -42,7 +42,7 @@ const BaseNumberInput = <TEntity extends FieldValues = FieldValues>({
 }
 
 const BaseNumberInputItem = <TEntity extends FieldValues = FieldValues, TControlType extends NumberControl = NumberControl>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
-  const { rhf, setAfterDataChanged, form, onBlur } = useBaseFormContext<TEntity>()
+  const { rhf, setAfterDataChanged, form, onBlur, showLabel } = useBaseFormContext<TEntity>()
   const { placeholder, label, disableFn, validate, min, max } = rhf[field.name] as RHFOptions<TEntity, TControlType>;
 
   const [disabled, setDisabled] = useState<boolean>(() => {
@@ -77,7 +77,7 @@ const BaseNumberInputItem = <TEntity extends FieldValues = FieldValues, TControl
 
   return (
     <FormItem>
-      <FormLabel>{label}</FormLabel>
+      {showLabel && <FormLabel>{label}</FormLabel>}
       <FormControl>
         <Input
           {...field}

@@ -26,6 +26,8 @@ import {
 import ModeToggle from "../mode-toggle"
 import SidebarAvatarBtn from "./sidebar-avatar-btn"
 import UserInfoLabel from "./user-info-label"
+import logoutAPI from "@/app/api/auth/logout/logout.api"
+import { useRouter } from "next/navigation"
 
 export function UserProfileMenu({ isOpen }: { isOpen?: boolean }) {
   return (
@@ -54,6 +56,14 @@ export function UserProfileMenu({ isOpen }: { isOpen?: boolean }) {
 }
 
 const UserProfileMenuContents = () => {
+  const router = useRouter();
+  
+  function handleLogout(event: any): void {
+    logoutAPI.logoutClient(true).then((_) => {
+      router.push("/");
+    });
+  }
+
   return (
     <DropdownMenuContent className="w-56" align="start" forceMount>
       <DropdownMenuLabel>
@@ -78,7 +88,7 @@ const UserProfileMenuContents = () => {
         </DropdownMenuItem>
       </DropdownMenuGroup>
       <DropdownMenuSeparator />
-      <DropdownMenuItem className="hover:cursor-pointer" onClick={() => {}}>
+      <DropdownMenuItem className="hover:cursor-pointer" onClick={handleLogout}>
         <LogOut className="w-4 h-4 mr-3 text-muted-foreground" />
         Sign out
       </DropdownMenuItem>

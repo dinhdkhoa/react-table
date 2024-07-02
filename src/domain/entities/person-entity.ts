@@ -7,7 +7,7 @@ import { UseFormReturn } from "react-hook-form";
 const statusData: BasicItem<string>[] = [
     {
         value: "InRelationship",
-        text: "In Relationship In Relationship In Relationship In Relationship In Relationship In Relationship",
+        text: "In Relationship",
     },
     {
         value: "Single",

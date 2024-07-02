@@ -52,7 +52,7 @@ const clearFilter = (onClick: () => void) => (
 );
 
 const BaseMultipleSelectInputItem = <TEntity extends FieldValues = FieldValues, TControlType extends MultipleSelectControl = MultipleSelectControl>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
-    const { rhf, setAfterDataChanged, form } = useBaseFormContext<TEntity>()
+    const { rhf, setAfterDataChanged, form, showLabel } = useBaseFormContext<TEntity>()
     const { placeholder, label, disableFn, selectOption, validate } = rhf[field.name] as RHFOptions<TEntity, TControlType>;
     const [open, setOpen] = useState(false)
 
@@ -153,7 +153,7 @@ const BaseMultipleSelectInputItem = <TEntity extends FieldValues = FieldValues, 
 
     return (
         <FormItem>
-            <FormLabel>{label}</FormLabel>
+            {showLabel && <FormLabel>{label}</FormLabel>}
             <FormControl>
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>

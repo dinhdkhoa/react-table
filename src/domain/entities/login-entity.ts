@@ -1,49 +1,52 @@
-// import { RHF } from "@/core/anotations/rhf-field";
-// import { BaseEntityForm } from "@/core/classes/base-entity-form";
-// import { BasicItem } from "@/core/classes/basic-item";
-// import { Control, SelectOption } from "@/core/types/control.types";
-// import { convertToSHA1 } from "@/core/utils/encryption";
-// import { UseFormReturn } from "react-hook-form";
+import { RHFOptions } from "@/core/anotations/rhf-field";
+import { IBaseEntityForm, IBaseEntityFormBehavior } from "@/core/classes/base-entity-form";
+import { Control } from "@/core/types/control.types";
+import { convertToSHA1 } from "@/core/utils/encryption";
 
+export interface LoginEntity extends IBaseEntityForm<LoginEntity>, LoginEntityBehavior {
+    username: string,
+    password: string,
+}
 
-// export class LoginEntity extends BaseEntityForm {
-//     @RHF({
-//         label: "User name",
-//         type: Control.Text,
-//         validate: {
-//             required: (fieldValue, entity: LoginEntity) => {
-//                 if (!entity.username)
-//                     return 'This field is required';
-//                 return true;
-//             }
-//         }
-//     })
-//     username?: string;
+export interface LoginEntityBehavior extends IBaseEntityFormBehavior<LoginEntity> {
+    passwordEncode: (entity: LoginEntity) => string;
+}
 
-//     @RHF({
-//         label: "Password",
-//         type: Control.Text,
-//         validate: {
-//             required: (fieldValue, entity: LoginEntity) => {
-//                 if (!entity.password)
-//                     return 'This field is required';
-//                 return true;
-//             }
-//         }
-//     })
-//     password?: string;
+export const Loginfields: RHFOptions<LoginEntity>[] = [
+    {
+        fieldName: "username",
+        label: 'User name',
+        type: Control.Text,
+        validate: {
+            required: (fieldValue, entity) => {
+                if (!entity.password)
+                    return 'This field is required';
+                return true;
+            }
+        }
+    },
+    {
+        type: Control.Text,
+        fieldName: "password",
+        label: 'Password',
+        validate: {
+            required: (fieldValue, entity) => {
+                if (!entity.password)
+                    return 'This field is required';
+                return true;
+            }
+        }
+    },
+]
 
-//     constructor(username?: string) {
-//         super();
-//         this.username = username;
-//     }
-
-//     get passwordEncode() {
-//         return convertToSHA1(this.password || '')
-//     }
-
-//     onChange = (form: UseFormReturn, fieldName: string | undefined, value: any) => {
-//         // console.log('onChange', this.username, form.getValues(), this);
-//         console.log('onChange', fieldName, form.getValues(), this);
-//     }
-// }
+export const defaultLoginEntity: LoginEntity = {
+    __id__: "",
+    __formfields__: Loginfields,
+    __keys__: [],
+    __onChange__: (form, fieldname, value, formGetValues) => {},
+    username: "",
+    password: "",
+    passwordEncode: function (entity: LoginEntity): string {
+        return convertToSHA1(entity.password || '');
+    }
+}

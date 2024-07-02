@@ -12,6 +12,7 @@ import { Checkbox } from "../../ui/checkbox"
 import { CheckedState } from "@radix-ui/react-checkbox"
 import { useBaseFormContext } from ".."
 import { CheckboxControl } from "@/core/types/control.types"
+import { cn } from "@/lib/utils"
 
 const BaseCheckboxInput = <TEntity extends FieldValues = FieldValues>({
   name
@@ -42,7 +43,7 @@ const BaseCheckboxInput = <TEntity extends FieldValues = FieldValues>({
 }
 
 const BaseCheckboxItem = <TEntity extends FieldValues = FieldValues, TControlType extends CheckboxControl = CheckboxControl>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
-  const { rhf, form, setAfterDataChanged } = useBaseFormContext<TEntity>()
+  const { rhf, form, setAfterDataChanged, showLabel } = useBaseFormContext<TEntity>()
   const { label, disableFn, validate } = rhf[field.name];
 
   const [disabled, setDisabled] = useState<boolean>(() => {
@@ -76,16 +77,16 @@ const BaseCheckboxItem = <TEntity extends FieldValues = FieldValues, TControlTyp
 
   return (
     <FormItem>
-      <FormLabel>{label}</FormLabel>
+      {showLabel && <FormLabel>{label}</FormLabel>}
       <FormControl>
-        <div className="flex items-center space-x-2">
+        <div className={cn("flex items-center space-x-2", showLabel ? "" : "place-content-center")}>
           <Checkbox id={field.name} onCheckedChange={handleChange} disabled={disabled} checked={form.getValues(field.name)} />
-          <label
+          {showLabel && <label
             htmlFor={field.name}
             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
             {label}
-          </label>
+          </label>}
         </div>
       </FormControl>
       <FormMessage />

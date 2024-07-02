@@ -95,7 +95,7 @@ const BaseTextInputItem = <TEntity extends FieldValues = FieldValues, TControlTy
     labelVariant,
     visibled = true
   } = props
-  const { rhf, setAfterDataChanged, form, onBlur } = useBaseFormContext<TEntity>();
+  const { rhf, setAfterDataChanged, form, onBlur, showLabel } = useBaseFormContext<TEntity>();
   const { placeholder, label, disableFn, validate, minLength, maxLength } = rhf[field.name] as RHFOptions<TEntity, TControlType>;
 
   const [disabled, setDisabled] = useState<boolean>(() => {
@@ -136,9 +136,9 @@ const BaseTextInputItem = <TEntity extends FieldValues = FieldValues, TControlTy
 
   return (
     <FormItem>
-      <FormLabel className={cn(SharedVariants({ labelVariant }))}>
+      {showLabel && <FormLabel className={cn(SharedVariants({ labelVariant }))}>
         {label}
-      </FormLabel>
+      </FormLabel>}
       <FormControl>
         <Input
           {...field}

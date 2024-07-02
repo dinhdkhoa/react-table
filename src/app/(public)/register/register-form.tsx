@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input"
 import { RegisterBody, RegisterBodyType } from "@/schemaValidations/auth.schema"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { LoginEntity } from "@/domain/entities/login-entity-refactor"
+import { LoginEntityRefactor } from "@/domain/entities/login-entity-refactor"
 import BaseForm from "@/components/base-form"
 let count = 0 
 

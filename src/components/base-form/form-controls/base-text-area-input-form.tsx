@@ -43,7 +43,7 @@ const BaseTextAreaInput = <TEntity extends FieldValues = FieldValues>({
 }
 
 const BaseTextAreaInputItem = <TEntity extends FieldValues = FieldValues, TControlType extends TextAreaControl = TextAreaControl>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
-    const { rhf, setAfterDataChanged, form, onBlur } = useBaseFormContext<TEntity>()
+    const { rhf, setAfterDataChanged, form, onBlur, showLabel } = useBaseFormContext<TEntity>()
     const { placeholder, label, disableFn, validate, minLength, maxLength, resize } = rhf[field.name] as RHFOptions<TEntity, TControlType>;
 
     const [disabled, setDisabled] = useState<boolean>(() => {
@@ -83,7 +83,7 @@ const BaseTextAreaInputItem = <TEntity extends FieldValues = FieldValues, TContr
 
     return (
         <FormItem>
-            <FormLabel>{label}</FormLabel>
+            {showLabel && <FormLabel>{label}</FormLabel>}
             <FormControl>
                 <Textarea {...field}
                     className={cn((resize ? '' : 'resize-none'))}

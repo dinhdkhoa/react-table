@@ -8,14 +8,14 @@ import { HttpError } from "@/lib/https"
 
 export async function POST(request: Request) {
     const req = await request.json()
-    const sessionExpired : boolean | undefined = req.sessionExpired
+    const sessionExpired: boolean | undefined = req.sessionExpired
     const signal: AbortController | undefined = req.signal
-    if(sessionExpired){
+    if (sessionExpired) {
         return Response.json({
             message: 'Session Expired. Please log in again!'
         }, {
             status: 200,
-            headers: { 'Set-Cookie': `sessionToken=; Path=/; HttpOnly; Max-Age=0` },    
+            headers: { 'Set-Cookie': `sessionToken=; Path=/; HttpOnly; Max-Age=0` },
         })
     }
     const cookieStore = cookies()

@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle
 } from "@/components/ui/card"
-import { LoginForm3 } from "./login-form-refactored"
+import { LoginForm } from "./login-form"
 
 export default function Login() {
   return (
@@ -17,7 +17,7 @@ export default function Login() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <LoginForm3 />
+          <LoginForm />
         </CardContent>
       </Card>
   )

@@ -51,7 +51,7 @@ const clearFilter = (onClick: () => void) => (
 );
 
 const BaseComboboxInputItem = <TEntity extends FieldValues = FieldValues, TControlType extends StaticComboboxControl = StaticComboboxControl>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
-  const { rhf, setAfterDataChanged, form } = useBaseFormContext<TEntity>()
+  const { rhf, setAfterDataChanged, form, showLabel } = useBaseFormContext<TEntity>()
   const { placeholder, label, disableFn, selectOption, validate, filterSelectOption } = rhf[field.name] as RHFOptions<TEntity, TControlType>;
   const [open, setOpen] = useState(false);
   const [inprocessData, setInprocessData] = useState(false);
@@ -137,7 +137,7 @@ const BaseComboboxInputItem = <TEntity extends FieldValues = FieldValues, TContr
 
   return (
     <FormItem>
-      <FormLabel id={field.name}>{label}</FormLabel>
+      {showLabel && <FormLabel id={field.name}>{label}</FormLabel>}
       <FormControl>
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>

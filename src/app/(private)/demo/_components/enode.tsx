@@ -92,24 +92,31 @@ export default function ENode() {
         {
             id: 'firstName',
             accessorKey: 'firstName',
+            meta: {
+                editable: true
+            }
         },
         {
             id: 'lastName',
             accessorKey: 'lastName',
+            meta: {
+                editable: true
+            }
         },
         {
             id: 'age',
             accessorKey: 'age',
             meta: {
                 formatColumnType: FormatColumnType.Decimal,
-                editable: false
+                editable: true
             }
         },
         {
             id: 'visits',
             accessorKey: 'visits',
             meta: {
-                formatColumnType: FormatColumnType.Decimal
+                formatColumnType: FormatColumnType.Decimal,
+                editable: true
             }
         },
         {
@@ -120,21 +127,24 @@ export default function ENode() {
             size: 400,
             meta: {
                 formatColumnType: FormatColumnType.StaticCombobox,
-                staticSelectOption: statusSelectOption
+                staticSelectOption: statusSelectOption,
+                editable: true
             }
         },
         {
             id: 'date',
             accessorKey: 'date',
             meta: {
-                formatColumnType: FormatColumnType.DateTime
+                formatColumnType: FormatColumnType.DateTime,
+                editable: true
             }
         },
         {
             id: 'active',
             accessorKey: 'active',
             meta: {
-                formatColumnType: FormatColumnType.Boolean
+                formatColumnType: FormatColumnType.Boolean,
+                editable: true
             }
         }
     )

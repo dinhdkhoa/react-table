@@ -92,36 +92,20 @@ export function BaseTableHeader<T extends IBaseData<T>>(props: {
     )
 }
 
-// function useBaseForm<TEntity>(
-//     entity: TEntity & Object
-// ) {
-//     const [state] = useState(entity)
-
-//     const rhf = Reflect.getMetadata(RHF_FIELDS, entity)
-//     const form = useForm({
-//         defaultValues: entity as DefaultValues<TEntity>
-//     })
-//     return {
-//         rhf: rhf,
-//         form,
-//         entity: state
-//     }
-// }
-
 export function BaseTableFormRow<T extends IBaseEntityForm<T>>(props: {
     row: Row<T>,
     tableConfig: BaseTableConfig<T>
 }) {
     const [entity] = useState<T>(() => (props.tableConfig.getEntityByRow(props.row.original, props.row.index, props.row.getParentRow())!));
-    const { ...baseFormProps } = useBaseForm<T>(entity);
+    const { ...baseFormProps } = useBaseForm<T>(entity, false);
 
     const buildCell = (cell: Cell<T, unknown>) => {
         const { editable } = cell.column.columnDef.meta ?? {};
         const anyField = (baseFormProps.rhf && baseFormProps.rhf[cell.column.id]);
 
         return (props.tableConfig.rowsEditing[(props.row.id)] !== undefined
-            && (editable ?? true)) && anyField
-            ? <BaseDynamicControl name={cell.column.id} />
+            && (editable ?? false)) && anyField
+            ? <div className="items-center" ><BaseDynamicControl name={cell.column.id} /></div>
             : flexRender(cell.column.columnDef.cell, cell.getContext())
     }
     return (
@@ -137,8 +121,40 @@ export function BaseTableFormRow<T extends IBaseEntityForm<T>>(props: {
                         </TableCell>
                     ))}
                 </BaseForm>
-
             </TableRow>
+        </>
+    )
+}
+
+function identity<Type>(arg: Type): Type {
+    return arg;
+}
+
+export function BaseTableRow<T extends IBaseData<T>>(props: {
+    row: Row<T>,
+    tableConfig: BaseTableConfig<T>
+}) {
+    const rowEditing = props.tableConfig.rowsEditing[(props.row.id)];
+
+    const buildRow = () => {
+        if (rowEditing) {
+            return <BaseTableFormRow key={props.row.id} row={props.row as any} tableConfig={props.tableConfig as any} />
+        }
+        return <TableRow>
+            {props.row.getVisibleCells().map(cell => (
+                <TableCell key={cell.id}
+                    style={{ ...getCommonPinningStyles(cell.column) }}
+                    className={cn("border-r last:border-r-0", cell.column.getIsPinned() ? "bg-background" : "")}
+                >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
+            ))}
+        </TableRow>
+    }
+
+    return (
+        <>
+            {buildRow()}
             {props.row.getIsExpanded() && (
                 <TableRow>
                     <TableCell colSpan={props.row.getVisibleCells().length}>
@@ -149,34 +165,6 @@ export function BaseTableFormRow<T extends IBaseEntityForm<T>>(props: {
         </>
     )
 }
-
-// export function BaseTableRow<T extends IBaseData>(props: {
-//     row: Row<T>,
-//     tableConfig: BaseTableConfig<T>
-// }) {
-//     return (
-//         <>
-//             <TableRow>
-//                 {props.row.getVisibleCells().map(cell => (
-//                     <TableCell key={cell.id}
-//                         style={{ ...getCommonPinningStyles(cell.column) }}
-//                         className={cn("border-r last:border-r-0", cell.column.getIsPinned() ? "bg-background" : "")}
-//                     >
-//                         flexRender(cell.column.columnDef.cell, cell.getContext())
-//                     </TableCell>
-//                 ))}
-
-//             </TableRow>
-//             {props.row.getIsExpanded() && (
-//                 <TableRow>
-//                     <TableCell colSpan={props.row.getVisibleCells().length}>
-//                         {JSON.stringify(props.row.original)}
-//                     </TableCell>
-//                 </TableRow>
-//             )}
-//         </>
-//     )
-// }
 
 export function BaseTableFooter<T extends IBaseData<T>>(props: {
     footerGroup: HeaderGroup<T>,

@@ -41,7 +41,7 @@ const BaseSwitchInput = <TEntity extends FieldValues = FieldValues>({
 }
 
 const BaseSwitchItem = <TEntity extends FieldValues = FieldValues, TControlType extends SwitchControl = SwitchControl>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
-    const { rhf, setAfterDataChanged, form } = useBaseFormContext<TEntity>()
+    const { rhf, setAfterDataChanged, form, showLabel } = useBaseFormContext<TEntity>()
     const { label, disableFn, validate } = rhf[field.name];
 
     const [disabled, setDisabled] = useState<boolean>(() => {
@@ -75,16 +75,16 @@ const BaseSwitchItem = <TEntity extends FieldValues = FieldValues, TControlType 
 
     return (
         <FormItem>
-            <FormLabel>{label}</FormLabel>
+            {showLabel && <FormLabel>{label}</FormLabel>}
             <FormControl>
                 <div className="flex items-center space-x-2">
                     <Switch id={field.name} {...field} onCheckedChange={handleChange} disabled={disabled} checked={form.getValues(field.name)} />
-                    <label
+                    {showLabel && <label
                         htmlFor={field.name}
                         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                     >
                         {label}
-                    </label>
+                    </label>}
                 </div>
 
             </FormControl>

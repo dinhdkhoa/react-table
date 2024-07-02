@@ -87,7 +87,7 @@ const weightSelectOption: SelectOption<BasicItem<number | undefined>, number | u
 }
 
 
-export interface LoginEntity extends IBaseEntityForm<LoginEntity>, LoginEntityBehavior {
+export interface LoginEntityRefactor extends IBaseEntityForm<LoginEntityRefactor>, LoginEntityBehavior {
     username: string,
     password: string,
     age?: number,
@@ -101,12 +101,12 @@ export interface LoginEntity extends IBaseEntityForm<LoginEntity>, LoginEntityBe
     abc?: boolean,
 }
 
-interface LoginEntityBehavior extends IBaseEntityFormBehavior<LoginEntity> {
-    passwordEncode: (entity: LoginEntity) => string;
+interface LoginEntityBehavior extends IBaseEntityFormBehavior<LoginEntityRefactor> {
+    passwordEncode: (entity: LoginEntityRefactor) => string;
 }
 
 
-export const fields: RHFOptions<LoginEntity>[] = [
+export const fields: RHFOptions<LoginEntityRefactor>[] = [
     {
         fieldName: "username",
         label: 'User name',
@@ -181,6 +181,11 @@ export const fields: RHFOptions<LoginEntity>[] = [
         label: "Email Type",
         type: Control.StaticCombobox,
         selectOption: emailSelectOption,
+        filterSelectOption: (value, entity: LoginEntityRefactor) => {
+            if (entity.username == 'abc')
+                return false;
+            return true;
+        },
         // visibleFn: (form: UseFormReturn, entity: LoginEntity) => {
         //   return !entity.abc;
         // },
@@ -233,7 +238,7 @@ export const fields: RHFOptions<LoginEntity>[] = [
     }
 ]
 
-export const loginEntity: LoginEntity = {
+export const loginEntity: LoginEntityRefactor = {
     __id__: "",
     __formfields__: fields,
     __keys__: [],
@@ -243,7 +248,7 @@ export const loginEntity: LoginEntity = {
     },
     username: "",
     password: "",
-    passwordEncode: function (entity: LoginEntity): string {
+    passwordEncode: function (entity: LoginEntityRefactor): string {
         return convertToSHA1(entity.password || '');
     }
 }
