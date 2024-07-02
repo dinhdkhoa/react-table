@@ -9,7 +9,40 @@ import { BaseTable } from "@/components/base-table/base-table";
 import { createColumnHelper } from "@tanstack/react-table";
 import { PersonEntity, PersonEntityFields, PersonEntityOnChange, statusSelectOption } from "@/domain/entities/person-entity";
 
-// const defaultData: Person[] = [];
+
+const firstNames = ["John", "Jane", "Alice", "Bob", "Chris", "Ella", "Tom", "Sophia", "Mike", "Olivia"];
+const lastNames = ["Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller", "Wilson", "Moore", "Taylor"];
+const statuses = ["InRelationship", "Single", "Complicated", ''];
+
+const getRandomElement = (arr: string[]): (string | undefined) => arr[Math.floor(Math.random() * arr.length)];
+const getRandomNumber = (min: number, max: number): number => Math.floor(Math.random() * (max - min + 1)) + min;
+const getRandomBoolean = (): boolean => Math.random() < 0.5;
+
+const generateRandomPerson = (id: number): PersonEntity => ({
+    __id__: id.toString(),
+    __formfields__: PersonEntityFields,
+    __onChange__: PersonEntityOnChange,
+    firstName: getRandomElement(firstNames),
+    lastName: getRandomElement(lastNames),
+    age: getRandomNumber(18, 80),
+    visits: getRandomNumber(0, 100),
+    status: getRandomElement(statuses),
+    progress: getRandomNumber(0, 100),
+    date: new Date(getRandomNumber(2020, 2023), getRandomNumber(0, 11), getRandomNumber(1, 28)),
+    active: getRandomBoolean()
+});
+
+const generateRandomPersons = (count: number): PersonEntity[] => {
+    const persons: PersonEntity[] = [];
+    for (let i = 0; i < count; i++) {
+        persons.push(generateRandomPerson(i));
+    }
+    return persons;
+};
+
+const randomPersons = generateRandomPersons(10000);
+console.log(randomPersons);
+
 const defaultData: PersonEntity[] = [
     {
         __id__: '1',
@@ -181,7 +214,7 @@ export default function ENode() {
         // console.log(arrData);
     }
 
-    tableConfig.setData([...defaultData,]);
+    tableConfig.setData(randomPersons);
 
     return (
         <>
