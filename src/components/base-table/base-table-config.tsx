@@ -98,8 +98,10 @@ export class BaseTableConfig<T extends IBaseData<T>> {
     };
     cancelButton: BaseRowAction<T> = {
         id: '_row_action_cancel', name: 'Cancel', iconChild: <X className={BaseTableConfig.defaultIconSize} fontSize='inherit' />,
-        action: (data) => {
-            this.removeRowEditing(getId(data, this.getKeys(data, this.keys), data.__id__) || '', data, false)
+        action: (data, form) => {
+            if (form) {
+                this.removeRowEditing(getId(data, this.getKeys(data, this.keys), data.__id__) || '', data, false, form)
+            }
         }
     };
     showChildButton: BaseRowAction<T> = {
@@ -164,9 +166,13 @@ export class BaseTableConfig<T extends IBaseData<T>> {
         }
     }
 
-    removeRowEditing(id: string, entity: T, saveData?: boolean) {
+    removeRowEditing(id: string, entity: T, saveData?: boolean, form?: UseFormReturn<T>) {
         if (id) {
             delete this.rowsEditing[id];
+            if (form) {
+                if (saveData) { assignValue(entity, form.getValues()); }
+                else { form.reset() }
+            }
             tableEventEmitter.emit(rowIdsEditingChangeEvent, this.rowsEditing)
         }
     }
@@ -183,8 +189,7 @@ export class BaseTableConfig<T extends IBaseData<T>> {
     }
 
     setAfterSaveRow(id: string, data: T, form: UseFormReturn<T>) {
-        assignValue(data, form.getValues());
-        this.removeRowEditing(id, data, true);
+        this.removeRowEditing(id, data, true, form);
         this.updateRowValuesCache(id, data);
     }
 
