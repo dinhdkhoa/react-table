@@ -1,5 +1,5 @@
 import { Guid } from "guid-typescript";
-import { FieldNames } from "../helper/helper";
+import { FieldNames } from "../helper/type-helpers";
 
 export type GetIdFn = <TData>(data: TData, keys: string[], defaultKey: string) => string;
 export type ClonePropToKeepDataFn = <TData>(data: TData) => TData;

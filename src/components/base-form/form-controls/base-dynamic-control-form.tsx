@@ -22,23 +22,23 @@ const BaseDynamicControl = <TEntity extends FieldValues = FieldValues,>(props: P
     const createControl = () => {
         switch (type) {
             case Control.Text:
-                return <BaseTextInput<TEntity> name={props.name as any} />
+                return <BaseTextInput<TEntity> name={props.name as any} showLabel={'hidden'}/>
             case Control.TextArea:
-                return <BaseTextAreaInput<TEntity> name={props.name as any} />
+                return <BaseTextAreaInput<TEntity> name={props.name as any}  showLabel={'hidden'} />
             case Control.Number:
-                return <BaseNumberInput<TEntity> name={props.name as any} />
+                return <BaseNumberInput<TEntity> name={props.name as any}  showLabel={'hidden'} />
             case Control.Checkbox:
-                return <BaseCheckboxInput<TEntity> name={props.name as any} />
+                return <BaseCheckboxInput<TEntity> name={props.name as any}  showLabel={'hidden'} checkBoxVariants={'table-item'}/>
             case Control.Switch:
-                return <BaseSwitchInput<TEntity> name={props.name as any} />
+                return <BaseSwitchInput<TEntity> name={props.name as any} showLabel={'hidden'}  switchVariants={'table-item'}/>
             case Control.StaticCombobox:
-                return <BaseComboboxInput<TEntity> name={props.name as any} />
+                return <BaseComboboxInput<TEntity> name={props.name as any}  showLabel={'hidden'} />
             case Control.MultipleSelect:
-                return <BaseMultipleSelectInput<TEntity> name={props.name as any} />
+                return <BaseMultipleSelectInput<TEntity> name={props.name as any} showLabel={'hidden'}  />
             case Control.RadioGroup:
-                return <BaseRadioGroupInput<TEntity> name={props.name as any} />
+                return <BaseRadioGroupInput<TEntity> name={props.name as any} showLabel={'hidden'} />
             case Control.Date:
-                return <BaseDateTimeInput<TEntity> name={props.name as any} />
+                return <BaseDateTimeInput<TEntity> name={props.name as any}  showLabel={'hidden'} />
             default:
                 return null;
         }

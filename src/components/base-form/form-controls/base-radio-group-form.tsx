@@ -13,40 +13,88 @@ import { cn } from "@/lib/utils"
 import { Direction, RadioGroupControl } from "@/core/types/control.types"
 import { useBaseFormContext } from ".."
 import { RHFOptions } from "@/core/anotations/rhf-field"
+import { VariantProps, cva } from "class-variance-authority"
+import { SharedVariantProps, SharedVariants } from "./shared-variants"
 
 const directionCol = 'flex-col space-y-1';
 const directionRow = 'flex-row';
 
-const BaseRadioGroupInput = <TEntity extends FieldValues = FieldValues>({
-    name
-}: BaseFormFieldPropsType<TEntity>) => {
-    const { form, rhf } = useBaseFormContext<TEntity>()
-    const { visibleFn } = rhf[name];
+// Variants
 
-    const [visibled, setVisibled] = useState<boolean>(() => {
-        if (visibleFn) {
-            return visibleFn(form, form.getValues());
-        }
-        return true;
-    });
+const BaseRadioVariants = cva(null, {
+  variants: {
+    radioVariants: {
+      vertical: "flex flex-col space-y-1",
+      horizontal: "flex flex-row"
+    }
+  },
+  defaultVariants: {
+    radioVariants: "vertical"
+  }
+})
 
-    useEffect(() => {
-        if (visibleFn) {
-            setVisibled(visibleFn(form, form.getValues()));
-        }
-    }, [form.watch()]);
+// Types & Interface
 
-    return (visibled &&
-        <FormField
-            control={form.control}
-            name={name}
-            render={(params) => <BaseRadioGroupItem visibled={visibled} {...params} />}
-        />
+type BaseRadioVariantsProps = VariantProps<typeof BaseRadioVariants>
+
+type BaseRadioProps<TEntity extends FieldValues = FieldValues> =
+  BaseFormFieldPropsType<TEntity> &
+    SharedVariantProps &
+    BaseRadioVariantsProps
+
+type BaseRadioGroupItemsProps<TEntity extends FieldValues = FieldValues> = {
+  field: ControllerRenderProps<TEntity, Path<TEntity>>
+  fieldState: ControllerFieldState
+  formState: UseFormStateReturn<TEntity>
+  visibled?: boolean
+} & SharedVariantProps &
+  BaseRadioVariantsProps
+
+// Components
+
+const BaseRadioGroup = <TEntity extends FieldValues = FieldValues>({
+  name, ...props
+}: BaseRadioProps<TEntity>) => {
+  const { form, rhf } = useBaseFormContext<TEntity>()
+  const { visibleFn } = rhf[name]
+
+  const [visibled, setVisibled] = useState<boolean>(() => {
+    if (visibleFn) {
+      return visibleFn(form, form.getValues())
+    }
+    return true
+  })
+
+  useEffect(() => {
+    if (visibleFn) {
+      setVisibled(visibleFn(form, form.getValues()))
+    }
+  }, [form.watch()])
+
+  return (
+    visibled && (
+      <FormField
+        control={form.control}
+        name={name}
+        render={(params) => (
+          <BaseRadioGroupItem visibled={visibled} {...params} {...props} />
+        )}
+      />
     )
+  )
 }
 
-const BaseRadioGroupItem = <TEntity extends FieldValues = FieldValues, TControlType extends RadioGroupControl = RadioGroupControl>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
-    const { rhf, setAfterDataChanged, form, showLabel } = useBaseFormContext<TEntity>()
+const BaseRadioGroupItem = <TEntity extends FieldValues = FieldValues, TControlType extends RadioGroupControl = RadioGroupControl>( props: BaseRadioGroupItemsProps<TEntity>) => {
+    const {
+      field,
+      fieldState,
+      formState,
+      formVariant,
+      showLabel,
+      radioVariants,
+      visibled = true
+    } = props
+    const { rhf, setAfterDataChanged, form } = useBaseFormContext<TEntity>()
     const { label, disableFn, validate, direction, selectOption } = rhf[field.name] as RHFOptions<TEntity, TControlType>;
     const [directionItem] = useState(() => {
         if (direction == Direction.Column)
@@ -102,13 +150,15 @@ const BaseRadioGroupItem = <TEntity extends FieldValues = FieldValues, TControlT
 
     return (
         <FormItem>
-            {showLabel && <FormLabel>{label}</FormLabel>}
+            <FormLabel className={cn(SharedVariants({ showLabel }))}>
+                {label}
+            </FormLabel>
             <FormControl>
                 <RadioGroup
                     disabled={disabled}
                     onValueChange={handleChange}
                     defaultValue={form.getValues(field.name)?.toString()}
-                    className={cn("flex", directionItem)}
+                    className={cn(BaseRadioVariants({radioVariants}))}
                 >{
                         selectOption.data.map(item => (
                             <FormItem key={getValueString(item)} className="flex items-center space-x-3 space-y-0">
@@ -128,4 +178,4 @@ const BaseRadioGroupItem = <TEntity extends FieldValues = FieldValues, TControlT
     )
 }
 
-export default BaseRadioGroupInput
+export default BaseRadioGroup

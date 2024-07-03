@@ -5,7 +5,7 @@ import {
 } from "react-hook-form"
 import "reflect-metadata"
 import { ControlType } from "../types/control.types"
-import { FieldNames } from "../helper/helper"
+import { FieldNames } from "../helper/type-helpers"
 
 export const RHF_FIELDS = "rhf:fields"
 

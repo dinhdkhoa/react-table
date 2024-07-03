@@ -3,7 +3,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { ChangeEvent, FocusEvent, useEffect, useState } from "react"
@@ -22,22 +22,28 @@ import { cn } from "@/lib/utils"
 import { SharedVariantProps, SharedVariants } from "./shared-variants"
 import { RHFOptions } from "@/core/anotations/rhf-field"
 
+// Variants
 
-const baseTextInputVariants = cva(
-  null,
-  {
-    variants: {
-      variant: {
-        default:
-          "",
-      },
-    },
-    defaultVariants: {
-      variant: "default"
+const baseTextInputVariants = cva(null, {
+  variants: {
+    baseTextInputVariant: {
+      default: ""
     }
+  },
+  defaultVariants: {
+    baseTextInputVariant: "default"
   }
-)
+})
+
+// Types & Interfaces
+
 type BaseTextInputVariantsProps = VariantProps<typeof baseTextInputVariants>
+
+type BaseTextInputProps<TEntity extends FieldValues = FieldValues> =
+  BaseFormFieldPropsType<TEntity> &
+    SharedVariantProps &
+    BaseTextInputVariantsProps
+
 type BaseTextInputItemsProps<TEntity extends FieldValues = FieldValues> = {
   field: ControllerRenderProps<TEntity, Path<TEntity>>
   fieldState: ControllerFieldState
@@ -46,13 +52,12 @@ type BaseTextInputItemsProps<TEntity extends FieldValues = FieldValues> = {
 } & SharedVariantProps &
   BaseTextInputVariantsProps
 
+// Components
+
 const BaseTextInput = <TEntity extends FieldValues = FieldValues>({
   name,
-  variant,
-  labelVariant
-}: BaseFormFieldPropsType<TEntity> &
-  SharedVariantProps &
-  BaseTextInputVariantsProps) => {
+  ...props
+}: BaseTextInputProps<TEntity>) => {
   const { form, rhf } = useBaseFormContext<TEntity>()
   const { visibleFn } = rhf[name]
   const [visibled, setVisibled] = useState<boolean>(() => {
@@ -74,29 +79,34 @@ const BaseTextInput = <TEntity extends FieldValues = FieldValues>({
         control={form.control}
         name={name}
         render={(params) => (
-          <BaseTextInputItem
-            visibled={visibled}
-            {...params}
-            variant={variant}
-            labelVariant={labelVariant}
-          />
+          <BaseTextInputItem visibled={visibled} {...params} {...props} />
         )}
       />
     )
   )
 }
 
-const BaseTextInputItem = <TEntity extends FieldValues = FieldValues, TControlType extends TextControl = TextControl>(props: BaseTextInputItemsProps<TEntity>) => {
+const BaseTextInputItem = <
+  TEntity extends FieldValues = FieldValues,
+  TControlType extends TextControl = TextControl
+>(
+  props: BaseTextInputItemsProps<TEntity>
+) => {
   const {
     field,
     fieldState,
     formState,
-    variant,
-    labelVariant,
+    formVariant,
+    baseTextInputVariant,
+    showLabel,
     visibled = true
   } = props
-  const { rhf, setAfterDataChanged, form, onBlur, showLabel } = useBaseFormContext<TEntity>();
-  const { placeholder, label, disableFn, validate, minLength, maxLength } = rhf[field.name] as RHFOptions<TEntity, TControlType>;
+
+  const { rhf, setAfterDataChanged, form, onBlur } =
+    useBaseFormContext<TEntity>()
+  const { placeholder, label, disableFn, validate, minLength, maxLength } = rhf[
+    field.name
+  ] as RHFOptions<TEntity, TControlType>
 
   const [disabled, setDisabled] = useState<boolean>(() => {
     if (disableFn) {
@@ -113,7 +123,9 @@ const BaseTextInputItem = <TEntity extends FieldValues = FieldValues, TControlTy
 
   useEffect(() => {
     form.register(field.name, {
-      validate: !((disableFn ? disableFn(form, form.getValues()) : false) || !visibled)
+      validate: !(
+        (disableFn ? disableFn(form, form.getValues()) : false) || !visibled
+      )
         ? validate
         : undefined,
       onChange: handleChange,
@@ -136,9 +148,9 @@ const BaseTextInputItem = <TEntity extends FieldValues = FieldValues, TControlTy
 
   return (
     <FormItem>
-      {showLabel && <FormLabel className={cn(SharedVariants({ labelVariant }))}>
+      <FormLabel className={cn(SharedVariants({ showLabel }))}>
         {label}
-      </FormLabel>}
+      </FormLabel>
       <FormControl>
         <Input
           {...field}

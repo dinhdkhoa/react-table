@@ -16,7 +16,6 @@ type BaseFormPropsType<
 > = {
   form: UseFormReturn<TEntity>
   rhf: Record<string, RHFOptions<TEntity>>
-  showLabel: boolean
   children?: React.ReactNode
 } & IBaseEntityFormBehavior<TEntity>
 
@@ -40,13 +39,12 @@ const useBaseFormContext = <
     throw new Error("useBaseFormContext should be used within <BaseForm>")
   }
 
-  const { rhf, form, showLabel, __onChange__, __onBlur__} = baseFormContext
+  const { rhf, form, __onChange__, __onBlur__} = baseFormContext
 
   return {
     setAfterDataChanged: __onChange__,
     form,
     rhf,
-    showLabel,
     onBlur: __onBlur__
   }
 }
@@ -61,7 +59,6 @@ const BaseForm = <
       value={{
         form: props.form as any,
         rhf: props.rhf as any,
-        showLabel: props.showLabel,
         __onChange__: props.__onChange__ as any,
         __onBlur__: props.__onChange__ as any,
       }}

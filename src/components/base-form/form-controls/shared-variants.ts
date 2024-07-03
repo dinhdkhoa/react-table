@@ -5,16 +5,16 @@ export const SharedVariants = cva(
     null,
     {
         variants: {
-            variant: {
+            formVariant: {
                 default:
                     "",
             },
-            labelVariant: {
+            showLabel: {
                 hidden: "hidden",
             }
         },
         defaultVariants: {
-            variant: "default"
+            formVariant: "default"
         }
     }
 )

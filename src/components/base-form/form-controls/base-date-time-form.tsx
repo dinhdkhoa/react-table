@@ -18,86 +18,146 @@ import { cn } from "@/lib/utils"
 import { useBaseFormContext } from ".."
 import { DateControl } from "@/core/types/control.types"
 import { RHFOptions } from "@/core/anotations/rhf-field"
+import { VariantProps, cva } from "class-variance-authority"
+import { SharedVariantProps, SharedVariants } from "./shared-variants"
 
+
+// Variants 
+
+const BaseDateTimeInputVariants = cva(null, {
+    variants: {
+        
+    },
+    defaultVariants: {
+  
+    }
+})
+
+// Types & Interface  
+
+type BaseDateTimeInputVariantsProps = VariantProps<
+  typeof BaseDateTimeInputVariants
+>
+
+type BaseDateTimeInputProps<TEntity extends FieldValues = FieldValues> = BaseFormFieldPropsType<TEntity> &
+  SharedVariantProps &
+  BaseDateTimeInputVariantsProps
+
+type BaseDateTimeInputItemsProps<TEntity extends FieldValues = FieldValues> = {
+  field: ControllerRenderProps<TEntity, Path<TEntity>>
+  fieldState: ControllerFieldState
+  formState: UseFormStateReturn<TEntity>
+  visibled?: boolean
+} & SharedVariantProps &
+  BaseDateTimeInputVariantsProps
+
+// Components
+ 
 const BaseDateTimeInput = <TEntity extends FieldValues = FieldValues>({
-  name
-}: BaseFormFieldPropsType<TEntity>) => {
+  name,
+  ...props
+}: BaseDateTimeInputProps<TEntity>) => {
   const { form, rhf } = useBaseFormContext<TEntity>()
-  const { visibleFn } = rhf[name];
+  const { visibleFn } = rhf[name]
 
   const [visibled, setVisibled] = useState<boolean>(() => {
     if (visibleFn) {
-      return visibleFn(form, form.getValues());
+      return visibleFn(form, form.getValues())
     }
-    return true;
-  });
+    return true
+  })
 
   useEffect(() => {
     if (visibleFn) {
-      setVisibled(visibleFn(form, form.getValues()));
+      setVisibled(visibleFn(form, form.getValues()))
     }
-  }, [form.watch()]);
+  }, [form.watch()])
 
-  return (visibled &&
-    <FormField
-      control={form.control}
-      name={name}
-      render={(params) => <BaseDateTimeInputItem visibled={visibled} {...params} />}
-    />
+  return (
+    visibled && (
+      <FormField
+        control={form.control}
+        name={name}
+        render={(params) => (
+          <BaseDateTimeInputItem visibled={visibled} {...params} {...props} />
+        )}
+      />
+    )
   )
 }
 
-const BaseDateTimeInputItem = <TEntity extends FieldValues = FieldValues, TControlType extends DateControl = DateControl>({ field, fieldState, formState, visibled = true }: { field: ControllerRenderProps<TEntity, Path<TEntity>>, fieldState: ControllerFieldState, formState: UseFormStateReturn<TEntity>, visibled?: boolean }) => {
-  const { rhf, setAfterDataChanged, form, showLabel } = useBaseFormContext<TEntity>()
-  const { placeholder, label, disableFn, validate, includeTime } = rhf[field.name] as RHFOptions<TEntity, TControlType>;
+const BaseDateTimeInputItem = <
+  TEntity extends FieldValues = FieldValues,
+  TControlType extends DateControl = DateControl
+>(
+  props: BaseDateTimeInputItemsProps<TEntity>
+) => {
+
+  const {
+    field,
+    fieldState,
+    formState,
+    formVariant,
+    showLabel,
+    visibled = true
+  } = props
+  const { rhf, setAfterDataChanged, form } =
+    useBaseFormContext<TEntity>()
+  const { placeholder, label, disableFn, validate, includeTime } = rhf[
+    field.name
+  ] as RHFOptions<TEntity, TControlType>
 
   const [disabled, setDisabled] = useState<boolean>(() => {
     if (disableFn) {
-      return disableFn(form, form.getValues());
+      return disableFn(form, form.getValues())
     }
-    return false;
-  });
+    return false
+  })
 
   useEffect(() => {
     if (disableFn) {
-      setDisabled(disableFn(form, form.getValues()));
+      setDisabled(disableFn(form, form.getValues()))
     }
-  }, [form.watch()]);
+  }, [form.watch()])
 
   useEffect(() => {
     form.register(field.name, {
-      validate: !((disableFn ? disableFn(form, form.getValues()) : false) || !visibled) ? validate : undefined
+      validate: !(
+        (disableFn ? disableFn(form, form.getValues()) : false) || !visibled
+      )
+        ? validate
+        : undefined
     })
     if (disabled) {
       form.clearErrors(field.name)
     }
   }, [disableFn, disabled, field.name, form, validate, visibled])
 
-
   const handleChange = (e: Date | undefined) => {
-    form.setValue(field.name, e as any);
+    form.setValue(field.name, e as any)
     if (setAfterDataChanged)
       setAfterDataChanged(form, field.name, e, form.getValues())
   }
 
   const display = () => {
-    const _value = form.getValues(field.name);
-    if(_value){
+    const _value = form.getValues(field.name)
+    if (_value) {
       if ((_value as any) instanceof Date) {
         return _value?.toLocaleString(undefined, {
-          dateStyle: 'medium',
-          timeStyle: 'short'
-      })
+          dateStyle: "medium",
+          timeStyle: "short"
+        })
+      }
     }
-      
-    }
-    
-    return placeholder;
+
+    return placeholder
   }
 
   return (
     <FormItem>
-      {showLabel && <FormLabel>{label}</FormLabel>}
+      <FormLabel className={cn(SharedVariants({ showLabel }))}>
+        {label}
+      </FormLabel>
       <FormControl>
         <Popover>
           <PopoverTrigger asChild>
@@ -114,7 +174,6 @@ const BaseDateTimeInputItem = <TEntity extends FieldValues = FieldValues, TContr
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0">
-
             <Calendar
               mode="single"
               selected={form.getValues(field.name)}
@@ -122,12 +181,14 @@ const BaseDateTimeInputItem = <TEntity extends FieldValues = FieldValues, TContr
               initialFocus
             />
 
-            {includeTime && <div className="p-3 border-t border-border">
-              <TimePickerDemo
-                setDate={handleChange}
-                date={form.getValues(field.name)}
-              />
-            </div>}
+            {includeTime && (
+              <div className="p-3 border-t border-border">
+                <TimePickerDemo
+                  setDate={handleChange}
+                  date={form.getValues(field.name)}
+                />
+              </div>
+            )}
           </PopoverContent>
         </Popover>
       </FormControl>
