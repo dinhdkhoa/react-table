@@ -1,9 +1,10 @@
-import { BaseData } from "@/core/classes/base-data";
+import { BaseData, IBaseData } from "@/core/classes/base-data";
 import { ConvertResponseModelToEntityFieldsFunc, EntityFields } from "@/core/helper/helper";
 import { UserLoginResponseModel } from "@/data/remote/enode-service/models/responses/login-response.model";
+import { Guid } from "guid-typescript";
 
 
-export class UserEntity extends BaseData {
+export interface UserEntity extends IBaseData<UserEntity> {
     storerKey?: string;
     userName?: string;
     whseid?: string;
@@ -22,6 +23,7 @@ export class UserEntity extends BaseData {
 
 export const convertUserEntityFn: ConvertResponseModelToEntityFieldsFunc<UserLoginResponseModel, UserEntity> = (res) => {
     const entityFields: EntityFields<UserEntity> = {
+        __id__: Guid.create().toString(),
         storerKey: res.storerKey,
         userName: res.userName,
         whseid: res.whseid,

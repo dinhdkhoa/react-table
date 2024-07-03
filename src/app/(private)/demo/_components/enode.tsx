@@ -90,21 +90,21 @@ export default function ENode() {
 
     tableConfig.cols.push(
         {
-            id: 'firstName',
+            // id: 'firstName',
             accessorKey: 'firstName',
             meta: {
                 editable: true
             }
         },
         {
-            id: 'lastName',
+            // id: 'lastName',
             accessorKey: 'lastName',
             meta: {
                 editable: true
             }
         },
         {
-            id: 'age',
+            // id: 'age',
             accessorKey: 'age',
             meta: {
                 formatColumnType: FormatColumnType.Decimal,
@@ -112,7 +112,7 @@ export default function ENode() {
             }
         },
         {
-            id: 'visits',
+            // id: 'visits',
             accessorKey: 'visits',
             meta: {
                 formatColumnType: FormatColumnType.Decimal,
@@ -120,7 +120,7 @@ export default function ENode() {
             }
         },
         {
-            id: 'status',
+            // id: 'status',
             accessorKey: 'status',
             maxSize: 400,
             minSize: 400,
@@ -132,7 +132,7 @@ export default function ENode() {
             }
         },
         {
-            id: 'date',
+            // id: 'date',
             accessorKey: 'date',
             meta: {
                 formatColumnType: FormatColumnType.DateTime,
@@ -140,7 +140,7 @@ export default function ENode() {
             }
         },
         {
-            id: 'active',
+            // id: 'active',
             accessorKey: 'active',
             meta: {
                 formatColumnType: FormatColumnType.Boolean,

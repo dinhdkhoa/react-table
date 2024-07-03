@@ -60,25 +60,23 @@ export function BaseTableHeader<T extends IBaseData<T>>(props: {
                     {
                         header.isPlaceholder ?
                             null :
-                            (column.getCanSort() ? (
+                            (
                                 <Button
                                     variant="ghost"
-                                    onClick={column.getToggleSortingHandler()}
+                                    className="capitalize"
+                                    onClick={(_) => { if (column.getCanSort()) column.getToggleSortingHandler() }}
                                 >
                                     {flexRender(
                                         header.column.columnDef.header,
                                         header.getContext()
                                     )}
 
-                                    {TableSortLabel({
+                                    {column.getCanSort() && TableSortLabel({
                                         active: column.getIsSorted() !== false,
                                         direction: (column.getIsSorted() == false ? firstSort : column.getIsSorted() as SortDirection)
                                     })}
                                 </Button>
-                            ) : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                            ))
+                            )
                     }
                     {header.column.getCanFilter() ? (
                         <div>
@@ -115,7 +113,7 @@ export function BaseTableFormRow<T extends IBaseEntityForm<T>>(props: {
                     {props.row.getVisibleCells().map(cell => (
                         <TableCell key={cell.id}
                             style={{ ...getCommonPinningStyles(cell.column) }}
-                            className={cn("border-r last:border-r-0", cell.column.getIsPinned() ? "bg-background" : "")}
+                            className={cn("border-r last:border-r-0", cell.column.getIsPinned() ? "bg-background" : "", "break-all")}
                         >
                             {buildCell(cell)}
                         </TableCell>
@@ -144,7 +142,7 @@ export function BaseTableRow<T extends IBaseData<T>>(props: {
             {props.row.getVisibleCells().map(cell => (
                 <TableCell key={cell.id}
                     style={{ ...getCommonPinningStyles(cell.column) }}
-                    className={cn("border-r last:border-r-0", cell.column.getIsPinned() ? "bg-background" : "")}
+                    className={cn("border-r last:border-r-0", cell.column.getIsPinned() ? "bg-background" : "", "break-all")}
                 >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </TableCell>

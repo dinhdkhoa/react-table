@@ -22,6 +22,9 @@ export function DefaultCell<TData extends IBaseData<TData>>(cellContext: CellCon
         if (value instanceof Date) {
             return DateTimeCell(cellContext);
         }
+        if (type === "object") {
+            return JSON.stringify(Value<TData, any>(cellContext) || '');
+        }
 
         return Value<TData, any>(cellContext) || '';
     }
@@ -51,7 +54,7 @@ export function StringCell<TData extends IBaseData<TData>>(
     cellContext: CellContext<TData, string | null | undefined>) {
     const value = Value<TData, string | null | undefined>(cellContext);
 
-    return value || '';
+    return  value || '';
 }
 
 export function IntegerCell<TData extends IBaseData<TData>>(
@@ -97,10 +100,10 @@ export function BooleanCell<TData extends IBaseData<TData>>(
 export function StaticComboboxCell<TData extends IBaseData<TData>>(
     cellContext: CellContext<TData, string | number | null | undefined>) {
     const { staticSelectOption } = cellContext.column.columnDef.meta ?? {}
-    if(staticSelectOption){
+    if (staticSelectOption) {
         const value = Value<TData, string | number | null | undefined>(cellContext);
         const findEntityCbo = staticSelectOption.data.find(w => staticSelectOption.value(w) == value)
-        if(!value && !findEntityCbo) return '';
+        if (!value && !findEntityCbo) return '';
         if (findEntityCbo) { return staticSelectOption.display(findEntityCbo) }
         return 'N/A';
     }
