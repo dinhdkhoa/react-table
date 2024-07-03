@@ -36,6 +36,7 @@ import { BaseTableConfig, rowIdsEditingChangeEvent } from './base-table-config'
 import TableHeaderActions from './base-table-header-action'
 import { BaseTableFooter, BaseTableFormRow, BaseTableHeader, BaseTableRow } from './base-table-row'
 import BaseTablePagination from './base-table-pagination'
+import { BaseTableNodata } from './base-table-nodata';
 
 export const rowActionId = 'rowAction';
 export const rowSelectionId = 'rowSelection';
@@ -309,9 +310,15 @@ export function BaseTable<T extends IBaseData<T>>(props: {
 
                     </TableHeader>
                     <TableBody className="border-r-0">
-                        {props.tableConfig.table.getRowModel().rows.map(row => (
-                            <BaseTableRow key={row.id} row={row} tableConfig={props.tableConfig} />
-                        ))}
+                        {props.tableConfig.table.getRowModel().rows.length === 0
+                            ? <BaseTableNodata colSpan={props.tableConfig.table.getHeaderGroups.length} />
+                            : 
+                            props.tableConfig.table.getRowModel().rows.map(row => (
+                                <BaseTableRow key={row.id} row={row} tableConfig={props.tableConfig} />
+                            ))
+                        }
+
+
                     </TableBody>
                     <TableFooter>
                         {props.tableConfig.table.getFooterGroups().map(footerGroup => (
@@ -319,7 +326,7 @@ export function BaseTable<T extends IBaseData<T>>(props: {
                         ))}
                     </TableFooter>
                 </ShadcnTable>
-                <BaseTablePagination table={props.tableConfig.table} />
+                <div className='p-4'><BaseTablePagination table={props.tableConfig.table} /></div>
             </div>
         </div>
     )

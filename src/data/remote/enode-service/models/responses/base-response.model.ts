@@ -1,3 +1,2 @@
-export interface BaseResponse<TEntity>{
-    toEntity() : TEntity;
+export interface BaseResponse<TEntity> {
 }

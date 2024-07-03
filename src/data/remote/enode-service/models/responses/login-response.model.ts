@@ -1,7 +1,7 @@
 import { UserEntity } from "@/domain/entities/user-entity";
 import { BaseResponse } from "./base-response.model";
 
-export class UserLoginResponseModel implements BaseResponse<UserEntity> {
+export interface UserLoginResponseModel extends BaseResponse<UserEntity> {
     storerKey?: string;
     userName?: string;
     whseid?: string;
@@ -15,10 +15,5 @@ export class UserLoginResponseModel implements BaseResponse<UserEntity> {
     name?: string;
     email?: string;
 
-    toEntity(): UserEntity {
-        const entity = new UserEntity();
-        Object.assign(entity, this);
-
-        return entity;
-    }
+    
 }

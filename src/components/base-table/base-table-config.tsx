@@ -1,6 +1,6 @@
 import { IBaseData, assignValue, clonePropToKeepData, getId } from "@/core/classes/base-data";
 import { CheckedState } from "@radix-ui/react-checkbox";
-import { ColumnDef, Row, SortingFn, Table, createColumnHelper } from "@tanstack/react-table";
+import { AccessorKeyColumnDef, ColumnDef, Row, SortingFn, Table, createColumnHelper } from "@tanstack/react-table";
 import { FormatColumnType, RowSelectType } from "./enums";
 import { Delete, List, Pencil, Save, X } from "lucide-react";
 import { filterCheckbox, filterNumber, filterOnDate, filterStaticCombobox } from "./base-table-filter";
@@ -55,7 +55,7 @@ export class BaseTableConfig<T extends IBaseData<T>> {
     //
     table: Table<T> | undefined;
     columnHelper = createColumnHelper<T>()
-    cols: ColumnDef<T>[] = [];
+    cols: AccessorKeyColumnDef<T, any>[] = [];
     colsFixLeft: string[] = [];
     colsFixRight: string[] = [];
 

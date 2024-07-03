@@ -21,19 +21,19 @@ export const UserService: UserServiceType<UserEntity, UserLoginResponseModel> = 
 
 ///
 ///Ví dụ UserService2 này chỉ dùng cho "use client", không phải "server action"
-export class UserService2 extends BaseService {
-  constructor(path?: string, apiVersion?: number) {
-    super(path, apiVersion);
-  }
+// export class UserService2 extends BaseService {
+//   constructor(path?: string, apiVersion?: number) {
+//     super(path, apiVersion);
+//   }
 
-  async login(request: LoginRequestModel) {
-    const handleState = new HandleState<UserEntity, UserLoginResponseModel>(UserLoginResponseModel);
-    try {
-      let response = await this.post<UserLoginResponseModel>({ data: request, ...loginRequestCode});
-      return handleState.byResponse(response);
-    } catch (error) {
-      console.log(error);
-    }
-    return handleState;
-  }
-}
+//   async login(request: LoginRequestModel) {
+//     const handleState = new HandleState<UserEntity, UserLoginResponseModel>(UserLoginResponseModel);
+//     try {
+//       let response = await this.post<UserLoginResponseModel>({ data: request, ...loginRequestCode});
+//       return handleState.byResponse(response);
+//     } catch (error) {
+//       console.log(error);
+//     }
+//     return handleState;
+//   }
+// }
