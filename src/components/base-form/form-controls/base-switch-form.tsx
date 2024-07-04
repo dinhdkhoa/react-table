@@ -1,49 +1,36 @@
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from "@/components/ui/form"
-import { useEffect, useState } from "react"
-import {
-  ControllerFieldState,
-  ControllerRenderProps,
-  FieldValues,
-  Path,
-  UseFormStateReturn
-} from "react-hook-form"
-import { BaseFormFieldPropsType } from "./types"
-import { Switch } from "../../ui/switch"
-import { useBaseFormContext } from ".."
-import { SwitchControl } from "@/core/types/control.types"
-import { cn } from "@/lib/utils"
-import { VariantProps, cva } from "class-variance-authority"
-import { SharedVariantProps, SharedVariants } from "./shared-variants"
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { useEffect, useState } from 'react'
+import { ControllerFieldState, ControllerRenderProps, FieldValues, Path, UseFormStateReturn } from 'react-hook-form'
+import { BaseFormFieldPropsType } from './types'
+import { Switch } from '../../ui/switch'
+import { useBaseFormContext } from '..'
+import { SwitchControl } from '@/core/types/control.types'
+import { cn } from '@/lib/utils'
+import { VariantProps, cva } from 'class-variance-authority'
+import { SharedVariantProps, SharedVariants } from './shared-variants'
 
 // Variants
-const sideLabelDefault =
-  "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+const sideLabelDefault = 'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
 
 const BaseSwitchVariants = cva(null, {
   variants: {
     switchVariants: {
-      "top-label": "",
-      "side-label": "",
-      "table-item": "place-content-center"
+      'top-label': '',
+      'side-label': '',
+      'table-item': 'place-content-center'
     },
     sideLabel: {
-      "label-left": sideLabelDefault,
-      "label-right": sideLabelDefault + " flex-row-reverse"
+      'label-left': sideLabelDefault,
+      'label-right': sideLabelDefault + ' flex-row-reverse'
     },
     topLabel: {
-      default: ""
+      default: ''
     }
   },
   defaultVariants: {
-    switchVariants: "top-label",
-    sideLabel: "label-left",
-    topLabel: "default"
+    switchVariants: 'top-label',
+    sideLabel: 'label-left',
+    topLabel: 'default'
   }
 })
 
@@ -51,8 +38,9 @@ const BaseSwitchVariants = cva(null, {
 
 type BaseSwitchVariantsProps = VariantProps<typeof BaseSwitchVariants>
 
-type BaseSwitchProps<TEntity extends FieldValues = FieldValues> =
-  BaseFormFieldPropsType<TEntity> & SharedVariantProps & BaseSwitchVariantsProps
+type BaseSwitchProps<TEntity extends FieldValues = FieldValues> = BaseFormFieldPropsType<TEntity> &
+  SharedVariantProps &
+  BaseSwitchVariantsProps
 
 type BaseSwitchItemsProps<TEntity extends FieldValues = FieldValues> = {
   field: ControllerRenderProps<TEntity, Path<TEntity>>
@@ -63,10 +51,7 @@ type BaseSwitchItemsProps<TEntity extends FieldValues = FieldValues> = {
   BaseSwitchVariantsProps
 
 // Components
-const BaseSwitch = <TEntity extends FieldValues = FieldValues>({
-  name,
-  ...props
-}: BaseSwitchProps<TEntity>) => {
+const BaseSwitch = <TEntity extends FieldValues = FieldValues>({ name, ...props }: BaseSwitchProps<TEntity>) => {
   const { form, rhf } = useBaseFormContext<TEntity>()
   const { visibleFn } = rhf[name]
 
@@ -88,18 +73,13 @@ const BaseSwitch = <TEntity extends FieldValues = FieldValues>({
       <FormField
         control={form.control}
         name={name}
-        render={(params) => (
-          <BaseSwitchItem visibled={visibled} {...params} {...props} />
-        )}
+        render={(params) => <BaseSwitchItem visibled={visibled} {...params} {...props} />}
       />
     )
   )
 }
 
-const BaseSwitchItem = <
-  TEntity extends FieldValues = FieldValues,
-  TControlType extends SwitchControl = SwitchControl
->(
+const BaseSwitchItem = <TEntity extends FieldValues = FieldValues, TControlType extends SwitchControl = SwitchControl>(
   props: BaseSwitchItemsProps<TEntity>
 ) => {
   const {
@@ -131,11 +111,7 @@ const BaseSwitchItem = <
 
   useEffect(() => {
     form.register(field.name, {
-      validate: !(
-        (disableFn ? disableFn(form, form.getValues()) : false) || !visibled
-      )
-        ? validate
-        : undefined
+      validate: !((disableFn ? disableFn(form, form.getValues()) : false) || !visibled) ? validate : undefined
     })
     if (disabled) {
       form.clearErrors(field.name)
@@ -144,43 +120,22 @@ const BaseSwitchItem = <
 
   const handleChange = (e: boolean) => {
     form.setValue(field.name, e as any)
-    if (setAfterDataChanged)
-      setAfterDataChanged(form, field.name, e, form.getValues())
+    if (setAfterDataChanged) setAfterDataChanged(form, field.name, e, form.getValues())
   }
 
-  const showTopLabel = switchVariants == "top-label"
+  const showTopLabel = switchVariants == 'top-label'
   return (
     <FormItem>
       {showTopLabel && (
-        <FormLabel
-          className={cn(
-            SharedVariants({ showLabel }),
-            BaseSwitchVariants({ topLabel })
-          )}
-        >
-          {label}
-        </FormLabel>
+        <FormLabel className={cn(SharedVariants({ showLabel }), BaseSwitchVariants({ topLabel }))}>{label}</FormLabel>
       )}
       <FormControl>
-        <div
-          className={cn(
-            "flex items-center space-x-2",
-            BaseSwitchVariants({ switchVariants })
-          )}
-        >
-          <div
-            className={cn(
-              "flex items-center gap-2 ",
-              BaseSwitchVariants({ switchVariants, sideLabel })
-            )}
-          >
+        <div className={cn('flex items-center space-x-2', BaseSwitchVariants({ switchVariants }))}>
+          <div className={cn('flex items-center gap-2 ', BaseSwitchVariants({ switchVariants, sideLabel }))}>
             {!showTopLabel && (
               <label
                 htmlFor={field.name}
-                className={cn(
-                  SharedVariants({ showLabel }),
-                  BaseSwitchVariants({ sideLabel })
-                )}
+                className={cn(SharedVariants({ showLabel }), BaseSwitchVariants({ sideLabel }))}
               >
                 {label}
               </label>

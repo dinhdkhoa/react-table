@@ -1,27 +1,20 @@
-"use client"
+'use client'
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
 
-import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { handleApiError } from "@/lib/utils"
-import { CreateProductBody, CreateProductBodyType, ProductDetailType } from "@/schemaValidations/product.schema"
-import Image from "next/image"
-import { useRef, useState } from "react"
-import { toast } from "sonner"
-import addProductsAPI from "../products.api"
-import { useRouter } from "next/navigation"
+import { Button } from '@/components/ui/button'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { handleApiError } from '@/lib/utils'
+import { CreateProductBody, CreateProductBodyType, ProductDetailType } from '@/schemaValidations/product.schema'
+import Image from 'next/image'
+import { useRef, useState } from 'react'
+import { toast } from 'sonner'
+import addProductsAPI from '../products.api'
+import { useRouter } from 'next/navigation'
 
-export function ProductForm({product}: { product?: ProductDetailType }) {
+export function ProductForm({ product }: { product?: ProductDetailType }) {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [file, setFile] = useState<File | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
@@ -29,17 +22,17 @@ export function ProductForm({product}: { product?: ProductDetailType }) {
   const form = useForm<CreateProductBodyType>({
     resolver: zodResolver(CreateProductBody),
     defaultValues: {
-      name: product?.name ?? "",
+      name: product?.name ?? '',
       price: product?.price ?? 0,
-      description: product?.description ?? "",
-      image: product?.image ??  ""
+      description: product?.description ?? '',
+      image: product?.image ?? ''
     }
   })
   const image = form.watch('image')
   // 2. Define a submit handler.
   async function onSubmit(values: CreateProductBodyType) {
     if (isLoading) return
-    if(product){
+    if (product) {
       await updateProduct(values)
     } else {
       await addProduct(values)
@@ -48,22 +41,22 @@ export function ProductForm({product}: { product?: ProductDetailType }) {
     router.refresh()
   }
 
-  const updateProduct =  async (values: CreateProductBodyType) => {
-    if(!product) return
+  const updateProduct = async (values: CreateProductBodyType) => {
+    if (!product) return
     setIsLoading(true)
     const _values = {
       ...values
     }
     try {
-      if(file){
+      if (file) {
         const formData = new FormData()
-        formData.append("file", file as Blob)
+        formData.append('file', file as Blob)
         const resp = await addProductsAPI.uploadImage(formData)
         toast.success(resp.payload.message)
         _values.image = resp.payload.data
       }
-      const updateProduct = await addProductsAPI.updateProduct(product?.id,{
-        ..._values,
+      const updateProduct = await addProductsAPI.updateProduct(product?.id, {
+        ..._values
       })
       toast.success(updateProduct.payload.message)
     } catch (error) {
@@ -76,7 +69,7 @@ export function ProductForm({product}: { product?: ProductDetailType }) {
     setIsLoading(true)
     try {
       const formData = new FormData()
-      formData.append("file", file as Blob)
+      formData.append('file', file as Blob)
       const resp = await addProductsAPI.uploadImage(formData)
       toast.success(resp.payload.message)
       const createProduct = await addProductsAPI.add({
@@ -93,18 +86,15 @@ export function ProductForm({product}: { product?: ProductDetailType }) {
   }
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-2 w-full max-w-[400px]"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-2 w-full max-w-[400px]'>
         <FormField
           control={form.control}
-          name="name"
+          name='name'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Name" {...field} />
+                <Input placeholder='Name' {...field} />
               </FormControl>
 
               <FormMessage />
@@ -113,12 +103,12 @@ export function ProductForm({product}: { product?: ProductDetailType }) {
         />
         <FormField
           control={form.control}
-          name="price"
+          name='price'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Price</FormLabel>
               <FormControl>
-                <Input placeholder="Price" type="number" {...field} />
+                <Input placeholder='Price' type='number' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -127,12 +117,12 @@ export function ProductForm({product}: { product?: ProductDetailType }) {
 
         <FormField
           control={form.control}
-          name="description"
+          name='description'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Input placeholder="Description" {...field} />
+                <Input placeholder='Description' {...field} />
               </FormControl>
 
               <FormMessage />
@@ -141,18 +131,18 @@ export function ProductForm({product}: { product?: ProductDetailType }) {
         />
         <FormField
           control={form.control}
-          name="image"
+          name='image'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Image</FormLabel>
               <FormControl>
                 <Input
-                  type="file"
+                  type='file'
                   ref={inputRef}
-                  accept="image/*"
+                  accept='image/*'
                   onClick={() => {
                     if (inputRef.current) {
-                      inputRef.current.value = ""
+                      inputRef.current.value = ''
                     }
                   }}
                   onChange={(event) => {
@@ -160,7 +150,7 @@ export function ProductForm({product}: { product?: ProductDetailType }) {
                     if (file) {
                       inputRef
                       setFile(file)
-                      field.onChange("http://localhost:3000/" + file.name)
+                      field.onChange('http://localhost:3000/' + file.name)
                     }
                   }}
                 />
@@ -176,18 +166,18 @@ export function ProductForm({product}: { product?: ProductDetailType }) {
               src={file ? URL.createObjectURL(file) : image}
               width={128}
               height={128}
-              alt="Product Image"
-              className="w-32 h-32 object-cover"
+              alt='Product Image'
+              className='w-32 h-32 object-cover'
             />
             <Button
-              type="button"
-              variant={"destructive"}
-              size={"sm"}
+              type='button'
+              variant={'destructive'}
+              size={'sm'}
               onClick={() => {
                 setFile(null)
-                form.setValue("image", "")
+                form.setValue('image', '')
                 if (inputRef.current) {
-                  inputRef.current.value = ""
+                  inputRef.current.value = ''
                 }
               }}
             >
@@ -195,8 +185,8 @@ export function ProductForm({product}: { product?: ProductDetailType }) {
             </Button>
           </>
         )}
-        <Button type="submit" className="!mt-8 w-full" disabled={isLoading}>
-          {product ? "Update Product" : "Add Product"}
+        <Button type='submit' className='!mt-8 w-full' disabled={isLoading}>
+          {product ? 'Update Product' : 'Add Product'}
         </Button>
       </form>
     </Form>

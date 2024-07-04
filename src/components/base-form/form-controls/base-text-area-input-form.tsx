@@ -1,40 +1,28 @@
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from "@/components/ui/form"
-import { ChangeEvent, FocusEvent, useEffect, useState } from "react"
-import {
-  ControllerFieldState,
-  ControllerRenderProps,
-  FieldValues,
-  Path,
-  UseFormStateReturn
-} from "react-hook-form"
-import { BaseFormFieldPropsType } from "./types"
-import { cn } from "@/lib/utils"
-import { Textarea } from "../../ui/textarea"
-import { useBaseFormContext } from ".."
-import { TextAreaControl } from "@/core/types/control.types"
-import { RHFOptions } from "@/core/anotations/rhf-field"
-import { VariantProps, cva } from "class-variance-authority"
-import { SharedVariantProps, SharedVariants } from "./shared-variants"
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { ChangeEvent, FocusEvent, useEffect, useState } from 'react'
+import { ControllerFieldState, ControllerRenderProps, FieldValues, Path, UseFormStateReturn } from 'react-hook-form'
+import { BaseFormFieldPropsType } from './types'
+import { cn } from '@/lib/utils'
+import { Textarea } from '../../ui/textarea'
+import { useBaseFormContext } from '..'
+import { TextAreaControl } from '@/core/types/control.types'
+import { RHFOptions } from '@/core/anotations/rhf-field'
+import { VariantProps, cva } from 'class-variance-authority'
+import { SharedVariantProps, SharedVariants } from './shared-variants'
 
 // Variants
 
 const baseTextAreaVariants = cva(null, {
   variants: {
     baseTextAreaVariant: {
-      default: ""
+      default: ''
     },
     resizeable: {
-      none: "resize-none"
+      none: 'resize-none'
     }
   },
   defaultVariants: {
-    baseTextAreaVariant: "default"
+    baseTextAreaVariant: 'default'
   }
 })
 
@@ -42,10 +30,9 @@ const baseTextAreaVariants = cva(null, {
 
 type BaseTextAreaVariantsProps = VariantProps<typeof baseTextAreaVariants>
 
-type BaseTextAreaProps<TEntity extends FieldValues = FieldValues> =
-  BaseFormFieldPropsType<TEntity> &
-    SharedVariantProps &
-    BaseTextAreaVariantsProps
+type BaseTextAreaProps<TEntity extends FieldValues = FieldValues> = BaseFormFieldPropsType<TEntity> &
+  SharedVariantProps &
+  BaseTextAreaVariantsProps
 
 type BaseTextAreaItemsProps<TEntity extends FieldValues = FieldValues> = {
   field: ControllerRenderProps<TEntity, Path<TEntity>>
@@ -57,10 +44,7 @@ type BaseTextAreaItemsProps<TEntity extends FieldValues = FieldValues> = {
 
 // Components
 
-const BaseTextArea = <TEntity extends FieldValues = FieldValues>({
-  name,
-  ...props
-}: BaseTextAreaProps<TEntity>) => {
+const BaseTextArea = <TEntity extends FieldValues = FieldValues>({ name, ...props }: BaseTextAreaProps<TEntity>) => {
   const { form, rhf } = useBaseFormContext<TEntity>()
   const { visibleFn } = rhf[name]
 
@@ -82,9 +66,7 @@ const BaseTextArea = <TEntity extends FieldValues = FieldValues>({
       <FormField
         control={form.control}
         name={name}
-        render={(params) => (
-          <BaseTextAreaItem visibled={visibled} {...params} {...props} />
-        )}
+        render={(params) => <BaseTextAreaItem visibled={visibled} {...params} {...props} />}
       />
     )
   )
@@ -106,17 +88,11 @@ const BaseTextAreaItem = <
     showLabel,
     visibled = true
   } = props
-  const { rhf, setAfterDataChanged, form, onBlur } =
-    useBaseFormContext<TEntity>()
-  const {
-    placeholder,
-    label,
-    disableFn,
-    validate,
-    minLength,
-    maxLength,
-    resize
-  } = rhf[field.name] as RHFOptions<TEntity, TControlType>
+  const { rhf, setAfterDataChanged, form, onBlur } = useBaseFormContext<TEntity>()
+  const { placeholder, label, disableFn, validate, minLength, maxLength, resize } = rhf[field.name] as RHFOptions<
+    TEntity,
+    TControlType
+  >
 
   const [disabled, setDisabled] = useState<boolean>(() => {
     if (disableFn) {
@@ -133,11 +109,7 @@ const BaseTextAreaItem = <
 
   useEffect(() => {
     form.register(field.name, {
-      validate: !(
-        (disableFn ? disableFn(form, form.getValues()) : false) || !visibled
-      )
-        ? validate
-        : undefined,
+      validate: !((disableFn ? disableFn(form, form.getValues()) : false) || !visibled) ? validate : undefined,
       onChange: handleChange,
       onBlur: handleBlur
     })
@@ -147,8 +119,7 @@ const BaseTextAreaItem = <
   }, [disableFn, disabled, field.name, form, validate, visibled])
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (setAfterDataChanged)
-      setAfterDataChanged(form, field.name, e.target.value, form.getValues())
+    if (setAfterDataChanged) setAfterDataChanged(form, field.name, e.target.value, form.getValues())
   }
   const handleBlur = (e: FocusEvent<HTMLInputElement, Element>) => {
     if (onBlur) {
@@ -158,9 +129,7 @@ const BaseTextAreaItem = <
 
   return (
     <FormItem>
-      <FormLabel className={cn(SharedVariants({ showLabel }))}>
-        {label}
-      </FormLabel>
+      <FormLabel className={cn(SharedVariants({ showLabel }))}>{label}</FormLabel>
       <FormControl>
         <Textarea
           {...field}

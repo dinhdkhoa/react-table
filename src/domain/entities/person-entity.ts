@@ -1,103 +1,102 @@
-import { RHF, RHFOptions } from "@/core/anotations/rhf-field";
-import { BaseEntityForm, IBaseEntityForm, onChangeFun } from "@/core/classes/base-entity-form";
-import { BasicItem } from "@/core/classes/basic-item";
-import { Control, SelectOption, StaticComboboxControl } from "@/core/types/control.types";
-import { UseFormReturn } from "react-hook-form";
+import { RHF, RHFOptions } from '@/core/anotations/rhf-field'
+import { BaseEntityForm, IBaseEntityForm, onChangeFun } from '@/core/classes/base-entity-form'
+import { BasicItem } from '@/core/classes/basic-item'
+import { Control, SelectOption, StaticComboboxControl } from '@/core/types/control.types'
+import { UseFormReturn } from 'react-hook-form'
 
 const statusData: BasicItem<string>[] = [
-    {
-        value: "InRelationship",
-        text: "In Relationship",
-    },
-    {
-        value: "Single",
-        text: "Single",
-    },
-    {
-        value: "Complicated",
-        text: "Complicated",
-    }
+  {
+    value: 'InRelationship',
+    text: 'In Relationship'
+  },
+  {
+    value: 'Single',
+    text: 'Single'
+  },
+  {
+    value: 'Complicated',
+    text: 'Complicated'
+  }
 ]
 
 export const statusSelectOption: SelectOption<BasicItem<string>, string> = {
-    data: statusData,
-    value: (data) => data.value ?? '',
-    valueString: (data) => (data.value ?? ''),
-    display: (data) => data.text ?? '',
+  data: statusData,
+  value: (data) => data.value ?? '',
+  valueString: (data) => data.value ?? '',
+  display: (data) => data.text ?? ''
 }
 
 export const PersonEntityFields: RHFOptions<PersonEntity>[] = [
-    {
-        fieldName: "firstName",
-        label: "First Name",
-        type: Control.Text,
-    },
-    {
-        fieldName: "lastName",
-        label: "Last Name",
-        type: Control.Text
-    },
-    {
-        fieldName: "age",
-        label: "Age",
-        type: Control.Number,
-        validate: {
-            required: (value, entity) => {
-                if (value > 10)
-                    return true;
-                return 'value must be larger than 10';
-            }
-        },
-    },
-    {
-        fieldName: "visits",
-        label: "Visits",
-        type: Control.Number,
-        disableFn: (form: UseFormReturn<PersonEntity>, entity: PersonEntity) => {
-            return entity.visits == 50;
-        }
-    },
-    {
-        fieldName: "status",
-        label: "Status",
-        type: Control.StaticCombobox,
-        selectOption: statusSelectOption,
-        filterSelectOption: (item: BasicItem<string>, entity: PersonEntity) => {
-            if (entity.firstName == 'tandy' || entity.firstName == 'hao') return false;
-            return true;
-        }
-    },
-    {
-        fieldName: "progress",
-        label: "Progress",
-        type: Control.Number
-    },
-    {
-        fieldName: "date",
-        label: "Date",
-        type: Control.Date,
-        includeTime: true,
-    },
-    {
-        fieldName: 'active',
-        label: "Active",
-        type: Control.Checkbox,
+  {
+    fieldName: 'firstName',
+    label: 'First Name',
+    type: Control.Text
+  },
+  {
+    fieldName: 'lastName',
+    label: 'Last Name',
+    type: Control.Text
+  },
+  {
+    fieldName: 'age',
+    label: 'Age',
+    type: Control.Number,
+    validate: {
+      required: (value, entity) => {
+        if (value > 10) return true
+        return 'value must be larger than 10'
+      }
     }
+  },
+  {
+    fieldName: 'visits',
+    label: 'Visits',
+    type: Control.Number,
+    disableFn: (form: UseFormReturn<PersonEntity>, entity: PersonEntity) => {
+      return entity.visits == 50
+    }
+  },
+  {
+    fieldName: 'status',
+    label: 'Status',
+    type: Control.StaticCombobox,
+    selectOption: statusSelectOption,
+    filterSelectOption: (item: BasicItem<string>, entity: PersonEntity) => {
+      if (entity.firstName == 'tandy' || entity.firstName == 'hao') return false
+      return true
+    }
+  },
+  {
+    fieldName: 'progress',
+    label: 'Progress',
+    type: Control.Number
+  },
+  {
+    fieldName: 'date',
+    label: 'Date',
+    type: Control.Date,
+    includeTime: true
+  },
+  {
+    fieldName: 'active',
+    label: 'Active',
+    type: Control.Checkbox
+  }
 ]
 
 export interface PersonEntity extends IBaseEntityForm<PersonEntity> {
-    firstName?: string;
-    lastName?: string;
-    age?: number;
-    visits?: number;
-    status?: string;
-    progress?: number;
-    date?: Date;
-    active?: boolean;
+  firstName?: string
+  lastName?: string
+  age?: number
+  visits?: number
+  status?: string
+  progress?: number
+  date?: Date
+  active?: boolean
 }
 
 export const PersonEntityOnChange: onChangeFun<PersonEntity> = (form, fieldName, value, formGetValues) => {
-    console.log('PersonEntityOnChange', formGetValues);
+  console.log('PersonEntityOnChange', formGetValues)
 }
 
 // export class PersonEntity2 extends BaseEntityForm {
@@ -194,4 +193,3 @@ export const PersonEntityOnChange: onChangeFun<PersonEntity> = (form, fieldName,
 //         console.log('entity', this)
 //     }
 // }
-
