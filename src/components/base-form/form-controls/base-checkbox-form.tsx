@@ -1,49 +1,36 @@
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from "@/components/ui/form"
-import { useEffect, useState } from "react"
-import {
-  ControllerFieldState,
-  ControllerRenderProps,
-  FieldValues,
-  Path,
-  UseFormStateReturn
-} from "react-hook-form"
-import { BaseFormFieldPropsType } from "./types"
-import { Checkbox } from "../../ui/checkbox"
-import { CheckedState } from "@radix-ui/react-checkbox"
-import { useBaseFormContext } from ".."
-import { CheckboxControl } from "@/core/types/control.types"
-import { cn } from "@/lib/utils"
-import { VariantProps, cva } from "class-variance-authority"
-import { SharedVariantProps, SharedVariants } from "./shared-variants"
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { useEffect, useState } from 'react'
+import { ControllerFieldState, ControllerRenderProps, FieldValues, Path, UseFormStateReturn } from 'react-hook-form'
+import { BaseFormFieldPropsType } from './types'
+import { Checkbox } from '../../ui/checkbox'
+import { CheckedState } from '@radix-ui/react-checkbox'
+import { useBaseFormContext } from '..'
+import { CheckboxControl } from '@/core/types/control.types'
+import { cn } from '@/lib/utils'
+import { VariantProps, cva } from 'class-variance-authority'
+import { SharedVariantProps, SharedVariants } from './shared-variants'
 
 // Variants
-const sideLabelDefault =
-  "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+const sideLabelDefault = 'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
 
 const BaseCheckboxVariants = cva(null, {
   variants: {
     checkBoxVariants: {
-      "top-label": "",
-      "side-label": "",
-      "table-item": "place-content-center"
+      'top-label': '',
+      'side-label': '',
+      'table-item': 'place-content-center'
     },
     sideLabel: {
-      "label-left": sideLabelDefault,
-      "label-right": sideLabelDefault + " flex-row-reverse"
+      'label-left': sideLabelDefault,
+      'label-right': sideLabelDefault + ' flex-row-reverse'
     },
     topLabel: {
-      default: ""
+      default: ''
     }
   },
   defaultVariants: {
-    checkBoxVariants: "top-label",
-    sideLabel: "label-left"
+    checkBoxVariants: 'top-label',
+    sideLabel: 'label-left'
   }
 })
 
@@ -51,10 +38,9 @@ const BaseCheckboxVariants = cva(null, {
 
 type BaseCheckboxVariantsProps = VariantProps<typeof BaseCheckboxVariants>
 
-type BaseCheckboxProps<TEntity extends FieldValues = FieldValues> =
-  BaseFormFieldPropsType<TEntity> &
-    SharedVariantProps &
-    BaseCheckboxVariantsProps
+type BaseCheckboxProps<TEntity extends FieldValues = FieldValues> = BaseFormFieldPropsType<TEntity> &
+  SharedVariantProps &
+  BaseCheckboxVariantsProps
 
 type BaseCheckboxItemsProps<TEntity extends FieldValues = FieldValues> = {
   field: ControllerRenderProps<TEntity, Path<TEntity>>
@@ -66,10 +52,7 @@ type BaseCheckboxItemsProps<TEntity extends FieldValues = FieldValues> = {
 
 // Components
 
-const BaseCheckbox = <TEntity extends FieldValues = FieldValues>({
-  name,
-  ...props
-}: BaseCheckboxProps<TEntity>) => {
+const BaseCheckbox = <TEntity extends FieldValues = FieldValues>({ name, ...props }: BaseCheckboxProps<TEntity>) => {
   const { form, rhf } = useBaseFormContext<TEntity>()
   const { visibleFn } = rhf[name]
 
@@ -91,9 +74,7 @@ const BaseCheckbox = <TEntity extends FieldValues = FieldValues>({
       <FormField
         control={form.control}
         name={name}
-        render={(params) => (
-          <BaseCheckboxItem visibled={visibled} {...params} {...props} />
-        )}
+        render={(params) => <BaseCheckboxItem visibled={visibled} {...params} {...props} />}
       />
     )
   )
@@ -134,11 +115,7 @@ const BaseCheckboxItem = <
 
   useEffect(() => {
     form.register(field.name, {
-      validate: !(
-        (disableFn ? disableFn(form, form.getValues()) : false) || !visibled
-      )
-        ? validate
-        : undefined
+      validate: !((disableFn ? disableFn(form, form.getValues()) : false) || !visibled) ? validate : undefined
     })
     if (disabled) {
       form.clearErrors(field.name)
@@ -147,40 +124,22 @@ const BaseCheckboxItem = <
 
   const handleChange = (e: CheckedState) => {
     form.setValue(field.name, e as any)
-    if (setAfterDataChanged)
-      setAfterDataChanged(form, field.name, e, form.getValues())
+    if (setAfterDataChanged) setAfterDataChanged(form, field.name, e, form.getValues())
   }
-  const showTopLabel = checkBoxVariants == "top-label"
+  const showTopLabel = checkBoxVariants == 'top-label'
 
   return (
     <FormItem>
       {showTopLabel && (
-        <FormLabel
-          className={cn(
-            SharedVariants({ showLabel }),
-            BaseCheckboxVariants({ topLabel })
-          )}
-        >
-          {label}
-        </FormLabel>
+        <FormLabel className={cn(SharedVariants({ showLabel }), BaseCheckboxVariants({ topLabel }))}>{label}</FormLabel>
       )}
       <FormControl>
-        <div className={cn(
-              "flex items-center space-x-2",
-              BaseCheckboxVariants({ checkBoxVariants}) )}>
-          <div
-            className={cn(
-              "flex items-center gap-2 ",
-              BaseCheckboxVariants({ checkBoxVariants, sideLabel })
-            )}
-          >
+        <div className={cn('flex items-center space-x-2', BaseCheckboxVariants({ checkBoxVariants }))}>
+          <div className={cn('flex items-center gap-2 ', BaseCheckboxVariants({ checkBoxVariants, sideLabel }))}>
             {!showTopLabel && (
               <label
                 htmlFor={field.name}
-                className={cn(
-                  SharedVariants({ showLabel }),
-                  BaseCheckboxVariants({ sideLabel })
-                )}
+                className={cn(SharedVariants({ showLabel }), BaseCheckboxVariants({ sideLabel }))}
               >
                 {label}
               </label>

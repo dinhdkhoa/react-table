@@ -1,6 +1,6 @@
 // eventEmitter.js
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'events'
 
-const tableEventEmitter = new EventEmitter();
+const tableEventEmitter = new EventEmitter()
 
-export default tableEventEmitter;
+export default tableEventEmitter

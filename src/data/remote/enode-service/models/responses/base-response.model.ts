@@ -1,2 +1,1 @@
-export interface BaseResponse<TEntity> {
-}
+export interface BaseResponse<TEntity> {}

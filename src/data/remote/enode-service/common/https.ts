@@ -1,83 +1,80 @@
-import { FileRequestModel } from "../models/requests/file-request.model";
-import { GatewayResponseModel, createGateWayRequestModel } from "./gateway.model";
-import { HttpMethodType } from "./types";
-import { ApiPath } from "./api-path";
+import { FileRequestModel } from '../models/requests/file-request.model'
+import { GatewayResponseModel, createGateWayRequestModel } from './gateway.model'
+import { HttpMethodType } from './types'
+import { ApiPath } from './api-path'
 
 class SessionToken {
-    private token = ''
-    private _expiresAt = ''
-    get value() {
-        return this.token
+  private token = ''
+  private _expiresAt = ''
+  get value() {
+    return this.token
+  }
+  set value(token: string) {
+    // Nếu gọi method này ở server thì sẽ bị lỗi
+    if (!isClient()) {
+      throw new Error('Cannot set token on server side')
     }
-    set value(token: string) {
-        // Nếu gọi method này ở server thì sẽ bị lỗi
-        if (!isClient()) {
-            throw new Error('Cannot set token on server side')
-        }
-        this.token = token
-    }
+    this.token = token
+  }
 
-    get expiresAt() {
-        return this._expiresAt
+  get expiresAt() {
+    return this._expiresAt
+  }
+  set expiresAt(expireAt: string) {
+    // Nếu gọi method này ở server thì sẽ bị lỗi
+    if (!isClient()) {
+      throw new Error('Cannot set _expiresAt on server side')
     }
-    set expiresAt(expireAt: string) {
-        // Nếu gọi method này ở server thì sẽ bị lỗi
-        if (!isClient()) {
-            throw new Error('Cannot set _expiresAt on server side')
-        }
-        this._expiresAt = expireAt
-    }
-
+    this._expiresAt = expireAt
+  }
 }
 /**
- *  chỉ lấy đc ở client, với server 
+ *  chỉ lấy đc ở client, với server
  * nếu muốn có gắn sessionToken vào header phải lấy từ cookies() - next/headers
  */
 export const clientSessionToken = new SessionToken()
 
 const isClient = (): boolean => {
-    return typeof window !== 'undefined'
+  return typeof window !== 'undefined'
 }
 
 const handleUnthorizedResponseOnClient = async (baseHeader: HeadersInit | undefined): Promise<void | string> => {
-    // handle 401 on client
-    await fetch('api/auth/logout',
-        {
-            method: 'POST',
-            body: JSON.stringify({
-                sessionExpired: true
-            }),
-            headers: {
-                ...baseHeader
-            }
-        }
-    )
-    clientSessionToken.value = '';
-    clientSessionToken.expiresAt = '';
-    location.href = '/login?sessionExpired=true'
+  // handle 401 on client
+  await fetch('api/auth/logout', {
+    method: 'POST',
+    body: JSON.stringify({
+      sessionExpired: true
+    }),
+    headers: {
+      ...baseHeader
+    }
+  })
+  clientSessionToken.value = ''
+  clientSessionToken.expiresAt = ''
+  location.href = '/login?sessionExpired=true'
 }
 
 const prepareFileData = (file: File, query: any): Promise<FileRequestModel> => {
-    return new Promise((resolve, reject) => {
-        //convert file data to base64
-        const fileData: FileRequestModel = {
-            fileName: file.name,
-            efileClassCode: query.efileClassCode,
-            fileType: file.name.split('.').pop() || '',
-        };
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = function () {
-            //remove data url
-            fileData.content = String(reader.result).split(',').pop()
-            resolve(fileData);
-        };
+  return new Promise((resolve, reject) => {
+    //convert file data to base64
+    const fileData: FileRequestModel = {
+      fileName: file.name,
+      efileClassCode: query.efileClassCode,
+      fileType: file.name.split('.').pop() || ''
+    }
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = function () {
+      //remove data url
+      fileData.content = String(reader.result).split(',').pop()
+      resolve(fileData)
+    }
 
-        reader.onerror = function (error) {
-            reject(error);
-        };
-    });
-};
+    reader.onerror = function (error) {
+      reject(error)
+    }
+  })
+}
 
 // const callGateway = async <T>(query: any, data: any, endPointCode: any, serviceCode: any, extRoute: any, method: HttpMethodType = 'POST', file?: File | null, apiVersion: number = 1): Promise<GatewayResponseModel<T>> => {
 //     const objReq = createGateWayRequestModel(method, apiVersion, query, data, endPointCode, serviceCode);

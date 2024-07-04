@@ -1,131 +1,122 @@
-import {
-  Tag,
-  Users,
-  Settings,
-  Bookmark,
-  SquarePen,
-  LayoutGrid,
-  LogIn,
-  Table
-} from "lucide-react";
+import { Tag, Users, Settings, Bookmark, SquarePen, LayoutGrid, LogIn, Table } from 'lucide-react'
 
 type Submenu = {
-  href: string;
-  label: string;
-  active: boolean;
-};
+  href: string
+  label: string
+  active: boolean
+}
 
 type Menu = {
-  href: string;
-  label: string;
-  active: boolean;
-  icon: any;
-  submenus: Submenu[];
-};
+  href: string
+  label: string
+  active: boolean
+  icon: any
+  submenus: Submenu[]
+}
 
 type Group = {
-  groupLabel: string;
-  menus: Menu[];
-};
+  groupLabel: string
+  menus: Menu[]
+}
 
 export function getActiveMenuItem(pathname: string): Menu | Submenu | null {
-  const groups = getMenuList(pathname);
+  const groups = getMenuList(pathname)
 
   for (const group of groups) {
     for (const menu of group.menus) {
       if (menu.active) {
-        return menu;
+        return menu
       }
 
       for (const submenu of menu.submenus) {
         if (submenu.active) {
-          return submenu;
+          return submenu
         }
       }
     }
   }
 
-  return null;
+  return null
 }
 
 export const getActiveMenuTitle = (pathname: string): string => {
   const activeItem = getActiveMenuItem(pathname)
-  if (!activeItem){
+  if (!activeItem) {
     return 'Page'
     throw new Error('Route is not yet declared in getMenuList')
   }
-  return activeItem.label;
+  return activeItem.label
 }
 
 export function getMenuList(pathname: string): Group[] {
   return [
     {
-      groupLabel: "",
+      groupLabel: '',
       menus: [
         {
-          href: "/dashboard",
-          label: "Dashboard",
-          active: pathname.includes("/dashboard"),
+          href: '/dashboard',
+          label: 'Dashboard',
+          active: pathname.includes('/dashboard'),
           icon: LayoutGrid,
           submenus: []
         }
       ]
     },
     {
-      groupLabel: "Contents",
+      groupLabel: 'Contents',
       menus: [
         {
-          href: "",
-          label: "Posts",
-          active: pathname.includes("/posts"),
+          href: '',
+          label: 'Posts',
+          active: pathname.includes('/posts'),
           icon: SquarePen,
           submenus: [
             {
-              href: "/posts",
-              label: "All Posts",
-              active: pathname === "/posts"
+              href: '/posts',
+              label: 'All Posts',
+              active: pathname === '/posts'
             },
             {
-              href: "/posts/new",
-              label: "New Post",
-              active: pathname === "/posts/new"
+              href: '/posts/new',
+              label: 'New Post',
+              active: pathname === '/posts/new'
             }
           ]
         },
         {
-          href: "/table",
-          label: "Table",
-          active: pathname.includes("/table"),
+          href: '/table',
+          label: 'Table',
+          active: pathname.includes('/table'),
           icon: Table,
           submenus: []
         },
         {
-          href: "/login",
-          label: "Login",
-          active: pathname.includes("/login"),
+          href: '/login',
+          label: 'Login',
+          active: pathname.includes('/login'),
           icon: LogIn,
           submenus: []
         }
       ]
     },
     {
-      groupLabel: "Settings",
+      groupLabel: 'Settings',
       menus: [
         {
-          href: "/users",
-          label: "Users",
-          active: pathname.includes("/users"),
+          href: '/users',
+          label: 'Users',
+          active: pathname.includes('/users'),
           icon: Users,
           submenus: []
         },
         {
-          href: "/account",
-          label: "Account",
-          active: pathname.includes("/account"),
+          href: '/account',
+          label: 'Account',
+          active: pathname.includes('/account'),
           icon: Settings,
           submenus: []
         }
       ]
     }
-  ];
+  ]
 }

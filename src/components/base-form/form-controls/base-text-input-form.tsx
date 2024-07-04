@@ -1,37 +1,25 @@
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { ChangeEvent, FocusEvent, useEffect, useState } from "react"
-import {
-  ControllerFieldState,
-  ControllerRenderProps,
-  FieldValues,
-  Path,
-  UseFormStateReturn
-} from "react-hook-form"
-import { BaseFormFieldPropsType } from "./types"
-import { useBaseFormContext } from ".."
-import { TextControl } from "@/core/types/control.types"
-import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "@/lib/utils"
-import { SharedVariantProps, SharedVariants } from "./shared-variants"
-import { RHFOptions } from "@/core/anotations/rhf-field"
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { ChangeEvent, FocusEvent, useEffect, useState } from 'react'
+import { ControllerFieldState, ControllerRenderProps, FieldValues, Path, UseFormStateReturn } from 'react-hook-form'
+import { BaseFormFieldPropsType } from './types'
+import { useBaseFormContext } from '..'
+import { TextControl } from '@/core/types/control.types'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '@/lib/utils'
+import { SharedVariantProps, SharedVariants } from './shared-variants'
+import { RHFOptions } from '@/core/anotations/rhf-field'
 
 // Variants
 
 const baseTextInputVariants = cva(null, {
   variants: {
     baseTextInputVariant: {
-      default: ""
+      default: ''
     }
   },
   defaultVariants: {
-    baseTextInputVariant: "default"
+    baseTextInputVariant: 'default'
   }
 })
 
@@ -39,10 +27,9 @@ const baseTextInputVariants = cva(null, {
 
 type BaseTextInputVariantsProps = VariantProps<typeof baseTextInputVariants>
 
-type BaseTextInputProps<TEntity extends FieldValues = FieldValues> =
-  BaseFormFieldPropsType<TEntity> &
-    SharedVariantProps &
-    BaseTextInputVariantsProps
+type BaseTextInputProps<TEntity extends FieldValues = FieldValues> = BaseFormFieldPropsType<TEntity> &
+  SharedVariantProps &
+  BaseTextInputVariantsProps
 
 type BaseTextInputItemsProps<TEntity extends FieldValues = FieldValues> = {
   field: ControllerRenderProps<TEntity, Path<TEntity>>
@@ -54,10 +41,7 @@ type BaseTextInputItemsProps<TEntity extends FieldValues = FieldValues> = {
 
 // Components
 
-const BaseTextInput = <TEntity extends FieldValues = FieldValues>({
-  name,
-  ...props
-}: BaseTextInputProps<TEntity>) => {
+const BaseTextInput = <TEntity extends FieldValues = FieldValues>({ name, ...props }: BaseTextInputProps<TEntity>) => {
   const { form, rhf } = useBaseFormContext<TEntity>()
   const { visibleFn } = rhf[name]
   const [visibled, setVisibled] = useState<boolean>(() => {
@@ -78,35 +62,22 @@ const BaseTextInput = <TEntity extends FieldValues = FieldValues>({
       <FormField
         control={form.control}
         name={name}
-        render={(params) => (
-          <BaseTextInputItem visibled={visibled} {...params} {...props} />
-        )}
+        render={(params) => <BaseTextInputItem visibled={visibled} {...params} {...props} />}
       />
     )
   )
 }
 
-const BaseTextInputItem = <
-  TEntity extends FieldValues = FieldValues,
-  TControlType extends TextControl = TextControl
->(
+const BaseTextInputItem = <TEntity extends FieldValues = FieldValues, TControlType extends TextControl = TextControl>(
   props: BaseTextInputItemsProps<TEntity>
 ) => {
-  const {
-    field,
-    fieldState,
-    formState,
-    formVariant,
-    baseTextInputVariant,
-    showLabel,
-    visibled = true
-  } = props
+  const { field, fieldState, formState, formVariant, baseTextInputVariant, showLabel, visibled = true } = props
 
-  const { rhf, setAfterDataChanged, form, onBlur } =
-    useBaseFormContext<TEntity>()
-  const { placeholder, label, disableFn, validate, minLength, maxLength } = rhf[
-    field.name
-  ] as RHFOptions<TEntity, TControlType>
+  const { rhf, setAfterDataChanged, form, onBlur } = useBaseFormContext<TEntity>()
+  const { placeholder, label, disableFn, validate, minLength, maxLength } = rhf[field.name] as RHFOptions<
+    TEntity,
+    TControlType
+  >
 
   const [disabled, setDisabled] = useState<boolean>(() => {
     if (disableFn) {
@@ -123,11 +94,7 @@ const BaseTextInputItem = <
 
   useEffect(() => {
     form.register(field.name, {
-      validate: !(
-        (disableFn ? disableFn(form, form.getValues()) : false) || !visibled
-      )
-        ? validate
-        : undefined,
+      validate: !((disableFn ? disableFn(form, form.getValues()) : false) || !visibled) ? validate : undefined,
       onChange: handleChange,
       onBlur: handleBlur
     })
@@ -137,8 +104,7 @@ const BaseTextInputItem = <
   }, [disableFn, disabled, field.name, form, validate, visibled])
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (setAfterDataChanged)
-      setAfterDataChanged(form, field.name, e.target.value, form.getValues())
+    if (setAfterDataChanged) setAfterDataChanged(form, field.name, e.target.value, form.getValues())
   }
   const handleBlur = (e: FocusEvent<HTMLInputElement, Element>) => {
     if (onBlur) {
@@ -148,17 +114,9 @@ const BaseTextInputItem = <
 
   return (
     <FormItem>
-      <FormLabel className={cn(SharedVariants({ showLabel }))}>
-        {label}
-      </FormLabel>
+      <FormLabel className={cn(SharedVariants({ showLabel }))}>{label}</FormLabel>
       <FormControl>
-        <Input
-          {...field}
-          placeholder={placeholder}
-          disabled={disabled}
-          minLength={minLength}
-          maxLength={maxLength}
-        />
+        <Input {...field} placeholder={placeholder} disabled={disabled} minLength={minLength} maxLength={maxLength} />
       </FormControl>
       <FormMessage />
     </FormItem>

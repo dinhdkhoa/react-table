@@ -1,36 +1,26 @@
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { useEffect, useMemo, useState } from "react"
-import { ControllerFieldState, ControllerRenderProps, FieldValues, Path, UseFormStateReturn } from "react-hook-form"
-import { BaseFormFieldPropsType } from "./types"
-import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover"
-import { Button } from "../../ui/button"
-import { Check, ChevronsUpDown, X } from "lucide-react"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../../ui/command"
-import { cn } from "@/lib/utils"
-import { useBaseFormContext } from ".."
-import { StaticComboboxControl } from "@/core/types/control.types"
-import { RHFOptions } from "@/core/anotations/rhf-field"
-import { SharedVariantProps, SharedVariants } from "./shared-variants"
-import { VariantProps, cva } from "class-variance-authority"
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { useEffect, useMemo, useState } from 'react'
+import { ControllerFieldState, ControllerRenderProps, FieldValues, Path, UseFormStateReturn } from 'react-hook-form'
+import { BaseFormFieldPropsType } from './types'
+import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover'
+import { Button } from '../../ui/button'
+import { Check, ChevronsUpDown, X } from 'lucide-react'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '../../ui/command'
+import { cn } from '@/lib/utils'
+import { useBaseFormContext } from '..'
+import { StaticComboboxControl } from '@/core/types/control.types'
+import { RHFOptions } from '@/core/anotations/rhf-field'
+import { SharedVariantProps, SharedVariants } from './shared-variants'
+import { VariantProps, cva } from 'class-variance-authority'
 
-// Variants 
+// Variants
 
 const BaseComboboxVariants = cva(null, {
-    variants: {
-       
-    },
-    defaultVariants: {
-     
-    }
+  variants: {},
+  defaultVariants: {}
 })
 
-// Types & Interface  
+// Types & Interface
 
 type BaseComboboxVariantsProps = VariantProps<typeof BaseComboboxVariants>
 
@@ -48,10 +38,7 @@ type BaseComboboxItemsProps<TEntity extends FieldValues = FieldValues> = {
 
 // Components
 
-const BaseCombobox = <TEntity extends FieldValues = FieldValues>({
-  name,
-  ...props
-}: BaseComboboxProps<TEntity>) => {
+const BaseCombobox = <TEntity extends FieldValues = FieldValues>({ name, ...props }: BaseComboboxProps<TEntity>) => {
   const { form, rhf } = useBaseFormContext<TEntity>()
   const { visibleFn } = rhf[name]
 
@@ -73,18 +60,21 @@ const BaseCombobox = <TEntity extends FieldValues = FieldValues>({
       <FormField
         control={form.control}
         name={name}
-        render={(params) => (
-          <BaseComboboxItem visibled={visibled} {...params} {...props} />
-        )}
+        render={(params) => <BaseComboboxItem visibled={visibled} {...params} {...props} />}
       />
     )
   )
 }
 
-
 const clearFilter = (onClick: () => void) => (
-  <X onClick={e => { e.stopPropagation(); onClick(); }} className="ml-2 h-4 w-4 shrink-0" />
-);
+  <X
+    onClick={(e) => {
+      e.stopPropagation()
+      onClick()
+    }}
+    className='ml-2 h-4 w-4 shrink-0'
+  />
+)
 
 const BaseComboboxItem = <
   TEntity extends FieldValues = FieldValues,
@@ -92,32 +82,18 @@ const BaseComboboxItem = <
 >(
   props: BaseComboboxItemsProps<TEntity>
 ) => {
-  const {
-    field,
-    fieldState,
-    formState,
-    formVariant,
-    showLabel,
-    visibled = true
-  } = props
-  const { rhf, setAfterDataChanged, form } =
-    useBaseFormContext<TEntity>()
-  const {
-    placeholder,
-    label,
-    disableFn,
-    selectOption,
-    validate,
-    filterSelectOption
-  } = rhf[field.name] as RHFOptions<TEntity, TControlType>
+  const { field, fieldState, formState, formVariant, showLabel, visibled = true } = props
+  const { rhf, setAfterDataChanged, form } = useBaseFormContext<TEntity>()
+  const { placeholder, label, disableFn, selectOption, validate, filterSelectOption } = rhf[field.name] as RHFOptions<
+    TEntity,
+    TControlType
+  >
   const [open, setOpen] = useState(false)
   const [inprocessData, setInprocessData] = useState(false)
   const [dataFiltered, setDataFiltered] = useState(() => {
     if (filterSelectOption) {
       setInprocessData(true)
-      const filtered = selectOption.data.filter((w) =>
-        filterSelectOption(w, form.getValues())
-      )
+      const filtered = selectOption.data.filter((w) => filterSelectOption(w, form.getValues()))
       setInprocessData(false)
       return filtered
     }
@@ -141,9 +117,7 @@ const BaseComboboxItem = <
   useEffect(() => {
     if (filterSelectOption) {
       setInprocessData(true)
-      const filtered = selectOption.data.filter((w) =>
-        filterSelectOption(w, form.getValues())
-      )
+      const filtered = selectOption.data.filter((w) => filterSelectOption(w, form.getValues()))
       setDataFiltered(filtered)
       setInprocessData(false)
     } else {
@@ -154,11 +128,7 @@ const BaseComboboxItem = <
 
   useEffect(() => {
     form.register(field.name, {
-      validate: !(
-        (disableFn ? disableFn(form, form.getValues()) : false) || !visibled
-      )
-        ? validate
-        : undefined
+      validate: !((disableFn ? disableFn(form, form.getValues()) : false) || !visibled) ? validate : undefined
     })
     if (disabled) {
       form.clearErrors(field.name)
@@ -167,20 +137,17 @@ const BaseComboboxItem = <
 
   const handleChange = (e: any) => {
     form.setValue(field.name, e)
-    if (setAfterDataChanged)
-      setAfterDataChanged(form, field.name, e, form.getValues())
+    if (setAfterDataChanged) setAfterDataChanged(form, field.name, e, form.getValues())
   }
 
   const display = useMemo(() => {
     const _value = form.getValues(field.name)
     if (_value) {
-      const findItem = selectOption.data.find(
-        (basicItem) => selectOption.value(basicItem) == _value
-      )
+      const findItem = selectOption.data.find((basicItem) => selectOption.value(basicItem) == _value)
       if (findItem) {
-        return selectOption.display(findItem) || ""
+        return selectOption.display(findItem) || ''
       }
-      return "N/A"
+      return 'N/A'
     }
 
     return placeholder
@@ -202,34 +169,30 @@ const BaseComboboxItem = <
 
   return (
     <FormItem>
-      <FormLabel className={cn(SharedVariants({ showLabel }))}>
-        {label}
-      </FormLabel>
+      <FormLabel className={cn(SharedVariants({ showLabel }))}>{label}</FormLabel>
       <FormControl>
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
               disabled={disabled}
-              variant="outline"
-              role="combobox"
+              variant='outline'
+              role='combobox'
               className={cn(
-                "justify-between w-full bg-transparent",
-                !form.getValues(field.name) && "text-muted-foreground"
+                'justify-between w-full bg-transparent',
+                !form.getValues(field.name) && 'text-muted-foreground'
               )}
             >
-              <span className="truncate">
-                {form.getValues(field.name) ? display : placeholder}
-              </span>
+              <span className='truncate'>{form.getValues(field.name) ? display : placeholder}</span>
               {form.getValues(field.name) ? (
                 clearFilter(() => {
                   handleChange(undefined)
                 })
               ) : (
-                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
               )}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="p-0">
+          <PopoverContent className='p-0'>
             <Command>
               <CommandInput placeholder={`Search ${label}`} />
               <CommandList>
@@ -249,10 +212,8 @@ const BaseComboboxItem = <
                       >
                         <Check
                           className={cn(
-                            "mr-2 h-4 w-4",
-                            getValue(item) === form.getValues(field.name)
-                              ? "opacity-100"
-                              : "opacity-0"
+                            'mr-2 h-4 w-4',
+                            getValue(item) === form.getValues(field.name) ? 'opacity-100' : 'opacity-0'
                           )}
                         />
                         {selectOption!.display(item)}

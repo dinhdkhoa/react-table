@@ -1,37 +1,32 @@
 'use client'
 
-import { TableCell, TableRow } from "@/components/ui/table";
-import { CirclePlus, Download, Filter, AlignJustify } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger
-} from "@/components/ui/tooltip"
-import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge"
+import { TableCell, TableRow } from '@/components/ui/table'
+import { CirclePlus, Download, Filter, AlignJustify } from 'lucide-react'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { toast } from 'sonner'
+import { Badge } from '@/components/ui/badge'
 
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu"
-import { useState } from "react";
-import { Table } from "@tanstack/react-table";
-export default function TableHeaderActions<T = unknown>({ colspan, table }: { colspan: number, table: Table<T> }) {
+} from '@/components/ui/dropdown-menu'
+import { useState } from 'react'
+import { Table } from '@tanstack/react-table'
+export default function TableHeaderActions<T = unknown>({ colspan, table }: { colspan: number; table: Table<T> }) {
   const [dropDownOpen, setDropDownOpen] = useState(false)
   return (
-    <TableRow className="bg-transparent h-10 hover:bg-transparent">
+    <TableRow className='bg-transparent h-10 hover:bg-transparent'>
       <TableCell colSpan={colspan}>
-        <div className="flex justify-between">
-          <h4 className="font-bold">Ngx Table V3</h4>
-          <div className="flex justify-end gap-2 ">
+        <div className='flex justify-between'>
+          <h4 className='font-bold'>Ngx Table V3</h4>
+          <div className='flex justify-end gap-2 '>
             <DropdownMenu open={dropDownOpen}>
-              <DropdownMenuTrigger onMouseEnter={() => setDropDownOpen(true)} className="mt-1" asChild>
-                <AlignJustify className="h-4 w-4" />
+              <DropdownMenuTrigger onMouseEnter={() => setDropDownOpen(true)} className='mt-1' asChild>
+                <AlignJustify className='h-4 w-4' />
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" onPointerDownOutside={() => setDropDownOpen(false)}>
+              <DropdownMenuContent align='end' onPointerDownOutside={() => setDropDownOpen(false)}>
                 {table
                   .getAllColumns()
                   .filter((column) => column.getCanHide())
@@ -39,11 +34,9 @@ export default function TableHeaderActions<T = unknown>({ colspan, table }: { co
                     return (
                       <DropdownMenuCheckboxItem
                         key={column.id}
-                        className="capitalize"
+                        className='capitalize'
                         checked={column.getIsVisible()}
-                        onCheckedChange={(value) =>
-                          column.toggleVisibility(!!value)
-                        }
+                        onCheckedChange={(value) => column.toggleVisibility(!!value)}
                       >
                         {column.id}
                       </DropdownMenuCheckboxItem>
@@ -53,12 +46,12 @@ export default function TableHeaderActions<T = unknown>({ colspan, table }: { co
             </DropdownMenu>
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger className="mt-1" asChild>
+                <TooltipTrigger className='mt-1' asChild>
                   {/* <Button variant="outline">Hover</Button> */}
                   <Filter
-                    className="h-4 w-4"
+                    className='h-4 w-4'
                     onClick={() => {
-                      toast.success("test")
+                      toast.success('test')
                     }}
                   />
                 </TooltipTrigger>
@@ -69,12 +62,12 @@ export default function TableHeaderActions<T = unknown>({ colspan, table }: { co
             </TooltipProvider>
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger className="mt-1" asChild>
+                <TooltipTrigger className='mt-1' asChild>
                   {/* <Button variant="outline">Hover</Button> */}
                   <Download
-                    className="h-4 w-4"
+                    className='h-4 w-4'
                     onClick={() => {
-                      toast.success("test")
+                      toast.success('test')
                     }}
                   />
                 </TooltipTrigger>
@@ -88,10 +81,10 @@ export default function TableHeaderActions<T = unknown>({ colspan, table }: { co
                 <TooltipTrigger asChild>
                   <Badge
                     onClick={() => {
-                      toast.success("test")
+                      toast.success('test')
                     }}
                   >
-                    Add <CirclePlus className=" ml-1 h-4 w-4" />
+                    Add <CirclePlus className=' ml-1 h-4 w-4' />
                   </Badge>
                 </TooltipTrigger>
                 <TooltipContent>

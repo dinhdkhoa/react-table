@@ -371,7 +371,6 @@
 //   }
 // ]
 
-
 // export type Payment = {
 //   id: string
 //   amount: number
@@ -481,7 +480,7 @@
 //           <DropdownMenuContent align="end">
 //             <DropdownMenuLabel>Actions</DropdownMenuLabel>
 //             <DropdownMenuItem
-//               onClick={() => 
+//               onClick={() =>
 //                 toast(JSON.stringify(payment))
 //                 // navigator.clipboard.writeText(payment.id)
 //               }
@@ -619,7 +618,6 @@
 //   )
 // }
 
-
-export default function TableDemo(){
+export default function TableDemo() {
   return <></>
 }

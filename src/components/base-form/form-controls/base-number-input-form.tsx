@@ -1,42 +1,35 @@
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { ChangeEvent, FocusEvent, useEffect, useState } from "react"
-import { ControllerFieldState, ControllerRenderProps, FieldValues, Path, UseFormStateReturn } from "react-hook-form"
-import { BaseFormFieldPropsType } from "./types"
-import { useBaseFormContext } from ".."
-import { NumberControl } from "@/core/types/control.types"
-import { RHFOptions } from "@/core/anotations/rhf-field"
-import { VariantProps, cva } from "class-variance-authority"
-import { SharedVariantProps, SharedVariants } from "./shared-variants"
-import { cn } from "@/lib/utils"
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { ChangeEvent, FocusEvent, useEffect, useState } from 'react'
+import { ControllerFieldState, ControllerRenderProps, FieldValues, Path, UseFormStateReturn } from 'react-hook-form'
+import { BaseFormFieldPropsType } from './types'
+import { useBaseFormContext } from '..'
+import { NumberControl } from '@/core/types/control.types'
+import { RHFOptions } from '@/core/anotations/rhf-field'
+import { VariantProps, cva } from 'class-variance-authority'
+import { SharedVariantProps, SharedVariants } from './shared-variants'
+import { cn } from '@/lib/utils'
 
-// Variants 
+// Variants
 
 const baseNumberInputVariants = cva(null, {
-    variants: {
-        baseNumberInputVariant: {
-            default: ""
-        }
-    },
-    defaultVariants: {
-        baseNumberInputVariant: "default"
+  variants: {
+    baseNumberInputVariant: {
+      default: ''
     }
+  },
+  defaultVariants: {
+    baseNumberInputVariant: 'default'
+  }
 })
 
-// Types & Interface  
+// Types & Interface
 
 type BaseNumberInputVariantsProps = VariantProps<typeof baseNumberInputVariants>
 
-type BaseNumberInputProps<TEntity extends FieldValues = FieldValues> =
-  BaseFormFieldPropsType<TEntity> &
-    SharedVariantProps &
-    BaseNumberInputVariantsProps
+type BaseNumberInputProps<TEntity extends FieldValues = FieldValues> = BaseFormFieldPropsType<TEntity> &
+  SharedVariantProps &
+  BaseNumberInputVariantsProps
 
 type BaseNumberInputItemsProps<TEntity extends FieldValues = FieldValues> = {
   field: ControllerRenderProps<TEntity, Path<TEntity>>
@@ -47,7 +40,6 @@ type BaseNumberInputItemsProps<TEntity extends FieldValues = FieldValues> = {
   BaseNumberInputVariantsProps
 
 // Components
-
 
 const BaseNumberInput = <TEntity extends FieldValues = FieldValues>({
   name,
@@ -74,9 +66,7 @@ const BaseNumberInput = <TEntity extends FieldValues = FieldValues>({
       <FormField
         control={form.control}
         name={name}
-        render={(params) => (
-          <BaseNumberInputItem visibled={visibled} {...params} {...props}/>
-        )}
+        render={(params) => <BaseNumberInputItem visibled={visibled} {...params} {...props} />}
       />
     )
   )
@@ -85,23 +75,13 @@ const BaseNumberInput = <TEntity extends FieldValues = FieldValues>({
 const BaseNumberInputItem = <
   TEntity extends FieldValues = FieldValues,
   TControlType extends NumberControl = NumberControl
->(props: BaseNumberInputItemsProps<TEntity>) => {
+>(
+  props: BaseNumberInputItemsProps<TEntity>
+) => {
+  const { field, fieldState, formState, formVariant, baseNumberInputVariant, showLabel, visibled = true } = props
 
-  const {
-    field,
-    fieldState,
-    formState,
-    formVariant,
-    baseNumberInputVariant,
-    showLabel,
-    visibled = true
-  } = props
-
-  const { rhf, setAfterDataChanged, form, onBlur } =
-    useBaseFormContext<TEntity>()
-  const { placeholder, label, disableFn, validate, min, max } = rhf[
-    field.name
-  ] as RHFOptions<TEntity, TControlType>
+  const { rhf, setAfterDataChanged, form, onBlur } = useBaseFormContext<TEntity>()
+  const { placeholder, label, disableFn, validate, min, max } = rhf[field.name] as RHFOptions<TEntity, TControlType>
 
   const [disabled, setDisabled] = useState<boolean>(() => {
     if (disableFn) {
@@ -123,8 +103,7 @@ const BaseNumberInputItem = <
   }, [disableFn, disabled, field.name, form, validate, visibled])
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (setAfterDataChanged)
-      setAfterDataChanged(form, field.name, e.target.value, form.getValues())
+    if (setAfterDataChanged) setAfterDataChanged(form, field.name, e.target.value, form.getValues())
   }
   const handleBlur = (e: FocusEvent<HTMLInputElement, Element>) => {
     if (onBlur) {
@@ -134,26 +113,19 @@ const BaseNumberInputItem = <
 
   return (
     <FormItem>
-      <FormLabel className={cn(SharedVariants({ showLabel }))}>
-        {label}
-      </FormLabel>
+      <FormLabel className={cn(SharedVariants({ showLabel }))}>{label}</FormLabel>
       <FormControl>
         <Input
           {...field}
           {...form.register(field.name, {
             valueAsNumber: true,
-            validate: !(
-              (disableFn ? disableFn(form, form.getValues()) : false) ||
-              !visibled
-            )
-              ? validate
-              : undefined,
+            validate: !((disableFn ? disableFn(form, form.getValues()) : false) || !visibled) ? validate : undefined,
             onChange: handleChange,
             onBlur: handleBlur
           })}
           disabled={disabled}
           placeholder={placeholder}
-          type="number"
+          type='number'
           min={min}
           max={max}
         />

@@ -1,11 +1,11 @@
-"use client"
+'use client'
 
-import React from "react"
-import { Button } from "./ui/button"
-import logoutAPI from "@/app/api/auth/logout/logout.api"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
-import { handleApiError } from "@/lib/utils"
+import React from 'react'
+import { Button } from './ui/button'
+import logoutAPI from '@/app/api/auth/logout/logout.api'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
+import { handleApiError } from '@/lib/utils'
 
 export default function ButtonLogout() {
   const router = useRouter()
@@ -14,7 +14,7 @@ export default function ButtonLogout() {
       const result = await logoutAPI.logoutClient()
       if (result) {
         toast.success(result.payload.message)
-        router.push("/login")
+        router.push('/login')
         router.refresh()
       }
     } catch (error) {

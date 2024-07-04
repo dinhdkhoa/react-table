@@ -1,43 +1,30 @@
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { useEffect, useState } from "react"
-import { ControllerFieldState, ControllerRenderProps, FieldValues, Path, UseFormStateReturn } from "react-hook-form"
-import { BaseFormFieldPropsType } from "./types"
-import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover"
-import { Button } from "../../ui/button"
-import { CalendarIcon } from "lucide-react"
-import { format } from "date-fns"
-import { Calendar } from "../../ui/calendar"
-import { TimePickerDemo } from "../../ui/date-time-input.tsx/time-picker-demo"
-import { cn } from "@/lib/utils"
-import { useBaseFormContext } from ".."
-import { DateControl } from "@/core/types/control.types"
-import { RHFOptions } from "@/core/anotations/rhf-field"
-import { VariantProps, cva } from "class-variance-authority"
-import { SharedVariantProps, SharedVariants } from "./shared-variants"
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { useEffect, useState } from 'react'
+import { ControllerFieldState, ControllerRenderProps, FieldValues, Path, UseFormStateReturn } from 'react-hook-form'
+import { BaseFormFieldPropsType } from './types'
+import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover'
+import { Button } from '../../ui/button'
+import { CalendarIcon } from 'lucide-react'
+import { format } from 'date-fns'
+import { Calendar } from '../../ui/calendar'
+import { TimePickerDemo } from '../../ui/date-time-input.tsx/time-picker-demo'
+import { cn } from '@/lib/utils'
+import { useBaseFormContext } from '..'
+import { DateControl } from '@/core/types/control.types'
+import { RHFOptions } from '@/core/anotations/rhf-field'
+import { VariantProps, cva } from 'class-variance-authority'
+import { SharedVariantProps, SharedVariants } from './shared-variants'
 
-
-// Variants 
+// Variants
 
 const BaseDateTimeInputVariants = cva(null, {
-    variants: {
-        
-    },
-    defaultVariants: {
-  
-    }
+  variants: {},
+  defaultVariants: {}
 })
 
-// Types & Interface  
+// Types & Interface
 
-type BaseDateTimeInputVariantsProps = VariantProps<
-  typeof BaseDateTimeInputVariants
->
+type BaseDateTimeInputVariantsProps = VariantProps<typeof BaseDateTimeInputVariants>
 
 type BaseDateTimeInputProps<TEntity extends FieldValues = FieldValues> = BaseFormFieldPropsType<TEntity> &
   SharedVariantProps &
@@ -52,7 +39,7 @@ type BaseDateTimeInputItemsProps<TEntity extends FieldValues = FieldValues> = {
   BaseDateTimeInputVariantsProps
 
 // Components
- 
+
 const BaseDateTimeInput = <TEntity extends FieldValues = FieldValues>({
   name,
   ...props
@@ -78,9 +65,7 @@ const BaseDateTimeInput = <TEntity extends FieldValues = FieldValues>({
       <FormField
         control={form.control}
         name={name}
-        render={(params) => (
-          <BaseDateTimeInputItem visibled={visibled} {...params} {...props} />
-        )}
+        render={(params) => <BaseDateTimeInputItem visibled={visibled} {...params} {...props} />}
       />
     )
   )
@@ -92,20 +77,9 @@ const BaseDateTimeInputItem = <
 >(
   props: BaseDateTimeInputItemsProps<TEntity>
 ) => {
-
-  const {
-    field,
-    fieldState,
-    formState,
-    formVariant,
-    showLabel,
-    visibled = true
-  } = props
-  const { rhf, setAfterDataChanged, form } =
-    useBaseFormContext<TEntity>()
-  const { placeholder, label, disableFn, validate, includeTime } = rhf[
-    field.name
-  ] as RHFOptions<TEntity, TControlType>
+  const { field, fieldState, formState, formVariant, showLabel, visibled = true } = props
+  const { rhf, setAfterDataChanged, form } = useBaseFormContext<TEntity>()
+  const { placeholder, label, disableFn, validate, includeTime } = rhf[field.name] as RHFOptions<TEntity, TControlType>
 
   const [disabled, setDisabled] = useState<boolean>(() => {
     if (disableFn) {
@@ -122,11 +96,7 @@ const BaseDateTimeInputItem = <
 
   useEffect(() => {
     form.register(field.name, {
-      validate: !(
-        (disableFn ? disableFn(form, form.getValues()) : false) || !visibled
-      )
-        ? validate
-        : undefined
+      validate: !((disableFn ? disableFn(form, form.getValues()) : false) || !visibled) ? validate : undefined
     })
     if (disabled) {
       form.clearErrors(field.name)
@@ -135,8 +105,7 @@ const BaseDateTimeInputItem = <
 
   const handleChange = (e: Date | undefined) => {
     form.setValue(field.name, e as any)
-    if (setAfterDataChanged)
-      setAfterDataChanged(form, field.name, e, form.getValues())
+    if (setAfterDataChanged) setAfterDataChanged(form, field.name, e, form.getValues())
   }
 
   const display = () => {
@@ -144,8 +113,8 @@ const BaseDateTimeInputItem = <
     if (_value) {
       if ((_value as any) instanceof Date) {
         return _value?.toLocaleString(undefined, {
-          dateStyle: "medium",
-          timeStyle: "short"
+          dateStyle: 'medium',
+          timeStyle: 'short'
         })
       }
     }
@@ -155,38 +124,28 @@ const BaseDateTimeInputItem = <
 
   return (
     <FormItem>
-      <FormLabel className={cn(SharedVariants({ showLabel }))}>
-        {label}
-      </FormLabel>
+      <FormLabel className={cn(SharedVariants({ showLabel }))}>{label}</FormLabel>
       <FormControl>
         <Popover>
           <PopoverTrigger asChild>
             <Button
               disabled={disabled}
-              variant="outline"
+              variant='outline'
               className={cn(
-                "justify-start text-left font-normal w-full bg-transparent",
-                !form.getValues(field.name) && "text-muted-foreground"
+                'justify-start text-left font-normal w-full bg-transparent',
+                !form.getValues(field.name) && 'text-muted-foreground'
               )}
             >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              <span className="truncate">{display()}</span>
+              <CalendarIcon className='mr-2 h-4 w-4' />
+              <span className='truncate'>{display()}</span>
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-0">
-            <Calendar
-              mode="single"
-              selected={form.getValues(field.name)}
-              onSelect={handleChange}
-              initialFocus
-            />
+          <PopoverContent className='w-auto p-0'>
+            <Calendar mode='single' selected={form.getValues(field.name)} onSelect={handleChange} initialFocus />
 
             {includeTime && (
-              <div className="p-3 border-t border-border">
-                <TimePickerDemo
-                  setDate={handleChange}
-                  date={form.getValues(field.name)}
-                />
+              <div className='p-3 border-t border-border'>
+                <TimePickerDemo setDate={handleChange} date={form.getValues(field.name)} />
               </div>
             )}
           </PopoverContent>
