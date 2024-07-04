@@ -22,38 +22,27 @@ import { VariantProps, cva } from "class-variance-authority"
 import { SharedVariantProps, SharedVariants } from "./shared-variants"
 
 // Variants
+const sideLabelDefault =
+  "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
 
 const BaseSwitchVariants = cva(null, {
   variants: {
     switchVariants: {
       "top-label": "",
       "side-label": "",
-      "table-item": ""
+      "table-item": "place-content-center"
     },
     sideLabel: {
-      default:
-        "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
-      "label-right":
-        "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+      "label-left": sideLabelDefault,
+      "label-right": sideLabelDefault + " flex-row-reverse"
     },
     topLabel: {
       default: ""
     }
   },
-  compoundVariants: [
-    {
-      switchVariants: "table-item",
-      className: "place-content-center"
-    },
-    {
-      switchVariants: "side-label",
-      sideLabel: "label-right",
-      className: "flex-row-reverse"
-    }
-  ],
   defaultVariants: {
     switchVariants: "top-label",
-    sideLabel: "default",
+    sideLabel: "label-left",
     topLabel: "default"
   }
 })
@@ -173,7 +162,12 @@ const BaseSwitchItem = <
         </FormLabel>
       )}
       <FormControl>
-        <div className="flex items-center space-x-2">
+        <div
+          className={cn(
+            "flex items-center space-x-2",
+            BaseSwitchVariants({ switchVariants })
+          )}
+        >
           <div
             className={cn(
               "flex items-center gap-2 ",

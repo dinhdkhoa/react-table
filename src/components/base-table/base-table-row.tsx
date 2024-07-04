@@ -103,7 +103,7 @@ export function BaseTableFormRow<T extends IBaseEntityForm<T>>(props: {
 
         return (props.tableConfig.rowsEditing[(props.row.id)] !== undefined
             && (editable ?? false)) && anyField
-            ? <div className="items-center" ><BaseDynamicControl name={cell.column.id} /></div>
+            ? <div className="items-center" ><BaseDynamicControl name={cell.column.id} showLabel={'hidden'}/></div>
             : flexRender(cell.column.columnDef.cell, cell.getContext())
     }
     return (

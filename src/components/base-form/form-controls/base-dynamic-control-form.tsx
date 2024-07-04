@@ -10,35 +10,37 @@ import BaseDateTimeInput from "./base-date-time-form"
 import BaseComboboxInput from "./base-combobox-form"
 import { Control, ControlType } from "@/core/types/control.types"
 import { useBaseFormContext } from ".."
+import { SharedVariantProps } from "./shared-variants"
 
 type Props = {
-    name: string
-}
+  name: string
+} & SharedVariantProps
 
 const BaseDynamicControl = <TEntity extends FieldValues = FieldValues,>(props: Props) => {
     const { rhf } = useBaseFormContext<TEntity>();
     const { type } = (rhf ?? {})[props.name] ?? {};
+    const {showLabel} = props
 
     const createControl = () => {
         switch (type) {
             case Control.Text:
-                return <BaseTextInput<TEntity> name={props.name as any} showLabel={'hidden'}/>
+                return <BaseTextInput<TEntity> name={props.name as any} showLabel={showLabel}/>
             case Control.TextArea:
-                return <BaseTextAreaInput<TEntity> name={props.name as any}  showLabel={'hidden'} />
+                return <BaseTextAreaInput<TEntity> name={props.name as any}  showLabel={showLabel} />
             case Control.Number:
-                return <BaseNumberInput<TEntity> name={props.name as any}  showLabel={'hidden'} />
+                return <BaseNumberInput<TEntity> name={props.name as any}  showLabel={showLabel} />
             case Control.Checkbox:
-                return <BaseCheckboxInput<TEntity> name={props.name as any}  showLabel={'hidden'} checkBoxVariants={'table-item'}/>
+                return <BaseCheckboxInput<TEntity> name={props.name as any}  showLabel={showLabel} checkBoxVariants={'table-item'}/>
             case Control.Switch:
-                return <BaseSwitchInput<TEntity> name={props.name as any} showLabel={'hidden'}  switchVariants={'table-item'}/>
+                return <BaseSwitchInput<TEntity> name={props.name as any} showLabel={showLabel}  switchVariants={'table-item'}/>
             case Control.StaticCombobox:
-                return <BaseComboboxInput<TEntity> name={props.name as any}  showLabel={'hidden'} />
+                return <BaseComboboxInput<TEntity> name={props.name as any}  showLabel={showLabel} />
             case Control.MultipleSelect:
-                return <BaseMultipleSelectInput<TEntity> name={props.name as any} showLabel={'hidden'}  />
+                return <BaseMultipleSelectInput<TEntity> name={props.name as any} showLabel={showLabel}  />
             case Control.RadioGroup:
-                return <BaseRadioGroupInput<TEntity> name={props.name as any} showLabel={'hidden'} />
+                return <BaseRadioGroupInput<TEntity> name={props.name as any} showLabel={showLabel} />
             case Control.Date:
-                return <BaseDateTimeInput<TEntity> name={props.name as any}  showLabel={'hidden'} />
+                return <BaseDateTimeInput<TEntity> name={props.name as any}  showLabel={showLabel} />
             default:
                 return null;
         }
