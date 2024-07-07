@@ -5,10 +5,11 @@ import { SidebarToggle } from '@/components/sidebar/sidebar-toggle'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
-import { useSidebarContext } from '../sidebar-provider'
+import { useStore } from '@/core/hooks/use-store'
+import { useSidebarToggle } from '@/core/hooks/use-sidebar-toggle'
 
 export function Sidebar() {
-  const sidebar = useSidebarContext()
+  const sidebar = useStore(useSidebarToggle, (state) => state);
 
   if (!sidebar) return null
 

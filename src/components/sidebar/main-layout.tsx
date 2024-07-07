@@ -2,13 +2,12 @@
 
 import { Sidebar } from '@/components/sidebar/sidebar'
 import { cn } from '@/lib/utils'
-import { useSidebarContext } from '../sidebar-provider'
 import { Navbar } from './navbar'
-import { Footer } from './footer'
+import { useStore } from '@/core/hooks/use-store'
+import { useSidebarToggle } from '@/core/hooks/use-sidebar-toggle'
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
-  const sidebar = useSidebarContext()
-
+  const sidebar = useStore(useSidebarToggle, (state) => state);
   if (!sidebar) return null
 
   return (
