@@ -7,6 +7,7 @@ import SetSeesionToken from './app-provider'
 import './globals.css'
 import SlideSession from '@/components/slide-session'
 import { AccountType } from '@/schemaValidations/account.schema'
+import ConfirmDialog  from '@/components/confirm-dialog'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -31,13 +32,18 @@ export default async function RootLayout({
   return (
     <html lang='en' suppressHydrationWarning>
       <body className={inter.className}>
+        {/* Obserables */}
         <Toaster richColors />
+        <ConfirmDialog />
+        {/*  */}
+        {/* Providers */}
         <ThemeProvider attribute='class' defaultTheme='light' enableSystem disableTransitionOnChange>
           <SetSeesionToken initialSessionToken={sessionToken} user={user}>
             {children}
             <SlideSession />
           </SetSeesionToken>
         </ThemeProvider>
+        {/*  */}
       </body>
     </html>
   )
