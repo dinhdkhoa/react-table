@@ -4,6 +4,15 @@ import { ControllerProps, FieldPath, FieldValues, UseFormReturn } from 'react-ho
 import { Form } from '../ui/form'
 import { RHFOptions } from '@/core/anotations/rhf-field'
 import { IBaseEntityFormBehavior } from '@/core/classes/base-entity-form'
+import BaseCheckbox from './form-controls/base-checkbox-form'
+import BaseTextInput from './form-controls/base-text-input-form'
+import BaseTextArea from './form-controls/base-text-area-input-form'
+import BaseSwitch from './form-controls/base-switch-form'
+import BaseRadioGroup from './form-controls/base-radio-group-form'
+import BaseNumberInput from './form-controls/base-number-input-form'
+import BaseMultipleSelect from './form-controls/base-multiple-select-form'
+import BaseDateTimeInput from './form-controls/base-date-time-form'
+import BaseCombobox from './form-controls/base-combobox-form'
 
 type BaseFormPropsType<TEntity extends FieldValues = FieldValues> = {
   form: UseFormReturn<TEntity>
@@ -43,10 +52,28 @@ const BaseForm = <TEntity extends FieldValues = FieldValues>({ ...props }: BaseF
         __onBlur__: props.__onChange__ as any
       }}
     >
-      <Form {...props.form}>{props.children}</Form>
+      <Form {...props.form}>
+        <fieldset className='group' disabled={false}>
+          {props.children}
+        </fieldset>
+      </Form>
     </BaseFormContext.Provider>
   )
 }
+
+const withEntity = <TEntity extends FieldValues,>(Component: React.ComponentType<{ form: UseFormReturn<TEntity> }>) => {
+  return (props: { form: UseFormReturn<TEntity> }) => <Component {...props} />;
+};
+
+BaseForm.Checkbox =  BaseCheckbox
+BaseForm.TextInput = BaseTextInput
+BaseForm.TextArea = BaseTextArea
+BaseForm.Switch = BaseSwitch
+BaseForm.RadioGroup = BaseRadioGroup
+BaseForm.NumberInput = BaseNumberInput
+BaseForm.MultipleSelect = BaseMultipleSelect
+BaseForm.DateTime = BaseDateTimeInput
+BaseForm.Combobox = BaseCombobox
 
 export { useBaseFormContext }
 export default BaseForm
