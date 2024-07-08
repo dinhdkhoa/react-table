@@ -3,12 +3,13 @@ import BaseForm from '@/components/base-form'
 import BaseTextInput from '@/components/base-form/form-controls/base-text-input-form'
 import { Button } from '@/components/ui/button'
 import useBaseForm from '@/core/hooks/useBaseForm'
-import { loginAction } from './_action/login-actions'
-import { toast } from 'sonner'
-import { useState } from 'react'
-import loginAPI from './login.api'
-import { useRouter } from 'next/navigation'
 import { LoginEntity, defaultLoginEntity } from '@/domain/entities/login-entity'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { toast } from 'sonner'
+import { loginAction } from './_action/login-actions'
+import loginAPI from './login.api'
+import DialogService from '@/core/utils/dialog'
 
 export function LoginForm() {
   const router = useRouter()
@@ -45,8 +46,25 @@ export function LoginForm() {
           <Button type='submit' disabled={props.form.formState.isLoading || loginState} className='!mt-8 w-full'>
             Login
           </Button>
+          <ConfirmButton />
         </form>
       </BaseForm>
     </>
+  )
+}
+
+
+
+function ConfirmButton() {
+
+  const onSubmit = () => {
+    DialogService.show(   () => {
+         console.log('asdasda')
+      },{title: 'Delete Data', message: 'This action cannot be undone.'} )
+  }
+  return (
+    <Button variant='outline' onClick={onSubmit}>
+      Show Dialog
+    </Button>
   )
 }
