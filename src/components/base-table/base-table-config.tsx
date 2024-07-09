@@ -8,7 +8,7 @@ import { DefaultCell } from './base-table-cell'
 import { ReactNode } from 'react'
 import tableEventEmitter from './events'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
-import { FieldNames } from '@/core/helper/helper'
+import { FieldNames } from '@/core/helper/type-helpers'
 
 export const showChildButtonId = '_row_action_show_child'
 export const saveButtonId = '_row_action_save'
@@ -153,7 +153,6 @@ export class BaseTableConfig<T extends IBaseData<T>> {
 
   getRowId(originalRow: T, index: number, parent?: Row<T>): string {
     const keys = this.getKeys(originalRow, this.keys)
-    console.log('keys', keys)
     return getId(originalRow, keys, originalRow.__id__) || index.toString()
   }
 

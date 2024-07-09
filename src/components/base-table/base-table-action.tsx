@@ -78,6 +78,7 @@ export default function TableActionColumn<T extends IBaseData<T>>(props: {
                   variant='ghost'
                   disabled={isDisable}
                   className='h-8 w-8 p-0'
+                  spinner={'disabled'}
                   onClick={() => {
                     if (allowAction) {
                       ac.action!(props.tableAction.data, form)

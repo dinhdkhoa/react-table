@@ -40,19 +40,19 @@ export const createGateWayRequestModel = (
       Token: ''
     },
     requestInfo: {
-      ApiVersion: apiVersion,
-      Channel: '',
-      UserRequest: '',
-      RequestUserId: user?.userId ?? '',
-      ServiceCode: serviceCode,
-      RequestDate: new Date(),
-      RequestId: Guid.create().toString(),
-      UserLanguage: language,
-      TimeLocal: 'GMT+07:00',
-      EndPointCode: endPointCode || '',
-      Checksum: '',
-      HttpMethod: method,
-      WorkPlaceId: user?.currentWorkPlaceId
+      channel: "Web",
+        serviceCode: serviceCode,
+        requestDate: new Date(),
+        userRequest: "",
+        requestId: Guid.create().toString(),
+        userLanguage: "vi-VN",
+        timeLocal: "GMT+07:00",
+        apiCode: endPointCode,
+        httpMethod: method,
+        partnerId: "",
+        extRoute: "",
+        version: apiVersion,
+        requestQuery: {}
     },
     requestData: requestData || {},
     requestQuery: requestQuery || {}

@@ -53,9 +53,9 @@ const BaseForm = <TEntity extends FieldValues = FieldValues>({ ...props }: BaseF
       }}
     >
       <Form {...props.form}>
-        <fieldset className='group' disabled={false}>
+        {/* <fieldset className='group' disabled={false}> */}
           {props.children}
-        </fieldset>
+        {/* </fieldset> */}
       </Form>
     </BaseFormContext.Provider>
   )

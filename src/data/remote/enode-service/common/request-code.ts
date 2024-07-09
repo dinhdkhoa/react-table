@@ -5,3 +5,9 @@ export const loginRequestCode: BaseRequestCode = {
   serviceCode: 'SVC001',
   endPointCode: 'ENP002'
 }
+
+export const getEnodeLogRequestCode: BaseRequestCode = {
+  extRoute: '',
+  serviceCode: 'eOMS001',
+  endPointCode: 'LIST'
+}

@@ -33,8 +33,7 @@ import { IBaseData, getId } from '@/core/classes/base-data'
 import { FormatColumnType, ModeType, RowSelectType } from './enums'
 import TableActionColumn from './base-table-action'
 import { BaseTableConfig, rowIdsEditingChangeEvent } from './base-table-config'
-import TableHeaderActions from './base-table-header-action'
-import { BaseTableFooter, BaseTableFormRow, BaseTableHeader, BaseTableRow } from './base-table-row'
+import { BaseTableFooter, BaseTableHeader, BaseTableRow } from './base-table-row'
 import BaseTablePagination from './base-table-pagination'
 import { BaseTableNodata } from './base-table-nodata'
 
@@ -129,10 +128,10 @@ function handleSelection<T extends IBaseData<T>>(
   }
 }
 
-export function BaseTable<T extends IBaseData<T>>(props: { data: Array<T>; tableConfig: BaseTableConfig<T> }) {
+export function BaseTable<T extends IBaseData<T>>( props: {loading: boolean,  data: Array<T>, tableConfig: BaseTableConfig<T> }) {
   const [rowsEditing, setRowsEditing] = useState<Record<string, T>>({ ...props.tableConfig.rowsEditing })
   const [columnPinningState, setColumnPinningState] = useState<ColumnPinningState>({})
-  const [data] = useState(() => [...props.data])
+  // const [data] = useState(() => [...props.data])
   const [rowSelection, setRowSelection] = useState({})
   const [rowSelectionForHandle, setRowSelectionForHandle] = useState(rowSelection)
   const [sorting, setSorting] = useState<SortingState>([])
@@ -162,13 +161,13 @@ export function BaseTable<T extends IBaseData<T>>(props: { data: Array<T>; table
             <Checkbox
               {...(props.tableConfig.isSelectAllPages
                 ? {
-                    checked: table.getIsAllRowsSelected() || (table.getIsSomeRowsSelected() && 'indeterminate'),
-                    onCheckedChange: (value) => handleSelection(value, RowSelectType.AllPages, undefined, table, props)
-                  }
+                  checked: table.getIsAllRowsSelected() || (table.getIsSomeRowsSelected() && 'indeterminate'),
+                  onCheckedChange: (value) => handleSelection(value, RowSelectType.AllPages, undefined, table, props)
+                }
                 : {
-                    checked: table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate'),
-                    onCheckedChange: (value) => handleSelection(value, RowSelectType.OnePage, undefined, table, props)
-                  })}
+                  checked: table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate'),
+                  onCheckedChange: (value) => handleSelection(value, RowSelectType.OnePage, undefined, table, props)
+                })}
             />
           </div>
         ),
@@ -247,9 +246,9 @@ export function BaseTable<T extends IBaseData<T>>(props: { data: Array<T>; table
     let keys = props.tableConfig.getKeys(originalRow, props.tableConfig.keys)
     return getId(originalRow, keys, originalRow.__id__)
   }
-
+  
   props.tableConfig.table = useReactTable({
-    data,
+    data: props.data,
     state: {
       rowSelection,
       sorting,

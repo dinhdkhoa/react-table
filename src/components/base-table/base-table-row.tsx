@@ -107,7 +107,7 @@ export function BaseTableFormRow<T extends IBaseEntityForm<T>>(props: {
             <TableCell
               key={cell.id}
               style={{ ...getCommonPinningStyles(cell.column) }}
-              className={cn('border-r last:border-r-0', cell.column.getIsPinned() ? 'bg-background' : '', 'break-all')}
+              className={cn('border-r last:border-r-0', cell.column.getIsPinned() ? 'bg-background' : '', 'truncate')}
             >
               {buildCell(cell)}
             </TableCell>
@@ -135,7 +135,7 @@ export function BaseTableRow<T extends IBaseData<T>>(props: { row: Row<T>; table
           <TableCell
             key={cell.id}
             style={{ ...getCommonPinningStyles(cell.column) }}
-            className={cn('border-r last:border-r-0', cell.column.getIsPinned() ? 'bg-background' : '', 'break-all')}
+            className={cn('border-r last:border-r-0', cell.column.getIsPinned() ? 'bg-background' : '', 'truncate')}
           >
             {flexRender(cell.column.columnDef.cell, cell.getContext())}
           </TableCell>

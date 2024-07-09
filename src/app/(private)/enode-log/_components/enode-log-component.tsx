@@ -3,10 +3,12 @@
 import { BaseTableConfig } from '@/components/base-table/base-table-config'
 
 import { BaseTable } from '@/components/base-table/base-table'
-import {} from '@/domain/entities/person-entity'
+import { } from '@/domain/entities/person-entity'
 import { EnodeLogEntity } from '@/domain/entities/enode-log-entity'
 import { FormatColumnType } from '@/components/base-table/enums'
 import { Guid } from 'guid-typescript'
+import { useEffect, useState } from 'react'
+import { EnodeLogUsecase } from '@/domain/use-cases/enode-log-usecase'
 
 function generateRandomString(length: number) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -53,32 +55,49 @@ function generateRecords(count: number) {
   return records
 }
 
-const records = generateRecords(1000)
-console.log(records)
+// const records = generateRecords(1000)
 
-export default function ENodeLog() {
-  const tableConfig = new BaseTableConfig<EnodeLogEntity>()
-  tableConfig.cols.push(
-    tableConfig.columnHelper.accessor('id', {
-      meta: {
-        formatColumnType: FormatColumnType.String
-      }
-    }),
-    tableConfig.columnHelper.accessor('url', {}),
-    tableConfig.columnHelper.accessor('method', {}),
-    tableConfig.columnHelper.accessor('timestamp', {
-      meta: {
-        formatColumnType: FormatColumnType.DateTime
-      }
-    }),
-    tableConfig.columnHelper.accessor('serviceCode', {}),
-    tableConfig.columnHelper.accessor('apiCode', {}),
-    tableConfig.columnHelper.accessor('request', {}),
-    tableConfig.columnHelper.accessor('payload', {}),
-    tableConfig.columnHelper.accessor('response', {})
-  )
+export default function ENodeLog({ data }: { data: Array<EnodeLogEntity> }) {
+  const [loading, setLoading] = useState(false);
+  const [tableConfig] = useState<BaseTableConfig<EnodeLogEntity>>(() => {
+    const config = new BaseTableConfig<EnodeLogEntity>();
 
-  tableConfig.init()
-  tableConfig.setData(records)
-  return <BaseTable<EnodeLogEntity> data={tableConfig.getData} tableConfig={tableConfig} />
+    config.cols.push(
+      config.columnHelper.accessor('id', {
+        meta: {
+          formatColumnType: FormatColumnType.String
+        }
+      }),
+      config.columnHelper.accessor('url', {}),
+      config.columnHelper.accessor('method', {}),
+      config.columnHelper.accessor('timestamp', {
+        meta: {
+          formatColumnType: FormatColumnType.DateTime
+        }
+      }),
+      config.columnHelper.accessor('serviceCode', {}),
+      config.columnHelper.accessor('apiCode', {}),
+      config.columnHelper.accessor('request', {}),
+      config.columnHelper.accessor('payload', {}),
+      config.columnHelper.accessor('response', {})
+    )
+
+    config.init()
+    config.setData(data)
+    return config;
+  });
+
+  useEffect(() => {
+    setLoading(true);
+    EnodeLogUsecase.getList({ postPerPage: 100, pageNumber: 0 }).then(handleState => {
+      if (!handleState.isError) {
+        handleState.value
+        tableConfig.setData(handleState.value || [])
+        setLoading(false);
+      }
+    })
+  }, []);
+
+  return <>
+    <BaseTable<EnodeLogEntity> loading={loading} data={tableConfig.getData} tableConfig={tableConfig} /></>
 }

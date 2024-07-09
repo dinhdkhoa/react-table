@@ -32,7 +32,7 @@ export async function callGateWay<T>({
 }): Promise<GatewayResponseModel<T>> {
   const { query, data, endPointCode, serviceCode, extRoute, method, file, apiVersion } = request
 
-  const objReq = createGateWayRequestModel(method, apiVersion ?? 1, query, data, endPointCode, serviceCode)
+  const objReq = createGateWayRequestModel(method, apiVersion ?? 1, query, data, serviceCode, endPointCode)
   if (file && query) {
     try {
       objReq.requestData = await prepareFileData(file, query)

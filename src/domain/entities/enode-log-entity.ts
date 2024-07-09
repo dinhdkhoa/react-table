@@ -1,5 +1,5 @@
 import { IBaseData } from '@/core/classes/base-data'
-import { ConvertResponseModelToEntityFieldsFunc, EntityFields } from '@/core/helper/helper'
+import { ConvertResponseModelToEntityFieldsFunc, EntityFields } from '@/core/helper/type-helpers'
 import { EnodeLogResponseModel } from '@/data/remote/enode-service/models/responses/enode-log-response.model'
 import { Guid } from 'guid-typescript'
 
@@ -17,23 +17,26 @@ export interface EnodeLogEntity extends IBaseData<EnodeLogEntity> {
   originJsonData?: object
 }
 
-export const convertEnodeLogEntityFn: ConvertResponseModelToEntityFieldsFunc<EnodeLogResponseModel, EnodeLogEntity> = (
+export const convertEnodeLogEntityFn: ConvertResponseModelToEntityFieldsFunc<Array<EnodeLogResponseModel>, Array<EnodeLogEntity>> = (
   res
 ) => {
-  // const entityFields: EntityFields<EnodeLogEntity> = Object.assign<EntityFields<EnodeLogEntity>, EnodeLogResponseModel>({ __id__: Guid.create().toString(), timestamp: res.timestamp ? new Date(res.timestamp) : undefined, originJsonData: res }, res);
-  const entityFields: EntityFields<EnodeLogEntity> = {
-    __id__: Guid.create().toString(),
-    id: res.id,
-    url: res.url,
-    method: res.method,
-    timestamp: res.timestamp ? new Date(res.timestamp) : undefined,
-    serviceCode: res.service_code,
-    apiCode: res.api_code,
-    request: res.request,
-    payload: res.payload,
-    response: res.response,
-    originJsonData: res
+  const result: Array<EnodeLogEntity> = [];
+  if (res && res.length > 0) {
+    res.forEach(_res => {
+      result.push({
+        __id__: Guid.create().toString(),
+        id: _res.id,
+        url: _res.url,
+        method: _res.method,
+        timestamp: _res.timestamp ? new Date(_res.timestamp) : undefined,
+        serviceCode: _res.service_code,
+        apiCode: _res.api_code,
+        request: _res.request,
+        payload: _res.payload,
+        response: _res.response,
+        originJsonData: _res
+      })
+    })
   }
-
-  return entityFields
+  return result
 }

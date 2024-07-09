@@ -1,5 +1,5 @@
 import { BaseData, IBaseData } from '@/core/classes/base-data'
-import { ConvertResponseModelToEntityFieldsFunc, EntityFields } from '@/core/helper/helper'
+import { ConvertResponseModelToEntityFieldsFunc, EntityFields } from '@/core/helper/type-helpers'
 import { UserLoginResponseModel } from '@/data/remote/enode-service/models/responses/login-response.model'
 import { Guid } from 'guid-typescript'
 
