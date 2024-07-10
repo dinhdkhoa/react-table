@@ -130,7 +130,7 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
 
   const isNumberCol = isNumberColumn(formatColumnType)
 
-  if (!formatColumnType || isNumberCol) {
+  if (!formatColumnType || isNumberCol || [FormatColumnType.String].includes(formatColumnType)) {
     return (
       <Input
         placeholder='Filter'

@@ -128,7 +128,7 @@ function handleSelection<T extends IBaseData<T>>(
   }
 }
 
-export function BaseTable<T extends IBaseData<T>>( props: {loading: boolean,  data: Array<T>, tableConfig: BaseTableConfig<T> }) {
+export function BaseTable<T extends IBaseData<T>>(props: { loading: boolean, data: Array<T>, tableConfig: BaseTableConfig<T> }) {
   const [rowsEditing, setRowsEditing] = useState<Record<string, T>>({ ...props.tableConfig.rowsEditing })
   const [columnPinningState, setColumnPinningState] = useState<ColumnPinningState>({})
   // const [data] = useState(() => [...props.data])
@@ -246,7 +246,7 @@ export function BaseTable<T extends IBaseData<T>>( props: {loading: boolean,  da
     let keys = props.tableConfig.getKeys(originalRow, props.tableConfig.keys)
     return getId(originalRow, keys, originalRow.__id__)
   }
-  
+
   props.tableConfig.table = useReactTable({
     data: props.data,
     state: {

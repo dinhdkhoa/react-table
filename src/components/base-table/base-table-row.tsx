@@ -15,6 +15,7 @@ import BaseForm from '../base-form'
 import useBaseForm from '@/core/hooks/useBaseForm'
 import { IBaseEntityForm } from '@/core/classes/base-entity-form'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip'
+import { rowActionId, rowSelectionId } from './base-table'
 
 function TableSortLabel(props: { active: boolean; direction: SortDirection }) {
   const size = 'ml-2 h-4 w-4'
@@ -51,21 +52,24 @@ export function BaseTableHeader<T extends IBaseData<T>>(props: {
             colSpan={header.colSpan}
           >
             {header.isPlaceholder ? null : (
-              <Button
-                variant='ghost'
-                className='capitalize'
-                onClick={(_) => {
-                  if (column.getCanSort()) column.getToggleSortingHandler()
-                }}
-              >
-                {flexRender(header.column.columnDef.header, header.getContext())}
+              column.id == rowSelectionId ? flexRender(header.column.columnDef.header, header.getContext())
+                : (<Button
+                  variant='ghost'
+                  className='capitalize'
+                  onClick={(_) => {
+                    if (column.getCanSort()) column.getToggleSortingHandler()
+                  }}
+                >
+                  {flexRender(header.column.columnDef.header, header.getContext())}
 
-                {column.getCanSort() &&
-                  TableSortLabel({
-                    active: column.getIsSorted() !== false,
-                    direction: column.getIsSorted() == false ? firstSort : (column.getIsSorted() as SortDirection)
-                  })}
-              </Button>
+                  {column.getCanSort() &&
+                    TableSortLabel({
+                      active: column.getIsSorted() !== false,
+                      direction: column.getIsSorted() == false ? firstSort : (column.getIsSorted() as SortDirection)
+                    })}
+                </Button>)
+
+
             )}
             {header.column.getCanFilter() ? (
               <div>
@@ -92,14 +96,30 @@ export function BaseTableFormRow<T extends IBaseEntityForm<T>>(props: {
     const { editable } = cell.column.columnDef.meta ?? {}
     const anyField = baseFormProps.rhf && baseFormProps.rhf[cell.column.id]
 
-    return props.tableConfig.rowsEditing[props.row.id] !== undefined && (editable ?? false) && anyField ? (
-      <div className='items-center'>
-        <BaseDynamicControl name={cell.column.id} showLabel={'hidden'} />
-      </div>
-    ) : (
-      flexRender(cell.column.columnDef.cell, cell.getContext())
-    )
+    if (props.tableConfig.rowsEditing[props.row.id] !== undefined && (editable ?? false) && anyField) {
+      return (
+        <div className='items-center'>
+          <BaseDynamicControl name={cell.column.id} showLabel={'hidden'} />
+        </div>
+      );
+    }
+
+    if ([rowActionId, rowSelectionId].includes(cell.column.id)) {
+      return flexRender(cell.column.columnDef.cell, cell.getContext());
+    }
+
+    return (<TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span>{flexRender(cell.column.columnDef.cell, cell.getContext())}</span>
+        </TooltipTrigger>
+        <TooltipContent>
+          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>)
   }
+
   return (
     <>
       <TableRow>
@@ -119,12 +139,25 @@ export function BaseTableFormRow<T extends IBaseEntityForm<T>>(props: {
   )
 }
 
-function identity<Type>(arg: Type): Type {
-  return arg
-}
-
 export function BaseTableRow<T extends IBaseData<T>>(props: { row: Row<T>; tableConfig: BaseTableConfig<T> }) {
   const rowEditing = props.tableConfig.rowsEditing[props.row.id]
+
+  const buildCell = (cell: Cell<T, unknown>) => {
+    if ([rowActionId, rowSelectionId].includes(cell.column.id)) {
+      return flexRender(cell.column.columnDef.cell, cell.getContext());
+    }
+
+    return (<TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span>{flexRender(cell.column.columnDef.cell, cell.getContext())}</span>
+        </TooltipTrigger>
+        <TooltipContent>
+          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>)
+  }
 
   const buildRow = () => {
     if (rowEditing) {
@@ -138,17 +171,7 @@ export function BaseTableRow<T extends IBaseData<T>>(props: { row: Row<T>; table
             style={{ ...getCommonPinningStyles(cell.column) }}
             className={cn('border-r last:border-r-0', cell.column.getIsPinned() ? 'bg-background' : '', 'truncate')}
           >
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span className='truncate'>{flexRender(cell.column.columnDef.cell, cell.getContext())}</span>
-                </TooltipTrigger>
-                <TooltipContent>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-
+            {buildCell(cell)}
           </TableCell>
         ))}
       </TableRow>

@@ -105,7 +105,7 @@ export default function TableActionColumn<T extends IBaseData<T>>(props: {
     return <TableMenuActionColumn tableAction={props.tableAction} />
   }
 
-  return props.tableAction.actions.map((action) => {
+  return props.tableAction.actions.filter(w => ![saveButtonId, cancelButtonId].includes(w.id)).map((action) => {
     const ac = { ...action }
     const { isDisable, isVisible, allowAction } = GetActionState(props.tableAction.data, ac)
 
@@ -142,7 +142,7 @@ export default function TableActionColumn<T extends IBaseData<T>>(props: {
 
 function TableMenuActionColumn<T extends IBaseData<T>>(props: { tableAction: TableActionType<T> }) {
   const showChildButton = props.tableAction.actions.find((w) => w.id == showChildButtonId)
-  const otherButton = props.tableAction.actions.filter((w) => w.id != showChildButtonId)
+  const otherButton = props.tableAction.actions.filter((w) => w.id != showChildButtonId && ![saveButtonId, cancelButtonId].includes(w.id))
 
   const childButton = () => {
     if (showChildButton) {
@@ -166,7 +166,7 @@ function TableMenuActionColumn<T extends IBaseData<T>>(props: { tableAction: Tab
         <DropdownMenuContent>
           {otherButton.map((action) => {
             const ac = { ...action }
-            if ([saveButtonId, cancelButtonId].includes(ac.id)) return null
+            // if ([saveButtonId, cancelButtonId].includes(ac.id)) return null
             const { isDisable, isVisible, allowAction } = GetActionState(props.tableAction.data, ac)
             return (
               isVisible && (

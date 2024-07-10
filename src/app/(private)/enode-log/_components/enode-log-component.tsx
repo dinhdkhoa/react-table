@@ -7,8 +7,9 @@ import { } from '@/domain/entities/person-entity'
 import { EnodeLogEntity } from '@/domain/entities/enode-log-entity'
 import { FormatColumnType } from '@/components/base-table/enums'
 import { Guid } from 'guid-typescript'
-import { useEffect, useState } from 'react'
-import { EnodeLogUsecase } from '@/domain/use-cases/enode-log-usecase'
+import { useState } from 'react'
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet'
+import { Button } from '@/components/ui/button'
 
 function generateRandomString(length: number) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -59,6 +60,8 @@ function generateRecords(count: number) {
 
 export default function ENodeLog({ data }: { data: Array<EnodeLogEntity> }) {
   const [loading, setLoading] = useState(false);
+  const [sheetIsOpen, setSheetIsOpen] = useState(false);
+  const [entitySheet, setEntitySheet] = useState<EnodeLogEntity | undefined>(undefined);
   const [tableConfig] = useState<BaseTableConfig<EnodeLogEntity>>(() => {
     const config = new BaseTableConfig<EnodeLogEntity>();
 
@@ -88,13 +91,21 @@ export default function ENodeLog({ data }: { data: Array<EnodeLogEntity> }) {
 
     // config.editButton.visibleFn = (data) => true;
     // config.detailButton
-    config.isShowActionColumn = false;
+    // config.isShowActionColumn = false;
+    config.detailButton.visibleFn = (data) => true;
+    config.detailButton.action = (data) => {
+      setEntitySheet(data);
+      setSheetIsOpen(true);
+    }
+    config.isActionColumListType = false;
+    config.isShowSelectionColumn = true;
+
 
     config.init()
     config.setData(data)
     return config;
   });
-  
+
 
   // useEffect(() => {
   //   setLoading(true);
@@ -108,5 +119,29 @@ export default function ENodeLog({ data }: { data: Array<EnodeLogEntity> }) {
   // }, []);
 
   return <>
-    <BaseTable<EnodeLogEntity> loading={loading} data={tableConfig.getData} tableConfig={tableConfig} /></>
+    <BaseTable<EnodeLogEntity> loading={loading} data={tableConfig.getData} tableConfig={tableConfig} />
+    <Sheet open={sheetIsOpen} onOpenChange={setSheetIsOpen}>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>Detail</SheetTitle>
+        </SheetHeader>
+        <div className='break-all h-full overflow-y-scroll'>
+
+          <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+            <code>
+              {JSON.stringify(entitySheet?.originJsonData, null, 2)}
+            </code>
+          </pre>
+
+        </div>
+        <SheetFooter>
+          <SheetClose asChild>
+            <Button type="submit" onClick={() => setSheetIsOpen(false)}>
+              Save changes
+            </Button>
+          </SheetClose>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
+  </>
 }

@@ -231,7 +231,7 @@ export default function ENode() {
 
   return (
     <>
-      <BaseTable<PersonEntity> data={tableConfig.getData} tableConfig={tableConfig} />
+      <BaseTable<PersonEntity> data={tableConfig.getData} tableConfig={tableConfig} loading={false} />
     </>
   )
 }
