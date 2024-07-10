@@ -82,6 +82,7 @@ export class BaseTableConfig<T extends IBaseData<T>> {
     id: '_row_action_edit',
     name: 'Edit',
     iconChild: <Pencil className={BaseTableConfig.defaultIconSize} fontSize='inherit' />,
+    visibleFn: (data) => false,
     action: (data) => {
       this.addRowEditing(getId(data, this.getKeys(data, this.keys), data.__id__) || '', data)
     }
@@ -89,12 +90,14 @@ export class BaseTableConfig<T extends IBaseData<T>> {
   detailButton: BaseRowAction<T> = {
     id: '_row_action_detail',
     name: 'Detail',
-    iconChild: <List className={BaseTableConfig.defaultIconSize} fontSize='inherit' />
+    iconChild: <List className={BaseTableConfig.defaultIconSize} fontSize='inherit' />,
+    visibleFn: (data) => false,
   }
   deleteButton: BaseRowAction<T> = {
     id: '_row_action_delete',
     name: 'Delete',
-    iconChild: <Delete className={BaseTableConfig.defaultIconSize} fontSize='inherit' />
+    iconChild: <Delete className={BaseTableConfig.defaultIconSize} fontSize='inherit' />,
+    visibleFn: (data) => false,
   }
   saveButton: BaseRowAction<T> = {
     id: '_row_action_save',

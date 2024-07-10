@@ -11,4 +11,9 @@ export interface EnodeLogResponseModel extends BaseResponse<EnodeLogEntity> {
   request?: string
   payload?: object
   response?: object
+  
+  msg_id: string;
+  request_id: string;
+  desc: string;
+  http_status: string;
 }

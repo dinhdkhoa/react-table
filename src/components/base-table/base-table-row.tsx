@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils'
 import BaseForm from '../base-form'
 import useBaseForm from '@/core/hooks/useBaseForm'
 import { IBaseEntityForm } from '@/core/classes/base-entity-form'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip'
 
 function TableSortLabel(props: { active: boolean; direction: SortDirection }) {
   const size = 'ml-2 h-4 w-4'
@@ -137,7 +138,17 @@ export function BaseTableRow<T extends IBaseData<T>>(props: { row: Row<T>; table
             style={{ ...getCommonPinningStyles(cell.column) }}
             className={cn('border-r last:border-r-0', cell.column.getIsPinned() ? 'bg-background' : '', 'truncate')}
           >
-            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className='truncate'>{flexRender(cell.column.columnDef.cell, cell.getContext())}</span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
           </TableCell>
         ))}
       </TableRow>

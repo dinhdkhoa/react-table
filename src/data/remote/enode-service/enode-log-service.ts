@@ -6,12 +6,14 @@ import { GetEnodeLogRequestModel } from './models/requests/get-enode-log-request
 import { EnodeLogResponseModel } from './models/responses/enode-log-response.model'
 import { convertEnodeLogEntityFn, EnodeLogEntity } from '@/domain/entities/enode-log-entity'
 
-type EnodeLogServiceType<TEntity, TResModel extends BaseResponse<TEntity>> = {
-  getList: (request: GetEnodeLogRequestModel) => Promise<HandleStateType<TEntity, TResModel>>
+
+type GetList<TEntity, TResModel extends BaseResponse<TEntity>> = (request: GetEnodeLogRequestModel) => Promise<HandleStateType<TEntity, TResModel>>;
+type EnodeLogServiceType = {
+  getList: GetList<Array<EnodeLogEntity>, Array<EnodeLogResponseModel>>
 }
 
-export const EnodeLogService: EnodeLogServiceType<Array<EnodeLogEntity>, Array<EnodeLogResponseModel>> = {
-    getList: async (request: GetEnodeLogRequestModel): Promise<HandleStateType<Array<EnodeLogEntity>, Array<EnodeLogResponseModel>>> => {
+export const EnodeLogService: EnodeLogServiceType = {
+  getList: async function (request: GetEnodeLogRequestModel): Promise<HandleStateType<EnodeLogEntity[], EnodeLogResponseModel[]>> {
     const response = await getFn<Array<EnodeLogResponseModel>>({
       path: 'enode',
       request: { data: request, ...getEnodeLogRequestCode }

@@ -68,35 +68,44 @@ export default function ENodeLog({ data }: { data: Array<EnodeLogEntity> }) {
           formatColumnType: FormatColumnType.String
         }
       }),
-      config.columnHelper.accessor('url', {}),
+      config.columnHelper.accessor('serviceCode', {}),
+      config.columnHelper.accessor('apiCode', {}),
+      config.columnHelper.accessor('httpStatus', {}),
       config.columnHelper.accessor('method', {}),
       config.columnHelper.accessor('timestamp', {
         meta: {
           formatColumnType: FormatColumnType.DateTime
         }
       }),
-      config.columnHelper.accessor('serviceCode', {}),
-      config.columnHelper.accessor('apiCode', {}),
+      config.columnHelper.accessor('url', {}),
+      config.columnHelper.accessor('requestId', {}),
+      config.columnHelper.accessor('destination', {}),
       config.columnHelper.accessor('request', {}),
       config.columnHelper.accessor('payload', {}),
-      config.columnHelper.accessor('response', {})
+      config.columnHelper.accessor('response', {}),
+      config.columnHelper.accessor('messageId', {}),
     )
+
+    // config.editButton.visibleFn = (data) => true;
+    // config.detailButton
+    config.isShowActionColumn = false;
 
     config.init()
     config.setData(data)
     return config;
   });
+  
 
-  useEffect(() => {
-    setLoading(true);
-    EnodeLogUsecase.getList({ postPerPage: 100, pageNumber: 0 }).then(handleState => {
-      if (!handleState.isError) {
-        handleState.value
-        tableConfig.setData(handleState.value || [])
-        setLoading(false);
-      }
-    })
-  }, []);
+  // useEffect(() => {
+  //   setLoading(true);
+  //   EnodeLogUsecase.getList({ postPerPage: 100, pageNumber: 0 }).then(handleState => {
+  //     if (!handleState.isError) {
+  //       handleState.value
+  //       tableConfig.setData(handleState.value || [])
+  //       setLoading(false);
+  //     }
+  //   })
+  // }, []);
 
   return <>
     <BaseTable<EnodeLogEntity> loading={loading} data={tableConfig.getData} tableConfig={tableConfig} /></>

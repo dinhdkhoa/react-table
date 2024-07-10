@@ -10,6 +10,12 @@ export interface EnodeLogEntity extends IBaseData<EnodeLogEntity> {
   timestamp?: Date
   serviceCode?: string
   apiCode?: string
+  //
+  messageId?: string;
+  requestId?: string;
+  destination?: string;
+  httpStatus?: string;
+  //
   request?: string
   payload?: object
   response?: object
@@ -34,7 +40,11 @@ export const convertEnodeLogEntityFn: ConvertResponseModelToEntityFieldsFunc<Arr
         request: _res.request,
         payload: _res.payload,
         response: _res.response,
-        originJsonData: _res
+        originJsonData: _res,
+        destination: _res.desc,
+        httpStatus: _res.http_status,
+        messageId: _res.msg_id,
+        requestId: _res.request_id
       })
     })
   }
