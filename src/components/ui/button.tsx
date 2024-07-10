@@ -38,22 +38,24 @@ const buttonVariants = cva(
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  VariantProps<typeof buttonVariants> {
   asChild?: boolean
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, spinner = 'disabled',...props }, ref) => {
-    const Comp = asChild ? Slot : 'button'
-    return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} >
-      {/* <Spinner  className={cn('group-disabled:opacity-100 group-enabled:opacity-0', buttonVariants({ spinner }))}/> */}
-      <>
-      <Spinner  className={cn(props.disabled ? 'opacity-100' : 'opacity-0', buttonVariants({ spinner }))}/>
+  ({ className, variant, size, asChild = false, spinner = 'disabled', ...props }, ref) => {
+    // const Comp = asChild ? Slot : 'button'
+    if(asChild){
+      return <Slot className={cn(buttonVariants({ variant, size, className }))} {...props} />
+    }
+    return <button className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} >
+      <Spinner className={cn(props.disabled ? 'opacity-100' : 'opacity-0', buttonVariants({ spinner }))} />
       {props.children}
-      </>
-    </Comp>
+    </button>
   }
 )
+
+
 Button.displayName = 'Button'
 
 export { Button, buttonVariants }

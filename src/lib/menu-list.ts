@@ -103,9 +103,9 @@ export function getMenuList(pathname: string): Group[] {
       groupLabel: 'Settings',
       menus: [
         {
-          href: '/users',
-          label: 'Users',
-          active: pathname.includes('/users'),
+          href: '/enode-log',
+          label: 'Enode Log',
+          active: pathname.includes('/enode-log'),
           icon: Users,
           submenus: []
         },
