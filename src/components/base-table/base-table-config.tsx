@@ -24,6 +24,10 @@ export interface BaseRowAction<IBaseData extends FieldValues = FieldValues> {
   visibleFn?: (data: IBaseData) => boolean
 }
 
+interface ShowChildRowAction<IBaseData extends FieldValues = FieldValues> extends BaseRowAction<IBaseData>{
+  children?: (data: IBaseData) => ReactNode
+}
+
 export const isNumberColumn = (columnType: FormatColumnType | undefined) => {
   return columnType && [FormatColumnType.Decimal, FormatColumnType.Integer].includes(columnType)
 }
@@ -82,7 +86,7 @@ export class BaseTableConfig<T extends IBaseData<T>> {
     id: '_row_action_edit',
     name: 'Edit',
     iconChild: <Pencil className={BaseTableConfig.defaultIconSize} fontSize='inherit' />,
-    visibleFn: (data) => false,
+    visibleFn: (_) => false,
     action: (data) => {
       this.addRowEditing(getId(data, this.getKeys(data, this.keys), data.__id__) || '', data)
     }
@@ -91,13 +95,13 @@ export class BaseTableConfig<T extends IBaseData<T>> {
     id: '_row_action_detail',
     name: 'Detail',
     iconChild: <List className={BaseTableConfig.defaultIconSize} fontSize='inherit' />,
-    visibleFn: (data) => false,
+    visibleFn: (dat_a) => false,
   }
   deleteButton: BaseRowAction<T> = {
     id: '_row_action_delete',
     name: 'Delete',
     iconChild: <Delete className={BaseTableConfig.defaultIconSize} fontSize='inherit' />,
-    visibleFn: (data) => false,
+    visibleFn: (_) => false,
   }
   saveButton: BaseRowAction<T> = {
     id: '_row_action_save',
@@ -119,9 +123,10 @@ export class BaseTableConfig<T extends IBaseData<T>> {
       }
     }
   }
-  showChildButton: BaseRowAction<T> = {
+  showChildButton: ShowChildRowAction<T> = {
     id: showChildButtonId,
-    name: 'Show Child'
+    name: 'Show Child',
+    children: (data) => <span>Empty Child</span>
   }
   otherButton: Array<BaseRowAction<T>> = []
 

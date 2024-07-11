@@ -109,6 +109,9 @@ export default function TableActionColumn<T extends IBaseData<T>>(props: {
     const ac = { ...action }
     const { isDisable, isVisible, allowAction } = GetActionState(props.tableAction.data, ac)
 
+    if (ac.id == showChildButtonId)
+      return ExpandChildIcon(props.tableAction, props.tableAction.data, ac.action, ac.iconChild)
+
     return (
       isVisible && (
         <TooltipProvider key={action.id}>
@@ -121,9 +124,6 @@ export default function TableActionColumn<T extends IBaseData<T>>(props: {
                 onClick={() => {
                   if (allowAction) {
                     ac.action!(props.tableAction.data)
-                  }
-                  if (ac.id == showChildButtonId) {
-                    props.tableAction.toggleExpandedHandler()
                   }
                 }}
               >

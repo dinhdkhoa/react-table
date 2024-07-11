@@ -282,7 +282,7 @@ export function BaseTable<T extends IBaseData<T>>(props: { loading: boolean, dat
   })
 
   return (
-    <div className='max-w-7xl mx-auto mb-10 mt-5'>
+    <div className='mx-auto mb-5 mt-5'>
       <div className='rounded-md border mb-4'>
         <ShadcnTable
           {...{

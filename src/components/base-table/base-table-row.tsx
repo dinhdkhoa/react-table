@@ -169,7 +169,7 @@ export function BaseTableRow<T extends IBaseData<T>>(props: { row: Row<T>; table
           <TableCell
             key={cell.id}
             style={{ ...getCommonPinningStyles(cell.column) }}
-            className={cn('border-r last:border-r-0', cell.column.getIsPinned() ? 'bg-background' : '', 'truncate')}
+            className={cn('border-r last:border-r-0', cell.column.getIsPinned() ? 'bg-background' : '', cell.column.id == rowActionId ? '' : 'truncate')}
           >
             {buildCell(cell)}
           </TableCell>
@@ -181,9 +181,9 @@ export function BaseTableRow<T extends IBaseData<T>>(props: { row: Row<T>; table
   return (
     <>
       {buildRow()}
-      {props.row.getIsExpanded() && (
+      {props.row.getIsExpanded() && props.tableConfig.showChildButton.children != undefined && (
         <TableRow>
-          <TableCell colSpan={props.row.getVisibleCells().length}>{JSON.stringify(props.row.original)}</TableCell>
+          <TableCell colSpan={props.row.getVisibleCells().length}>{props.tableConfig.showChildButton.children(props.row.original)}</TableCell>
         </TableRow>
       )}
     </>

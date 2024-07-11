@@ -10,6 +10,7 @@ import { Guid } from 'guid-typescript'
 import { useState } from 'react'
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
+import ENode from '../../demo/_components/enode'
 
 function generateRandomString(length: number) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -66,11 +67,7 @@ export default function ENodeLog({ data }: { data: Array<EnodeLogEntity> }) {
     const config = new BaseTableConfig<EnodeLogEntity>();
 
     config.cols.push(
-      config.columnHelper.accessor('id', {
-        meta: {
-          formatColumnType: FormatColumnType.String
-        }
-      }),
+      config.columnHelper.accessor('id', {}),
       config.columnHelper.accessor('serviceCode', {}),
       config.columnHelper.accessor('apiCode', {}),
       config.columnHelper.accessor('httpStatus', {}),
@@ -92,11 +89,16 @@ export default function ENodeLog({ data }: { data: Array<EnodeLogEntity> }) {
     // config.editButton.visibleFn = (data) => true;
     // config.detailButton
     // config.isShowActionColumn = false;
-    config.detailButton.visibleFn = (data) => true;
-    config.detailButton.action = (data) => {
-      setEntitySheet(data);
-      setSheetIsOpen(true);
-    }
+    // config.editButton.visibleFn = (data) => true;
+    config.showChildButton.visibleFn = (data) => true;
+    config.showChildButton.children = (data) => <JsonChild data={data.originJsonData}></JsonChild>
+    config.isShowChild = true
+
+    // config.detailButton.visibleFn = (data) => true;
+    // config.detailButton.action = (data) => {
+    //   setEntitySheet(data);
+    //   setSheetIsOpen(true);
+    // }
     config.isActionColumListType = false;
     config.isShowSelectionColumn = true;
 
@@ -120,13 +122,12 @@ export default function ENodeLog({ data }: { data: Array<EnodeLogEntity> }) {
 
   return <>
     <BaseTable<EnodeLogEntity> loading={loading} data={tableConfig.getData} tableConfig={tableConfig} />
-    <Sheet open={sheetIsOpen} onOpenChange={setSheetIsOpen}>
+    {/* <Sheet open={sheetIsOpen} onOpenChange={setSheetIsOpen}>
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Detail</SheetTitle>
         </SheetHeader>
         <div className='break-all h-full overflow-y-scroll'>
-
           <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
             <code>
               {JSON.stringify(entitySheet?.originJsonData, null, 2)}
@@ -142,6 +143,18 @@ export default function ENodeLog({ data }: { data: Array<EnodeLogEntity> }) {
           </SheetClose>
         </SheetFooter>
       </SheetContent>
-    </Sheet>
+    </Sheet> */}
   </>
+}
+
+
+const JsonChild = (props :{data: any}) => {
+  return (<div className='break-all h-full overflow-y-scroll'>
+    <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+      <code>
+        {JSON.stringify(props.data, null, 2)}
+      </code>
+    </pre>
+
+  </div>)
 }
