@@ -1,4 +1,4 @@
-import { Tag, Users, Settings, Bookmark, SquarePen, LayoutGrid, LogIn, Table } from 'lucide-react'
+import { Tag, Users, Settings, Bookmark, SquarePen, LayoutGrid, LogIn, Table, History } from 'lucide-react'
 
 type Submenu = {
   href: string
@@ -50,72 +50,72 @@ export const getActiveMenuTitle = (pathname: string): string => {
 
 export function getMenuList(pathname: string): Group[] {
   return [
+    // {
+    //   groupLabel: '',
+    //   menus: [
+    //     {
+    //       href: '/dashboard',
+    //       label: 'Dashboard',
+    //       active: pathname.includes('/dashboard'),
+    //       icon: LayoutGrid,
+    //       submenus: []
+    //     }
+    //   ]
+    // },
+    // {
+    //   groupLabel: 'Contents',
+    //   menus: [
+    //     {
+    //       href: '',
+    //       label: 'Posts',
+    //       active: pathname.includes('/posts'),
+    //       icon: SquarePen,
+    //       submenus: [
+    //         {
+    //           href: '/posts',
+    //           label: 'All Posts',
+    //           active: pathname === '/posts'
+    //         },
+    //         {
+    //           href: '/posts/new',
+    //           label: 'New Post',
+    //           active: pathname === '/posts/new'
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       href: '/table',
+    //       label: 'Table',
+    //       active: pathname.includes('/table'),
+    //       icon: Table,
+    //       submenus: []
+    //     },
+    //     {
+    //       href: '/login',
+    //       label: 'Login',
+    //       active: pathname.includes('/login'),
+    //       icon: LogIn,
+    //       submenus: []
+    //     }
+    //   ]
+    // },
     {
-      groupLabel: '',
-      menus: [
-        {
-          href: '/dashboard',
-          label: 'Dashboard',
-          active: pathname.includes('/dashboard'),
-          icon: LayoutGrid,
-          submenus: []
-        }
-      ]
-    },
-    {
-      groupLabel: 'Contents',
-      menus: [
-        {
-          href: '',
-          label: 'Posts',
-          active: pathname.includes('/posts'),
-          icon: SquarePen,
-          submenus: [
-            {
-              href: '/posts',
-              label: 'All Posts',
-              active: pathname === '/posts'
-            },
-            {
-              href: '/posts/new',
-              label: 'New Post',
-              active: pathname === '/posts/new'
-            }
-          ]
-        },
-        {
-          href: '/table',
-          label: 'Table',
-          active: pathname.includes('/table'),
-          icon: Table,
-          submenus: []
-        },
-        {
-          href: '/login',
-          label: 'Login',
-          active: pathname.includes('/login'),
-          icon: LogIn,
-          submenus: []
-        }
-      ]
-    },
-    {
-      groupLabel: 'Settings',
+      groupLabel: 'EnodeLog',
       menus: [
         {
           href: '/enode-log',
           label: 'Enode Log',
           active: pathname.includes('/enode-log'),
-          icon: Users,
+          icon: History,
           submenus: []
         },
-        {
-          href: '/account',
-          label: 'Account',
-          active: pathname.includes('/account'),
-          icon: Settings,
-          submenus: []
-        }
+        // {
+        //   href: '/account',
+        //   label: 'Account',
+        //   active: pathname.includes('/account'),
+        //   icon: Settings,
+        //   submenus: []
+        // }
       ]
     }
   ]

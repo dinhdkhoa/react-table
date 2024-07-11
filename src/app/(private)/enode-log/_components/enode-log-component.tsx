@@ -8,9 +8,7 @@ import { EnodeLogEntity } from '@/domain/entities/enode-log-entity'
 import { FormatColumnType } from '@/components/base-table/enums'
 import { Guid } from 'guid-typescript'
 import { useState } from 'react'
-import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
-import ENode from '../../demo/_components/enode'
 
 function generateRandomString(length: number) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -61,8 +59,6 @@ function generateRecords(count: number) {
 
 export default function ENodeLog({ data }: { data: Array<EnodeLogEntity> }) {
   const [loading, setLoading] = useState(false);
-  const [sheetIsOpen, setSheetIsOpen] = useState(false);
-  const [entitySheet, setEntitySheet] = useState<EnodeLogEntity | undefined>(undefined);
   const [tableConfig] = useState<BaseTableConfig<EnodeLogEntity>>(() => {
     const config = new BaseTableConfig<EnodeLogEntity>();
 
