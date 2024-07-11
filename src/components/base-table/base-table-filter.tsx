@@ -13,6 +13,7 @@ import { isNumberColumn } from './base-table-config'
 import { FormatColumnType } from './enums'
 import { SelectOption } from '@/core/types/control.types'
 import { Input } from '../ui/input'
+import useDebounce from '@/core/hooks/useDebound'
 
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData extends RowData, TValue> {
@@ -132,12 +133,10 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
 
   if (!formatColumnType || isNumberCol || [FormatColumnType.String].includes(formatColumnType)) {
     return (
-      <Input
+      <FilterInput
         placeholder='Filter'
-        onChange={(value) => {
-          column.setFilterValue(value.currentTarget.value)
-        }}
-        type={isNumberCol ? 'number' : 'text'}
+        column={column}
+        isNumberCol={isNumberCol ?? false}
       />
     )
   }
@@ -426,3 +425,27 @@ function FilterStaticCombobox({
     </Popover>
   )
 }
+
+
+function FilterInput({ placeholder, column, isNumberCol }: { placeholder: string, column: Column<any, unknown>, isNumberCol: boolean }) {
+  const [searchText, setSearchText] = useState<string>('');
+  const debounceValue = useDebounce(searchText);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setSearchText(value);
+  }
+
+
+  useEffect(() => {
+    column.setFilterValue(searchText)
+  }, [column, debounceValue, searchText]);
+
+  return (
+    <Input
+      placeholder={placeholder}
+      onChange={handleChange}
+      type={isNumberCol ? 'number' : 'text'}
+    />
+  );
+};
