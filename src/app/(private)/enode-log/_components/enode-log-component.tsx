@@ -85,7 +85,7 @@ export default function ENodeLog({ data }: { data: Array<EnodeLogEntity> }) {
     // config.editButton.visibleFn = (data) => true;
     // config.detailButton
     // config.isShowActionColumn = false;
-    // config.editButton.visibleFn = (data) => true;
+    config.editButton.visibleFn = (data) => true;
     config.showChildButton.visibleFn = (data) => true;
     config.showChildButton.children = (data) => <JsonChild data={data.originJsonData}></JsonChild>
     config.isShowChild = true

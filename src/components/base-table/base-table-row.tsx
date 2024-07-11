@@ -143,7 +143,7 @@ export function BaseTableFormRow<T extends IBaseEntityForm<T>>(props: {
             <TableCell
               key={cell.id}
               style={{ ...getCommonPinningStyles(cell.column) }}
-              className={cn('border-r last:border-r-0', cell.column.getIsPinned() ? 'bg-background' : '', 'truncate')}
+              className={cn('border-r last:border-r-0', cell.column.getIsPinned() ? 'bg-background' : '', [rowActionId, rowSelectionId].includes(cell.column.id) ? 'text-center' : 'truncate')}
             >
               {buildCell(cell)}
             </TableCell>

@@ -23,23 +23,33 @@ type ActionStateType = {
 function ExpandChildIcon<T extends IBaseData<T>>(
   tableAction: TableActionType<T>,
   data: T,
-  action?: (data: T) => void,
-  icon?: any
+  button: BaseRowAction<T>
 ) {
   const [expanded, setExpanded] = useState(tableAction.isExpanded)
 
   const handleExpandClick = () => {
     setExpanded(!expanded)
-    if (action) {
-      action(data)
+    if (button.action) {
+      button.action(data)
     }
     tableAction.toggleExpandedHandler()
   }
 
   return (
-    <Toggle onClick={handleExpandClick} aria-expanded={expanded} aria-label='show more' className='h-8 w-8 p-0'>
-      {icon || <ChevronsUpDown className='h-4 w-4' />}
-    </Toggle>
+
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Toggle onClick={handleExpandClick} aria-expanded={expanded} aria-label='show more' className='h-8 w-8 p-0'>
+            {button.iconChild || <ChevronsUpDown className='h-4 w-4' />}
+          </Toggle>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{button.name || ''}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+
   )
 }
 
@@ -110,7 +120,7 @@ export default function TableActionColumn<T extends IBaseData<T>>(props: {
     const { isDisable, isVisible, allowAction } = GetActionState(props.tableAction.data, ac)
 
     if (ac.id == showChildButtonId)
-      return ExpandChildIcon(props.tableAction, props.tableAction.data, ac.action, ac.iconChild)
+      return ExpandChildIcon(props.tableAction, props.tableAction.data, ac)
 
     return (
       isVisible && (
@@ -148,7 +158,7 @@ function TableMenuActionColumn<T extends IBaseData<T>>(props: { tableAction: Tab
     if (showChildButton) {
       const ac = { ...showChildButton }
 
-      return ExpandChildIcon(props.tableAction, props.tableAction.data, ac.action, ac.iconChild)
+      return ExpandChildIcon(props.tableAction, props.tableAction.data, ac)
     }
   }
 
@@ -166,7 +176,6 @@ function TableMenuActionColumn<T extends IBaseData<T>>(props: { tableAction: Tab
         <DropdownMenuContent>
           {otherButton.map((action) => {
             const ac = { ...action }
-            // if ([saveButtonId, cancelButtonId].includes(ac.id)) return null
             const { isDisable, isVisible, allowAction } = GetActionState(props.tableAction.data, ac)
             return (
               isVisible && (
