@@ -163,6 +163,7 @@ export default function ENode() {
 
   tableConfig.colsFixLeft.push('age')
   tableConfig.init()
+  tableConfig.editButton.visibleFn = (data) => true;
 
   // gridConfig.isActionColumListType = false;
   tableConfig.isShowSelectionColumn = true

@@ -124,11 +124,6 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
     return `w-[${column.getSize()}px] max-w-[${column.columnDef.maxSize}px] min-w-[${column.columnDef.minSize}px]`
   }, [column])
 
-  const sortedUniqueValues = useMemo(
-    () => (filterVariant === 'range' ? [] : Array.from(column.getFacetedUniqueValues().keys()).sort().slice(0, 5000)),
-    [column.getFacetedUniqueValues(), filterVariant]
-  )
-
   const isNumberCol = isNumberColumn(formatColumnType)
 
   if (!formatColumnType || isNumberCol || [FormatColumnType.String].includes(formatColumnType)) {
