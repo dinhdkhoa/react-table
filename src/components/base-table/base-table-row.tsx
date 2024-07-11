@@ -2,7 +2,7 @@
 
 import { Cell, ColumnResizeMode, HeaderGroup, Row, SortDirection, flexRender } from '@tanstack/react-table'
 import { TableCell, TableHead, TableRow } from '@/components/ui/table'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ArrowDownNarrowWide, ArrowUpDown, ArrowUpNarrowWide } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { BaseTableConfig } from './base-table-config'
@@ -16,7 +16,6 @@ import useBaseForm from '@/core/hooks/useBaseForm'
 import { IBaseEntityForm } from '@/core/classes/base-entity-form'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip'
 import { rowActionId, rowSelectionId } from './base-table'
-import { RHFOptions } from '@/core/anotations/rhf-field'
 
 
 
@@ -59,13 +58,8 @@ export function BaseTableHeader<T extends IBaseData<T>>(props: {
                 : (<Button
                   variant='ghost'
                   className='capitalize'
-                  onClick={(e) => {
-                    if (column.getCanSort()) {
-                      const toggleSortingHandler = column.getToggleSortingHandler();
-                      if (toggleSortingHandler) {
-                        toggleSortingHandler(e);
-                      }
-                    }
+                  onClick={(_) => {
+                    if (column.getCanSort()) column.getToggleSortingHandler()
                   }}
                 >
                   {flexRender(header.column.columnDef.header, header.getContext())}
@@ -91,37 +85,6 @@ export function BaseTableHeader<T extends IBaseData<T>>(props: {
   )
 }
 
-export function BaseTableCell<T extends IBaseData<T>>(props: { cell: Cell<T, unknown>; row: Row<T>; tableConfig: BaseTableConfig<T>; formField?: RHFOptions<T> }) {
-  const { editable } = props.cell.column.columnDef.meta ?? {}
-
-  const cell = useMemo(() => {
-    if ([rowActionId, rowSelectionId].includes(props.cell.column.id)) {
-      return flexRender(props.cell.column.columnDef.cell, props.cell.getContext());
-    }
-
-    if (props.tableConfig.rowsEditing[props.row.id] !== undefined && (editable ?? false) && props.formField) {
-      return (
-        <div className='items-center'>
-          <BaseDynamicControl name={props.cell.column.id} showLabel={'hidden'} />
-        </div>
-      );
-    }
-
-    return (<TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <span>{flexRender(props.cell.column.columnDef.cell, props.cell.getContext())}</span>
-        </TooltipTrigger>
-        <TooltipContent>
-          {flexRender(props.cell.column.columnDef.cell, props.cell.getContext())}
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>)
-  }, [editable, props.cell, props.formField, props.row.id, props.tableConfig.rowsEditing])
-
-  return cell;
-}
-
 export function BaseTableFormRow<T extends IBaseEntityForm<T>>(props: {
   row: Row<T>
   tableConfig: BaseTableConfig<T>
@@ -130,9 +93,33 @@ export function BaseTableFormRow<T extends IBaseEntityForm<T>>(props: {
     () => props.tableConfig.getEntityByRow(props.row.original, props.row.index, props.row.getParentRow())!
   )
   const { ...baseFormProps } = useBaseForm<T>(entity, false)
+
   const buildCell = (cell: Cell<T, unknown>) => {
-    const formField = baseFormProps.rhf && baseFormProps.rhf[cell.column.id]
-    return <BaseTableCell cell={cell} row={props.row} tableConfig={props.tableConfig} formField={formField} />
+    const { editable } = cell.column.columnDef.meta ?? {}
+    const anyField = baseFormProps.rhf && baseFormProps.rhf[cell.column.id]
+
+    if (props.tableConfig.rowsEditing[props.row.id] !== undefined && (editable ?? false) && anyField) {
+      return (
+        <div className='items-center'>
+          <BaseDynamicControl name={cell.column.id} showLabel={'hidden'} />
+        </div>
+      );
+    }
+
+    if ([rowActionId, rowSelectionId].includes(cell.column.id)) {
+      return flexRender(cell.column.columnDef.cell, cell.getContext());
+    }
+
+    return (<TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span>{flexRender(cell.column.columnDef.cell, cell.getContext())}</span>
+        </TooltipTrigger>
+        <TooltipContent>
+          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>)
   }
 
   return (
@@ -157,7 +144,24 @@ export function BaseTableFormRow<T extends IBaseEntityForm<T>>(props: {
 export function BaseTableRow<T extends IBaseData<T>>(props: { row: Row<T>; tableConfig: BaseTableConfig<T> }) {
   const rowEditing = props.tableConfig.rowsEditing[props.row.id]
 
-  const buildRow = useMemo(() => {
+  const buildCell = (cell: Cell<T, unknown>) => {
+    if ([rowActionId, rowSelectionId].includes(cell.column.id)) {
+      return flexRender(cell.column.columnDef.cell, cell.getContext());
+    }
+
+    return (<TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span>{flexRender(cell.column.columnDef.cell, cell.getContext())}</span>
+        </TooltipTrigger>
+        <TooltipContent>
+          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>)
+  }
+
+  const buildRow = () => {
     if (rowEditing) {
       return <BaseTableFormRow key={props.row.id} row={props.row as any} tableConfig={props.tableConfig as any} />
     }
@@ -169,16 +173,16 @@ export function BaseTableRow<T extends IBaseData<T>>(props: { row: Row<T>; table
             style={{ ...getCommonPinningStyles(cell.column) }}
             className={cn('border-r last:border-r-0', cell.column.getIsPinned() ? 'bg-background' : '', [rowActionId, rowSelectionId].includes(cell.column.id) ? 'text-center' : 'truncate')}
           >
-            <BaseTableCell cell={cell} row={props.row} tableConfig={props.tableConfig} />
+            {buildCell(cell)}
           </TableCell>
         ))}
       </TableRow>
     )
-  }, [props.row, props.tableConfig, rowEditing])
+  }
 
   return (
     <>
-      {buildRow}
+      {buildRow()}
       {props.row.getIsExpanded() && props.tableConfig.showChildButton.children != undefined && (
         <TableRow>
           <TableCell colSpan={props.row.getVisibleCells().length}>{props.tableConfig.showChildButton.children(props.row.original)}</TableCell>
