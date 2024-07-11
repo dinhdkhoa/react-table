@@ -58,8 +58,13 @@ export function BaseTableHeader<T extends IBaseData<T>>(props: {
                 : (<Button
                   variant='ghost'
                   className='capitalize'
-                  onClick={(_) => {
-                    if (column.getCanSort()) column.getToggleSortingHandler()
+                  onClick={(e) => {
+                    if (column.getCanSort()) {
+                      const toggleSortingHandler = column.getToggleSortingHandler();
+                      if (toggleSortingHandler) {
+                        toggleSortingHandler(e);
+                      }
+                    }
                   }}
                 >
                   {flexRender(header.column.columnDef.header, header.getContext())}
