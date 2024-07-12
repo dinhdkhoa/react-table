@@ -90,7 +90,8 @@ const defaultData: PersonEntity[] = [
 
 export default function ENode() {
   const tableConfig = new BaseTableConfig<PersonEntity>(['__id__'])
-
+  tableConfig.tableName = 'Demo'
+  tableConfig.showQuickSearch = true;
   tableConfig.cols.push(
     {
       // id: 'firstName',
@@ -200,6 +201,10 @@ export default function ENode() {
   tableConfig.allowSelectRow = (data) => {
     return data.lastName != 'dirte'
   }
+  
+  tableConfig.addNewAction.visibleFn = (data) => true;
+  tableConfig.filterAction.visibleFn = (data) => true;
+
 
   tableConfig.onSelect = (checked, rowSelectType, data, id) => {
     switch (rowSelectType) {

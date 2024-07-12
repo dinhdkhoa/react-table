@@ -61,6 +61,8 @@ export default function ENodeLog({ data }: { data: Array<EnodeLogEntity> }) {
   const [loading, setLoading] = useState(false);
   const [tableConfig] = useState<BaseTableConfig<EnodeLogEntity>>(() => {
     const config = new BaseTableConfig<EnodeLogEntity>();
+    config.tableName = 'Enode Log';
+    config.showQuickSearch = true;
 
     config.cols.push(
       config.columnHelper.accessor('id', {}),
@@ -106,6 +108,10 @@ export default function ENodeLog({ data }: { data: Array<EnodeLogEntity> }) {
     // config.detailButton
     // config.isShowActionColumn = false;
     // config.editButton.visibleFn = (data) => true;
+    config.addNewAction.visibleFn = (data) => true;
+    config.filterAction.visibleFn = (data) => true;
+
+
     config.showChildButton.visibleFn = (data) => true;
     config.showChildButton.children = (data) => <JsonChild data={data.originJsonData}></JsonChild>
     config.isShowChild = true

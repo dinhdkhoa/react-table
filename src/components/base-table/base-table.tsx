@@ -36,6 +36,7 @@ import { BaseTableConfig, rowIdsEditingChangeEvent } from './base-table-config'
 import { BaseTableFooter, BaseTableHeader, BaseTableRow } from './base-table-row'
 import BaseTablePagination from './base-table-pagination'
 import { BaseTableNodata } from './base-table-nodata'
+import TableHeaderActions from './base-table-header-action'
 
 export const rowActionId = 'rowAction'
 export const rowSelectionId = 'rowSelection'
@@ -96,7 +97,7 @@ function GetActions<T extends IBaseData<T>>(row: Row<T>, props: TableProps<T>, m
         isExpanded: row.getIsExpanded(),
         toggleExpandedHandler: row.getToggleExpandedHandler(),
         data: row.original,
-        actions: props.tableConfig.getActions()
+        actions: props.tableConfig.getRowActions()
       }}
       menuList={props.tableConfig.isActionColumListType}
       mode={mode}
@@ -284,6 +285,7 @@ export function BaseTable<T extends IBaseData<T>>(props: { loading: boolean, dat
   return (
     <div className='mx-auto mb-5 mt-5'>
       <div className='rounded-md border mb-4'>
+        <TableHeaderActions<T> tableConfig={props.tableConfig} />
         <ShadcnTable
           {...{
             style: {

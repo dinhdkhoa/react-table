@@ -93,9 +93,6 @@ export default function TableActionColumn<T extends IBaseData<T>>(props: {
                     if (allowAction) {
                       ac.action!(props.tableAction.data, form)
                     }
-                    if (ac.id == showChildButtonId) {
-                      props.tableAction.toggleExpandedHandler()
-                    }
                   }}
                 >
                   {ac.iconChild}

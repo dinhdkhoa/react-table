@@ -13,6 +13,9 @@ import { FieldNames } from '@/core/helper/type-helpers'
 export const showChildButtonId = '_row_action_show_child'
 export const saveButtonId = '_row_action_save'
 export const cancelButtonId = '_row_action_cancel'
+export const filterButtonId = '_header_action_filter'
+export const showHideColumnsButtonId = '_header_action_show_hide_columns'
+export const addNewButtonId = '_header_action_add_new'
 export const rowIdsEditingChangeEvent = 'rowsIdsEditingChange'
 
 export interface BaseRowAction<IBaseData extends FieldValues = FieldValues> {
@@ -24,7 +27,9 @@ export interface BaseRowAction<IBaseData extends FieldValues = FieldValues> {
   visibleFn?: (data: IBaseData) => boolean
 }
 
-interface ShowChildRowAction<IBaseData extends FieldValues = FieldValues> extends BaseRowAction<IBaseData>{
+export interface BaseHeaderAction<IBaseData extends FieldValues = FieldValues> extends BaseRowAction<IBaseData> { }
+
+interface ShowChildRowAction<IBaseData extends FieldValues = FieldValues> extends BaseRowAction<IBaseData> {
   children?: (data: IBaseData) => ReactNode
 }
 
@@ -40,6 +45,7 @@ export class BaseTableConfig<T extends IBaseData<T>> {
   static defaultIconSize = 'h-4 w-4'
   keys: FieldNames<T>[] = ['__id__']
   data: T[] = []
+  tableName?: string
   rowsEditing: Record<string, T> = {}
 
   constructor(keys?: FieldNames<T>[]) {
@@ -130,12 +136,34 @@ export class BaseTableConfig<T extends IBaseData<T>> {
   }
   otherButton: Array<BaseRowAction<T>> = []
 
+  ///
+  ///Header Action
+  showHideColumnsAction: BaseHeaderAction<T> = {
+    id: showHideColumnsButtonId,
+    name: 'Show/Hide Columns',
+    visibleFn: (data) => true,
+  }
+  filterAction: BaseHeaderAction<T> = {
+    id: filterButtonId,
+    name: 'Filter',
+    visibleFn: (data) => false,
+  }
+  addNewAction: BaseHeaderAction<T> = {
+    id: addNewButtonId,
+    name: 'Add New',
+    visibleFn: (data) => false,
+  }
+  ///
+  ///Quick search
+  showQuickSearch = false;
+  ///
+
   getKeys(data?: T, keys?: FieldNames<T>[]): string[] {
     const _keys = (keys || data?.__keys__ || []) as string[]
     return _keys
   }
 
-  getActions() {
+  getRowActions() {
     let actions = [
       this.editButton,
       this.detailButton,
