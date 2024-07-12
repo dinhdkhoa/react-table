@@ -17,7 +17,8 @@ import useDebounce from '@/core/hooks/useDebound'
 
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData extends RowData, TValue> {
-    filterVariant?: 'text' | 'range' | 'select'
+    filterVariant?: 'text' | 'range' | 'select',
+    breakAll?: boolean,
     staticSelectOption?: SelectOption<any, any>
   }
 }

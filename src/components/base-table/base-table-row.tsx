@@ -2,7 +2,7 @@
 
 import { Cell, ColumnResizeMode, HeaderGroup, Row, SortDirection, flexRender } from '@tanstack/react-table'
 import { TableCell, TableHead, TableRow } from '@/components/ui/table'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { ArrowDownNarrowWide, ArrowUpDown, ArrowUpNarrowWide } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { BaseTableConfig } from './base-table-config'
@@ -16,7 +16,7 @@ import useBaseForm from '@/core/hooks/useBaseForm'
 import { IBaseEntityForm } from '@/core/classes/base-entity-form'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip'
 import { rowActionId, rowSelectionId } from './base-table'
-
+import { RHFOptions } from '@/core/anotations/rhf-field'
 
 
 function TableSortLabel(props: { active: boolean; direction: SortDirection }) {
@@ -90,6 +90,59 @@ export function BaseTableHeader<T extends IBaseData<T>>(props: {
   )
 }
 
+export function BaseTableCell<T extends IBaseData<T>>(props: { cell: Cell<T, unknown>; row: Row<T>; tableConfig: BaseTableConfig<T>; formField?: RHFOptions<T> }) {
+  const { editable, breakAll } = props.cell.column.columnDef.meta ?? {};
+
+  const className = useState(() => {
+    const result: string[] = [];
+    result.push('border-r last:border-r-0');
+    if (props.cell.column.getIsPinned()) result.push('bg-background');
+    if ([rowActionId, rowSelectionId].includes(props.cell.column.id)) {
+      result.push('text-center');
+    }
+    else if (breakAll) {
+      result.push('break-all');
+    }
+    else {
+      result.push('truncate');
+    }
+
+    return result.join(' ');
+  })
+
+  const buildCell = () => {
+    if ([rowActionId, rowSelectionId].includes(props.cell.column.id)) {
+      return flexRender(props.cell.column.columnDef.cell, props.cell.getContext());
+    }
+
+    if (props.tableConfig.rowsEditing[props.row.id] !== undefined && (editable ?? false) && props.formField) {
+      return (
+        <div className='items-center'>
+          <BaseDynamicControl name={props.cell.column.id} showLabel={'hidden'} />
+        </div>
+      );
+    }
+
+    return (<TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span>{flexRender(props.cell.column.columnDef.cell, props.cell.getContext())}</span>
+        </TooltipTrigger>
+        <TooltipContent>
+          {flexRender(props.cell.column.columnDef.cell, props.cell.getContext())}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>)
+  }
+
+  return (<TableCell
+    style={{ ...getCommonPinningStyles(props.cell.column) }}
+    className={cn(className)}
+  >
+    {buildCell()}
+  </TableCell>)
+}
+
 export function BaseTableFormRow<T extends IBaseEntityForm<T>>(props: {
   row: Row<T>
   tableConfig: BaseTableConfig<T>
@@ -98,48 +151,16 @@ export function BaseTableFormRow<T extends IBaseEntityForm<T>>(props: {
     () => props.tableConfig.getEntityByRow(props.row.original, props.row.index, props.row.getParentRow())!
   )
   const { ...baseFormProps } = useBaseForm<T>(entity, false)
-
   const buildCell = (cell: Cell<T, unknown>) => {
-    const { editable } = cell.column.columnDef.meta ?? {}
-    const anyField = baseFormProps.rhf && baseFormProps.rhf[cell.column.id]
-
-    if (props.tableConfig.rowsEditing[props.row.id] !== undefined && (editable ?? false) && anyField) {
-      return (
-        <div className='items-center'>
-          <BaseDynamicControl name={cell.column.id} showLabel={'hidden'} />
-        </div>
-      );
-    }
-
-    if ([rowActionId, rowSelectionId].includes(cell.column.id)) {
-      return flexRender(cell.column.columnDef.cell, cell.getContext());
-    }
-
-    return (<TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <span>{flexRender(cell.column.columnDef.cell, cell.getContext())}</span>
-        </TooltipTrigger>
-        <TooltipContent>
-          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>)
+    const formField = baseFormProps.rhf && baseFormProps.rhf[cell.column.id]
+    return <BaseTableCell key={cell.id} cell={cell} row={props.row} tableConfig={props.tableConfig} formField={formField} />
   }
 
   return (
     <>
       <TableRow>
         <BaseForm<T> {...baseFormProps}>
-          {props.row.getVisibleCells().map((cell) => (
-            <TableCell
-              key={cell.id}
-              style={{ ...getCommonPinningStyles(cell.column) }}
-              className={cn('border-r last:border-r-0', cell.column.getIsPinned() ? 'bg-background' : '', [rowActionId, rowSelectionId].includes(cell.column.id) ? 'text-center' : 'truncate')}
-            >
-              {buildCell(cell)}
-            </TableCell>
-          ))}
+          {props.row.getVisibleCells().map((cell) => buildCell(cell))}
         </BaseForm>
       </TableRow>
     </>
@@ -149,23 +170,6 @@ export function BaseTableFormRow<T extends IBaseEntityForm<T>>(props: {
 export function BaseTableRow<T extends IBaseData<T>>(props: { row: Row<T>; tableConfig: BaseTableConfig<T> }) {
   const rowEditing = props.tableConfig.rowsEditing[props.row.id]
 
-  const buildCell = (cell: Cell<T, unknown>) => {
-    if ([rowActionId, rowSelectionId].includes(cell.column.id)) {
-      return flexRender(cell.column.columnDef.cell, cell.getContext());
-    }
-
-    return (<TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <span>{flexRender(cell.column.columnDef.cell, cell.getContext())}</span>
-        </TooltipTrigger>
-        <TooltipContent>
-          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>)
-  }
-
   const buildRow = () => {
     if (rowEditing) {
       return <BaseTableFormRow key={props.row.id} row={props.row as any} tableConfig={props.tableConfig as any} />
@@ -173,17 +177,11 @@ export function BaseTableRow<T extends IBaseData<T>>(props: { row: Row<T>; table
     return (
       <TableRow>
         {props.row.getVisibleCells().map((cell) => (
-          <TableCell
-            key={cell.id}
-            style={{ ...getCommonPinningStyles(cell.column) }}
-            className={cn('border-r last:border-r-0', cell.column.getIsPinned() ? 'bg-background' : '', [rowActionId, rowSelectionId].includes(cell.column.id) ? 'text-center' : 'truncate')}
-          >
-            {buildCell(cell)}
-          </TableCell>
+          <BaseTableCell key={cell.id} cell={cell} row={props.row} tableConfig={props.tableConfig} />
         ))}
       </TableRow>
     )
-  }
+  };
 
   return (
     <>
