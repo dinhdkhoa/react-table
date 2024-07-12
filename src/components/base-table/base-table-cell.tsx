@@ -1,9 +1,71 @@
 'use client'
 
-import { CellContext } from '@tanstack/react-table'
+import { Cell, CellContext, flexRender, Row } from '@tanstack/react-table'
 import { Checkbox } from '@/components/ui/checkbox'
 import { IBaseData } from '@/core/classes/base-data'
 import { FormatColumnType } from './enums'
+import { TableCell } from '../ui/table'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip'
+import { rowActionId, rowSelectionId } from './base-table'
+import BaseDynamicControl from '../base-form/form-controls/base-dynamic-control-form'
+import { cn } from '@/lib/utils'
+import { BaseTableConfig } from './base-table-config'
+import { getCommonPinningStyles } from './styles'
+import { useState } from 'react'
+import { RHFOptions } from '@/core/anotations/rhf-field'
+
+export function BaseTableCell<T extends IBaseData<T>>(props: { cell: Cell<T, unknown>; row: Row<T>; tableConfig: BaseTableConfig<T>; formField?: RHFOptions<T> }) {
+  const { editable, breakAll } = props.cell.column.columnDef.meta ?? {};
+
+  const className = useState(() => {
+    const result: string[] = [];
+    result.push('border-r last:border-r-0');
+    if (props.cell.column.getIsPinned()) result.push('bg-background');
+    if ([rowActionId, rowSelectionId].includes(props.cell.column.id)) {
+      result.push('text-center');
+    }
+    else if (breakAll) {
+      result.push('break-all');
+    }
+    else {
+      result.push('truncate');
+    }
+
+    return result.join(' ');
+  })
+
+  const buildCell = () => {
+    if ([rowActionId, rowSelectionId].includes(props.cell.column.id)) {
+      return flexRender(props.cell.column.columnDef.cell, props.cell.getContext());
+    }
+
+    if (props.tableConfig.rowsEditing[props.row.id] !== undefined && (editable ?? false) && props.formField) {
+      return (
+        <div className='items-center'>
+          <BaseDynamicControl name={props.cell.column.id} showLabel={'hidden'} />
+        </div>
+      );
+    }
+
+    return (<TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span>{flexRender(props.cell.column.columnDef.cell, props.cell.getContext())}</span>
+        </TooltipTrigger>
+        <TooltipContent>
+          {flexRender(props.cell.column.columnDef.cell, props.cell.getContext())}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>)
+  }
+
+  return (<TableCell
+    style={{ ...getCommonPinningStyles(props.cell.column) }}
+    className={cn(className)}
+  >
+    {buildCell()}
+  </TableCell>)
+}
 
 export function DefaultCell<TData extends IBaseData<TData>>(cellContext: CellContext<TData, any>) {
   const { formatColumnType } = cellContext.column.columnDef.meta ?? {}

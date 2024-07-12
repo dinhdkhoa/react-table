@@ -2,21 +2,19 @@
 
 import { Cell, ColumnResizeMode, HeaderGroup, Row, SortDirection, flexRender } from '@tanstack/react-table'
 import { TableCell, TableHead, TableRow } from '@/components/ui/table'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { ArrowDownNarrowWide, ArrowUpDown, ArrowUpNarrowWide } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { BaseTableConfig } from './base-table-config'
 import { IBaseData } from '@/core/classes/base-data'
 import { getCommonPinningStyles } from './styles'
 import { Filter } from './base-table-filter'
-import BaseDynamicControl from '../base-form/form-controls/base-dynamic-control-form'
 import { cn } from '@/lib/utils'
 import BaseForm from '../base-form'
 import useBaseForm from '@/core/hooks/useBaseForm'
 import { IBaseEntityForm } from '@/core/classes/base-entity-form'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip'
-import { rowActionId, rowSelectionId } from './base-table'
-import { RHFOptions } from '@/core/anotations/rhf-field'
+import { rowSelectionId } from './base-table'
+import { BaseTableCell } from './base-table-cell'
 
 
 function TableSortLabel(props: { active: boolean; direction: SortDirection }) {
@@ -88,59 +86,6 @@ export function BaseTableHeader<T extends IBaseData<T>>(props: {
       })}
     </TableRow>
   )
-}
-
-export function BaseTableCell<T extends IBaseData<T>>(props: { cell: Cell<T, unknown>; row: Row<T>; tableConfig: BaseTableConfig<T>; formField?: RHFOptions<T> }) {
-  const { editable, breakAll } = props.cell.column.columnDef.meta ?? {};
-
-  const className = useState(() => {
-    const result: string[] = [];
-    result.push('border-r last:border-r-0');
-    if (props.cell.column.getIsPinned()) result.push('bg-background');
-    if ([rowActionId, rowSelectionId].includes(props.cell.column.id)) {
-      result.push('text-center');
-    }
-    else if (breakAll) {
-      result.push('break-all');
-    }
-    else {
-      result.push('truncate');
-    }
-
-    return result.join(' ');
-  })
-
-  const buildCell = () => {
-    if ([rowActionId, rowSelectionId].includes(props.cell.column.id)) {
-      return flexRender(props.cell.column.columnDef.cell, props.cell.getContext());
-    }
-
-    if (props.tableConfig.rowsEditing[props.row.id] !== undefined && (editable ?? false) && props.formField) {
-      return (
-        <div className='items-center'>
-          <BaseDynamicControl name={props.cell.column.id} showLabel={'hidden'} />
-        </div>
-      );
-    }
-
-    return (<TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <span>{flexRender(props.cell.column.columnDef.cell, props.cell.getContext())}</span>
-        </TooltipTrigger>
-        <TooltipContent>
-          {flexRender(props.cell.column.columnDef.cell, props.cell.getContext())}
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>)
-  }
-
-  return (<TableCell
-    style={{ ...getCommonPinningStyles(props.cell.column) }}
-    className={cn(className)}
-  >
-    {buildCell()}
-  </TableCell>)
 }
 
 export function BaseTableFormRow<T extends IBaseEntityForm<T>>(props: {
