@@ -17,7 +17,7 @@ import useDebounce from '@/core/hooks/useDebound'
 
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData extends RowData, TValue> {
-    filterVariant?: 'text' | 'range' | 'select',
+    filterVariant?: 'unique',
     breakAll?: boolean,
     staticSelectOption?: SelectOption<any, any>
   }
@@ -125,9 +125,37 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
     return `w-[${column.getSize()}px] max-w-[${column.columnDef.maxSize}px] min-w-[${column.columnDef.minSize}px]`
   }, [column])
 
+  const sortedUniqueValues = useMemo(
+    () => filterVariant === 'unique' ? Array.from(column.getFacetedUniqueValues().keys()) : []
+      .sort()
+      .slice(0, 5000),
+    [column.getFacetedUniqueValues(), filterVariant]
+  );
+
   const isNumberCol = isNumberColumn(formatColumnType)
 
-  if (!formatColumnType || isNumberCol || [FormatColumnType.String].includes(formatColumnType)) {
+  if (!formatColumnType) {
+    return (
+      <FilterInput
+        placeholder='Filter'
+        column={column}
+        isNumberCol={isNumberCol ?? false}
+      />
+    )
+  }
+
+  if (isNumberCol || [FormatColumnType.String].includes(formatColumnType)) {
+    if (filterVariant === 'unique') {
+      return (
+        <FilterAutocomplete
+          popOverContentWidth={buildWidthPopOver}
+          options={sortedUniqueValues}
+          onChange={value => {
+            column.setFilterValue(value)
+          }}
+        />
+      );
+    }
     return (
       <FilterInput
         placeholder='Filter'

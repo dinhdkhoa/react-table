@@ -64,10 +64,30 @@ export default function ENodeLog({ data }: { data: Array<EnodeLogEntity> }) {
 
     config.cols.push(
       config.columnHelper.accessor('id', {}),
-      config.columnHelper.accessor('serviceCode', {}),
-      config.columnHelper.accessor('apiCode', {}),
-      config.columnHelper.accessor('httpStatus', {}),
-      config.columnHelper.accessor('method', {}),
+      config.columnHelper.accessor('serviceCode', {
+        meta: {
+          formatColumnType: FormatColumnType.String,
+          filterVariant: 'unique',
+        }
+      }),
+      config.columnHelper.accessor('apiCode', {
+        meta: {
+          formatColumnType: FormatColumnType.String,
+          filterVariant: 'unique',
+        }
+      }),
+      config.columnHelper.accessor('httpStatus', {
+        meta: {
+          formatColumnType: FormatColumnType.String,
+          filterVariant: 'unique',
+        }
+      }),
+      config.columnHelper.accessor('method', {
+        meta: {
+          formatColumnType: FormatColumnType.String,
+          filterVariant: 'unique',
+        }
+      }),
       config.columnHelper.accessor('timestamp', {
         meta: {
           formatColumnType: FormatColumnType.DateTime
@@ -144,7 +164,7 @@ export default function ENodeLog({ data }: { data: Array<EnodeLogEntity> }) {
 }
 
 
-const JsonChild = (props :{data: any}) => {
+const JsonChild = (props: { data: any }) => {
   return (<div className='break-all h-full overflow-y-scroll'>
     <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
       <code>
