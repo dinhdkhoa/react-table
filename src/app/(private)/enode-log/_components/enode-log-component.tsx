@@ -165,7 +165,7 @@ export default function ENodeLog({ data }: { data: Array<EnodeLogEntity> }) {
 
 
 const JsonChild = (props: { data: any }) => {
-  return (<div className='break-all h-full overflow-y-scroll'>
+  return (<div className='break-all max-h-[480px] overflow-y-scroll'>
     <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
       <code>
         {JSON.stringify(props.data, null, 2)}
