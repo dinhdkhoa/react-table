@@ -37,6 +37,8 @@ import { BaseTableFooter, BaseTableHeader, BaseTableRow } from './base-table-row
 import BaseTablePagination from './base-table-pagination'
 import { BaseTableNodata } from './base-table-nodata'
 import TableHeaderActions from './base-table-header-action'
+import { fuzzyFilter } from './base-table-filter'
+// import { rankItem, compareItems } from '@tanstack/match-sorter-utils'
 
 export const rowActionId = 'rowAction'
 export const rowSelectionId = 'rowSelection'
@@ -142,6 +144,7 @@ export function BaseTable<T extends IBaseData<T>>(props: { loading: boolean, dat
     pageSize: props.tableConfig.pageSizeDefault
   })
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [globalFilter, setGlobalFilter] = React.useState('')
 
   const columns = useMemo<ColumnDef<T, any>[]>(() => {
     if (props.tableConfig.isShowSelectionColumn) {
@@ -150,6 +153,7 @@ export function BaseTable<T extends IBaseData<T>>(props: { loading: boolean, dat
         accessorKey: rowSelectionId,
         enableSorting: false,
         enableColumnFilter: false,
+        enableGlobalFilter: false,
         size: 40,
         minSize: 40,
         maxSize: 40,
@@ -198,6 +202,7 @@ export function BaseTable<T extends IBaseData<T>>(props: { loading: boolean, dat
         accessorKey: rowActionId,
         enableSorting: false,
         enableColumnFilter: false,
+        enableGlobalFilter: false,
         enableResizing: false,
         size: 100,
         minSize: 100,
@@ -255,12 +260,18 @@ export function BaseTable<T extends IBaseData<T>>(props: { loading: boolean, dat
       sorting,
       pagination,
       columnFilters,
-      columnPinning: columnPinningState
+      columnPinning: columnPinningState,
+      globalFilter
+    },
+    filterFns: {
+      fuzzy: fuzzyFilter
     },
     defaultColumn: {
       filterFn: filterFns.includesString,
+      enableGlobalFilter: true,
       maxSize: 200,
-      minSize: 100
+      minSize: 100,
+
     },
     columns,
     columnResizeMode,
@@ -279,13 +290,19 @@ export function BaseTable<T extends IBaseData<T>>(props: { loading: boolean, dat
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
-    onPaginationChange: setPagination
+    onPaginationChange: setPagination,
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: 'fuzzy'
   })
+
+  // props.tableConfig.filterAction.onClearFilter = () =>{
+  //   setColumnFilters([])
+  // }
 
   return (
     <div className='mx-auto mb-5 mt-5'>
       <div className='rounded-md border mb-4'>
-        <TableHeaderActions<T> tableConfig={props.tableConfig} />
+        <TableHeaderActions<T> tableConfig={props.tableConfig} searchGlobal={globalFilter}/>
         <ShadcnTable
           {...{
             style: {

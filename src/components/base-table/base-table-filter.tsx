@@ -1,6 +1,6 @@
 'use client'
 
-import { Column, Row, RowData } from '@tanstack/react-table'
+import { CellContext, Column, FilterFn, Row, RowData } from '@tanstack/react-table'
 import { useEffect, useMemo, useState } from 'react'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Check, ChevronsUpDown, X } from 'lucide-react'
@@ -15,13 +15,60 @@ import { SelectOption } from '@/core/types/control.types'
 import { Input } from '../ui/input'
 import useDebounce from '@/core/hooks/useDebound'
 
+import {
+  RankingInfo,
+  rankItem,
+  compareItems,
+} from '@tanstack/match-sorter-utils'
+import { StaticComboboxCell } from './base-table-cell'
+
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData extends RowData, TValue> {
     filterVariant?: 'unique',
     breakAll?: boolean,
     staticSelectOption?: SelectOption<any, any>
+    cacheDisplayText?: any
+  }
+
+  interface Row<TData> {
+    cacheDisplay?: Record<string, any>;
+  }
+
+  interface FilterFns {
+    fuzzy: FilterFn<unknown>
+  }
+  interface FilterMeta {
+    itemRank: RankingInfo
   }
 }
+
+export const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
+  const { formatColumnType } = row._getAllCellsByColumnId()[columnId]?.column?.columnDef?.meta ?? {};
+  if (formatColumnType == FormatColumnType.StaticCombobox) {
+    if (row.cacheDisplay === undefined) {
+      row.cacheDisplay = {}
+    }
+    if (row.cacheDisplay[columnId] === undefined) {
+      const cellContext = row._getAllCellsByColumnId()[columnId]?.getContext();
+      if (cellContext) {
+        const comboboxDisplayValue = StaticComboboxCell(row._getAllCellsByColumnId()[columnId].getContext() as CellContext<any, any>);
+        row.cacheDisplay[columnId] = comboboxDisplayValue;
+      }
+    }
+    const itemRank = rankItem(row.cacheDisplay[columnId], value, { threshold: 3 })
+    addMeta({
+      itemRank,
+    })
+    return itemRank.passed
+  }
+
+  const itemRank = rankItem(row.getValue(columnId), value, { threshold: 3 })
+  addMeta({
+    itemRank,
+  })
+  return itemRank.passed
+}
+
 
 type CheckBoxFilterType = string | null | undefined
 type DateFilterType = Date | null | undefined

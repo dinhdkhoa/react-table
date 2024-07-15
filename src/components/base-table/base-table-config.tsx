@@ -28,6 +28,10 @@ export interface BaseRowAction<IBaseData extends FieldValues = FieldValues> {
 }
 
 export interface BaseHeaderAction<IBaseData extends FieldValues = FieldValues> extends BaseRowAction<IBaseData> { }
+export interface FilterHeaderAction<IBaseData extends FieldValues = FieldValues> extends BaseHeaderAction<IBaseData> {
+  onChangeShowHideFilter?: (value: boolean) => void
+  onClearFilter?: () => void
+}
 
 interface ShowChildRowAction<IBaseData extends FieldValues = FieldValues> extends BaseRowAction<IBaseData> {
   children?: (data: IBaseData) => ReactNode
@@ -138,12 +142,13 @@ export class BaseTableConfig<T extends IBaseData<T>> {
 
   ///
   ///Header Action
+  showFilterRow = true;
   showHideColumnsAction: BaseHeaderAction<T> = {
     id: showHideColumnsButtonId,
     name: 'Show/Hide Columns',
     visibleFn: (data) => true,
   }
-  filterAction: BaseHeaderAction<T> = {
+  filterAction: FilterHeaderAction<T> = {
     id: filterButtonId,
     name: 'Filter',
     visibleFn: (data) => false,
@@ -155,7 +160,19 @@ export class BaseTableConfig<T extends IBaseData<T>> {
   }
   ///
   ///Quick search
-  showQuickSearch = false;
+  isShowQuickSearch = false;
+  quickSearchFn = (value: string) => {
+    this.table!.getFilteredRowModel
+    if (this.table) {
+      this.table.getAllColumns().forEach(col => {
+        const { formatColumnType } = col.columnDef.meta ?? {};
+        if (formatColumnType) {
+          if ([FormatColumnType.String, FormatColumnType.Integer, FormatColumnType.Decimal].includes(formatColumnType))
+            col.setFilterValue(value)
+        }
+      })
+    }
+  }
   ///
 
   getKeys(data?: T, keys?: FieldNames<T>[]): string[] {
@@ -254,16 +271,19 @@ export class BaseTableConfig<T extends IBaseData<T>> {
       if (col.meta?.formatColumnType) {
         if (!col.filterFn) {
           if (isDateColumn(col.meta!.formatColumnType)) {
-            col.filterFn = filterOnDate
+            col.filterFn = filterOnDate;
+            col.enableGlobalFilter = false;
           }
           if ([FormatColumnType.Boolean].includes(col.meta!.formatColumnType)) {
-            col.filterFn = filterCheckbox
+            col.filterFn = filterCheckbox;
+            col.enableGlobalFilter = false;
           }
           if (isNumberColumn(col.meta!.formatColumnType!)) {
-            col.filterFn = filterNumber
+            col.filterFn = filterNumber;
           }
           if ([FormatColumnType.StaticCombobox].includes(col.meta!.formatColumnType)) {
-            col.filterFn = filterStaticCombobox
+            col.filterFn = filterStaticCombobox;
+            // col.enableGlobalFilter = false;
           }
         }
         if (!col.sortingFn) {
