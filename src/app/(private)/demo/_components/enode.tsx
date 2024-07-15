@@ -92,6 +92,7 @@ export default function ENode() {
   const tableConfig = new BaseTableConfig<PersonEntity>(['__id__'])
   tableConfig.tableName = 'Demo'
   tableConfig.isShowQuickSearch = true;
+  tableConfig.showFilterRow = true;
   tableConfig.cols.push(
     {
       // id: 'firstName',

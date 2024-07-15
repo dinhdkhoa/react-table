@@ -28,6 +28,10 @@ export interface BaseRowAction<IBaseData extends FieldValues = FieldValues> {
 }
 
 export interface BaseHeaderAction<IBaseData extends FieldValues = FieldValues> extends BaseRowAction<IBaseData> { }
+export interface FilterHeaderAction<IBaseData extends FieldValues = FieldValues> extends BaseHeaderAction<IBaseData> {
+  onChangeShowHideFilter?: (value: boolean) => void
+  onClearFilter?: () => void
+}
 
 interface ShowChildRowAction<IBaseData extends FieldValues = FieldValues> extends BaseRowAction<IBaseData> {
   children?: (data: IBaseData) => ReactNode
@@ -138,12 +142,13 @@ export class BaseTableConfig<T extends IBaseData<T>> {
 
   ///
   ///Header Action
+  showFilterRow = true;
   showHideColumnsAction: BaseHeaderAction<T> = {
     id: showHideColumnsButtonId,
     name: 'Show/Hide Columns',
     visibleFn: (data) => true,
   }
-  filterAction: BaseHeaderAction<T> = {
+  filterAction: FilterHeaderAction<T> = {
     id: filterButtonId,
     name: 'Filter',
     visibleFn: (data) => false,

@@ -1,15 +1,14 @@
 'use client'
 
-import { TableCell, TableRow } from '@/components/ui/table'
-import { CirclePlus, Download, Filter, AlignJustify, Columns3, Search } from 'lucide-react'
+import { CirclePlus, Download, Filter, AlignJustify, Columns3, Search, X, EyeOff, Eye } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { ChangeEvent, useEffect, useState } from 'react'
@@ -18,23 +17,24 @@ import { IBaseData } from '@/core/classes/base-data'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 export default function TableHeaderActions<T extends IBaseData<T>>({ tableConfig, searchGlobal }: { tableConfig: BaseTableConfig<T>; searchGlobal: string | number }) {
-  const [dropDownOpen, setDropDownOpen] = useState(false)
+  const [dropDownShowHideColumnOpen, setDropDownShowHideColumnOpen] = useState(false)
+  const [dropDownFilter, setDropDownFilter] = useState(false)
 
   const showHideColumns = () => {
     return tableConfig.showHideColumnsAction.visibleFn && tableConfig.showHideColumnsAction.visibleFn({} as any) && (
-      <DropdownMenu open={dropDownOpen}>
+      <DropdownMenu open={dropDownShowHideColumnOpen}>
         <DropdownMenuTrigger asChild>
           <Button
             variant='ghost'
             className='h-8 w-8 p-0'
             onClick={() => {
-              setDropDownOpen(true)
+              setDropDownShowHideColumnOpen(true)
             }}
           >
             <Columns3 className='h-4 w-4' />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align='end' onPointerDownOutside={() => setDropDownOpen(false)}>
+        <DropdownMenuContent align='end' onPointerDownOutside={() => setDropDownShowHideColumnOpen(false)}>
           {tableConfig.table!
             .getAllColumns()
             .filter((column) => column.getCanHide())
@@ -55,29 +55,53 @@ export default function TableHeaderActions<T extends IBaseData<T>>({ tableConfig
     )
   }
 
+  function handleOnSelectShowHideFilter(event: Event): void {
+    setDropDownFilter(false);
+    if (tableConfig.filterAction.onChangeShowHideFilter) {
+      tableConfig.filterAction.onChangeShowHideFilter(!tableConfig.showFilterRow);
+    }
+  }
+  function handleOnClearFilter(event: Event): void {
+    setDropDownFilter(false);
+    console.log('Clear Filter')
+  }
+
   const filter = () => {
     return tableConfig.filterAction.visibleFn && tableConfig.filterAction.visibleFn({} as any) &&
-      (<TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant='ghost'
-              // disabled={isDisable}
-              className='h-8 w-8 p-0'
-              onClick={() => {
-                // if (allowAction) {
-                //   ac.action!(props.tableAction.data)
-                // }
-              }}
-            >
-              <Filter className='h-4 w-4' />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{tableConfig.filterAction.name}</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>)
+      <DropdownMenu open={dropDownFilter}>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant='ghost'
+            className='h-8 w-8 p-0'
+            onClick={() => {
+              setDropDownFilter(true)
+            }}
+          >
+            <Filter className='h-4 w-4' />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align='end' onPointerDownOutside={() => setDropDownFilter(false)}>
+          <DropdownMenuItem
+            key={'clear_filter'}
+            onSelect={handleOnClearFilter}
+          >
+            <X
+              className={'mr-2 min-h-4 min-w-4 h-4 w-4'}
+            />  Clear filter
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            key={'show_hide_filter'}
+            onSelect={handleOnSelectShowHideFilter}
+          >
+            {tableConfig.showFilterRow ? <EyeOff
+              className={'mr-2 min-h-4 min-w-4 h-4 w-4'}
+            /> : <Eye
+              className={'mr-2 min-h-4 min-w-4 h-4 w-4'}
+            />}
+            {tableConfig.showFilterRow ? 'Hide filter' : 'Show filter'}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu >
   }
 
   const addNew = () => {

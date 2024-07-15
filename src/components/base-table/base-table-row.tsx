@@ -2,7 +2,7 @@
 
 import { Cell, ColumnResizeMode, HeaderGroup, Row, SortDirection, flexRender } from '@tanstack/react-table'
 import { TableCell, TableHead, TableRow } from '@/components/ui/table'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ArrowDownNarrowWide, ArrowUpDown, ArrowUpNarrowWide } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { BaseTableConfig } from './base-table-config'
@@ -38,6 +38,13 @@ export function BaseTableHeader<T extends IBaseData<T>>(props: {
   columnResizeMode: ColumnResizeMode
   tableConfig: BaseTableConfig<T>
 }) {
+  const [showFilterRow, setShowFilterRow] = useState(props.tableConfig.showFilterRow);
+
+  props.tableConfig.filterAction.onChangeShowHideFilter = (value: boolean) => {
+    props.tableConfig.showFilterRow = value;
+    setShowFilterRow(value)
+  }
+
   return (
     <TableRow>
       {props.headerGroup.headers.map((header) => {
@@ -76,7 +83,7 @@ export function BaseTableHeader<T extends IBaseData<T>>(props: {
 
 
             )}
-            {header.column.getCanFilter() ? (
+            {header.column.getCanFilter() && showFilterRow ? (
               <div>
                 <Filter column={header.column} />
               </div>

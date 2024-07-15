@@ -293,6 +293,10 @@ export function BaseTable<T extends IBaseData<T>>(props: { loading: boolean, dat
     globalFilterFn: 'fuzzy'
   })
 
+  // props.tableConfig.filterAction.onClearFilter = () =>{
+  //   setColumnFilters([])
+  // }
+
   return (
     <div className='mx-auto mb-5 mt-5'>
       <div className='rounded-md border mb-4'>
