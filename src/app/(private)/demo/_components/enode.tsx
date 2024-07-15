@@ -29,9 +29,9 @@ const generateRandomPerson = (id: number): PersonEntity => ({
   firstName: getRandomElement(firstNames),
   lastName: getRandomElement(lastNames),
   age: getRandomNumber(18, 80),
-  visits: getRandomNumber(0, 100),
+  visits: getRandomNumber(0, 9999),
   status: getRandomElement(statuses),
-  progress: getRandomNumber(0, 100),
+  progress: getRandomNumber(0, 9999),
   date: new Date(getRandomNumber(2020, 2023), getRandomNumber(0, 11), getRandomNumber(1, 28)),
   active: getRandomBoolean()
 })
@@ -91,7 +91,7 @@ const defaultData: PersonEntity[] = [
 export default function ENode() {
   const tableConfig = new BaseTableConfig<PersonEntity>(['__id__'])
   tableConfig.tableName = 'Demo'
-  tableConfig.showQuickSearch = true;
+  tableConfig.isShowQuickSearch = true;
   tableConfig.cols.push(
     {
       // id: 'firstName',
@@ -103,6 +103,7 @@ export default function ENode() {
     {
       // id: 'lastName',
       accessorKey: 'lastName',
+      enableGlobalFilter: true,
       meta: {
         editable: true
       }
@@ -159,7 +160,7 @@ export default function ENode() {
     id: '',
     cell: (info) => <i>{info.getValue()}</i>,
     header: () => <span>Last Name</span>,
-    footer: (info) => info.column.id
+    footer: (info) => info.column.id,
   })
 
   tableConfig.colsFixLeft.push('age')

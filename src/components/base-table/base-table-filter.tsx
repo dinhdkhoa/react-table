@@ -1,6 +1,6 @@
 'use client'
 
-import { Column, Row, RowData } from '@tanstack/react-table'
+import { Column, FilterFn, Row, RowData } from '@tanstack/react-table'
 import { useEffect, useMemo, useState } from 'react'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Check, ChevronsUpDown, X } from 'lucide-react'
@@ -15,13 +15,35 @@ import { SelectOption } from '@/core/types/control.types'
 import { Input } from '../ui/input'
 import useDebounce from '@/core/hooks/useDebound'
 
+import {
+  RankingInfo,
+  rankItem,
+  compareItems,
+} from '@tanstack/match-sorter-utils'
+
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData extends RowData, TValue> {
     filterVariant?: 'unique',
     breakAll?: boolean,
     staticSelectOption?: SelectOption<any, any>
   }
+
+  interface FilterFns {
+    fuzzy: FilterFn<unknown>
+  }
+  interface FilterMeta {
+    itemRank: RankingInfo
+  }
 }
+
+export const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
+  const itemRank = rankItem(row.getValue(columnId), value, {threshold: 3})
+  addMeta({
+    itemRank,
+  })
+  return itemRank.passed
+}
+
 
 type CheckBoxFilterType = string | null | undefined
 type DateFilterType = Date | null | undefined
@@ -473,3 +495,33 @@ function FilterInput({ placeholder, column, isNumberCol }: { placeholder: string
     />
   );
 };
+
+
+// function DebouncedInput({
+//   value: initialValue,
+//   onChange,
+//   debounce = 500,
+//   ...props
+// }: {
+//   value: string | number
+//   onChange: (value: string | number) => void
+//   debounce?: number
+// } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) {
+//   const [value, setValue] = useState(initialValue)
+
+//   useEffect(() => {
+//     setValue(initialValue)
+//   }, [initialValue])
+
+//   useEffect(() => {
+//     const timeout = setTimeout(() => {
+//       onChange(value)
+//     }, debounce)
+
+//     return () => clearTimeout(timeout)
+//   }, [value])
+
+//   return (
+//     <input {...props} value={value} onChange={e => setValue(e.target.value)} />
+//   )
+// }

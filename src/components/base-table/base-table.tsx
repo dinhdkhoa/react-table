@@ -37,6 +37,8 @@ import { BaseTableFooter, BaseTableHeader, BaseTableRow } from './base-table-row
 import BaseTablePagination from './base-table-pagination'
 import { BaseTableNodata } from './base-table-nodata'
 import TableHeaderActions from './base-table-header-action'
+import { fuzzyFilter } from './base-table-filter'
+// import { rankItem, compareItems } from '@tanstack/match-sorter-utils'
 
 export const rowActionId = 'rowAction'
 export const rowSelectionId = 'rowSelection'
@@ -142,6 +144,7 @@ export function BaseTable<T extends IBaseData<T>>(props: { loading: boolean, dat
     pageSize: props.tableConfig.pageSizeDefault
   })
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [globalFilter, setGlobalFilter] = React.useState('')
 
   const columns = useMemo<ColumnDef<T, any>[]>(() => {
     if (props.tableConfig.isShowSelectionColumn) {
@@ -255,12 +258,18 @@ export function BaseTable<T extends IBaseData<T>>(props: { loading: boolean, dat
       sorting,
       pagination,
       columnFilters,
-      columnPinning: columnPinningState
+      columnPinning: columnPinningState,
+      globalFilter
+    },
+    filterFns: {
+      fuzzy: fuzzyFilter
     },
     defaultColumn: {
       filterFn: filterFns.includesString,
+      enableGlobalFilter: true,
       maxSize: 200,
-      minSize: 100
+      minSize: 100,
+
     },
     columns,
     columnResizeMode,
@@ -279,13 +288,15 @@ export function BaseTable<T extends IBaseData<T>>(props: { loading: boolean, dat
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
-    onPaginationChange: setPagination
+    onPaginationChange: setPagination,
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: 'fuzzy'
   })
 
   return (
     <div className='mx-auto mb-5 mt-5'>
       <div className='rounded-md border mb-4'>
-        <TableHeaderActions<T> tableConfig={props.tableConfig} />
+        <TableHeaderActions<T> tableConfig={props.tableConfig} searchGlobal={globalFilter}/>
         <ShadcnTable
           {...{
             style: {
@@ -323,5 +334,36 @@ export function BaseTable<T extends IBaseData<T>>(props: { loading: boolean, dat
         </div>
       </div>
     </div>
+  )
+}
+
+
+
+function DebouncedInput({
+  value: initialValue,
+  onChange,
+  debounce = 500,
+  ...props
+}: {
+  value: string | number
+  onChange: (value: string | number) => void
+  debounce?: number
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) {
+  const [value, setValue] = React.useState(initialValue)
+
+  React.useEffect(() => {
+    setValue(initialValue)
+  }, [initialValue])
+
+  React.useEffect(() => {
+    const timeout = setTimeout(() => {
+      onChange(value)
+    }, debounce)
+
+    return () => clearTimeout(timeout)
+  }, [value])
+
+  return (
+    <input {...props} value={value} onChange={e => setValue(e.target.value)} />
   )
 }

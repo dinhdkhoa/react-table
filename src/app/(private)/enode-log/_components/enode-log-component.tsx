@@ -62,7 +62,7 @@ export default function ENodeLog({ data }: { data: Array<EnodeLogEntity> }) {
   const [tableConfig] = useState<BaseTableConfig<EnodeLogEntity>>(() => {
     const config = new BaseTableConfig<EnodeLogEntity>();
     config.tableName = 'Enode Log';
-    config.showQuickSearch = true;
+    config.isShowQuickSearch = true;
 
     config.cols.push(
       config.columnHelper.accessor('id', {}),

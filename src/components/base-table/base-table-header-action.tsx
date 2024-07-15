@@ -12,12 +12,12 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { BaseTableConfig } from './base-table-config'
 import { IBaseData } from '@/core/classes/base-data'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
-export default function TableHeaderActions<T extends IBaseData<T>>({ tableConfig }: { tableConfig: BaseTableConfig<T> }) {
+export default function TableHeaderActions<T extends IBaseData<T>>({ tableConfig, searchGlobal }: { tableConfig: BaseTableConfig<T>; searchGlobal: string | number }) {
   const [dropDownOpen, setDropDownOpen] = useState(false)
 
   const showHideColumns = () => {
@@ -97,12 +97,13 @@ export default function TableHeaderActions<T extends IBaseData<T>>({ tableConfig
   }
 
   const quickSearch = () => {
-    return tableConfig.showQuickSearch && <div className="relative flex items-center max-w-2xl ">
+    return tableConfig.isShowQuickSearch && <div className="relative flex items-center max-w-2xl ">
       <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 transform opacity-60" />
-      <Input
-        placeholder="Quick search"
-        className="max-w-sm pl-8"
+      <QuickSearchInput
+        value={searchGlobal}
+        onChange={value => tableConfig.table!.setGlobalFilter(String(value))}
       />
+
     </div>
   }
 
@@ -121,5 +122,40 @@ export default function TableHeaderActions<T extends IBaseData<T>>({ tableConfig
         {addNew()}
       </div>
     </div>
+  )
+}
+
+
+function QuickSearchInput({
+  value: initialValue,
+  onChange,
+  debounce = 500,
+  ...props
+}: {
+  value: string | number
+  onChange: (value: string | number) => void
+  debounce?: number
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) {
+  const [value, setValue] = useState(initialValue)
+  useEffect(() => {
+    setValue(initialValue)
+  }, [initialValue])
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      onChange(value)
+    }, debounce)
+
+    return () => clearTimeout(timeout)
+  }, [value])
+
+  return (
+    <Input
+      {...props}
+      value={value}
+      placeholder="Quick search"
+      className="max-w-sm pl-8"
+      onChange={e => setValue(e.currentTarget.value)}
+    />
   )
 }

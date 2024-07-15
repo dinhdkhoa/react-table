@@ -155,7 +155,19 @@ export class BaseTableConfig<T extends IBaseData<T>> {
   }
   ///
   ///Quick search
-  showQuickSearch = false;
+  isShowQuickSearch = false;
+  quickSearchFn = (value: string) => {
+    this.table!.getFilteredRowModel
+    if (this.table) {
+      this.table.getAllColumns().forEach(col => {
+        const { formatColumnType } = col.columnDef.meta ?? {};
+        if (formatColumnType) {
+          if ([FormatColumnType.String, FormatColumnType.Integer, FormatColumnType.Decimal].includes(formatColumnType))
+            col.setFilterValue(value)
+        }
+      })
+    }
+  }
   ///
 
   getKeys(data?: T, keys?: FieldNames<T>[]): string[] {
@@ -254,16 +266,19 @@ export class BaseTableConfig<T extends IBaseData<T>> {
       if (col.meta?.formatColumnType) {
         if (!col.filterFn) {
           if (isDateColumn(col.meta!.formatColumnType)) {
-            col.filterFn = filterOnDate
+            col.filterFn = filterOnDate;
+            col.enableGlobalFilter = false;
           }
           if ([FormatColumnType.Boolean].includes(col.meta!.formatColumnType)) {
-            col.filterFn = filterCheckbox
+            col.filterFn = filterCheckbox;
+            col.enableGlobalFilter = false;
           }
           if (isNumberColumn(col.meta!.formatColumnType!)) {
-            col.filterFn = filterNumber
+            col.filterFn = filterNumber;
           }
           if ([FormatColumnType.StaticCombobox].includes(col.meta!.formatColumnType)) {
-            col.filterFn = filterStaticCombobox
+            col.filterFn = filterStaticCombobox;
+            col.enableGlobalFilter = false;
           }
         }
         if (!col.sortingFn) {
