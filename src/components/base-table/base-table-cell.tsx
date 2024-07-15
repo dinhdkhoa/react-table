@@ -169,7 +169,10 @@ export function StaticComboboxCell<TData extends IBaseData<TData>>(
     const findEntityCbo = staticSelectOption.data.find((w) => staticSelectOption.value(w) == value)
     if (!value && !findEntityCbo) return ''
     if (findEntityCbo) {
-      return staticSelectOption.display(findEntityCbo)
+      const displayText = staticSelectOption.display(findEntityCbo);
+      if (cellContext.row.cacheDisplay === undefined) { cellContext.row.cacheDisplay = {} }
+      cellContext.row.cacheDisplay[cellContext.column.id] = displayText;
+      return displayText;
     }
     return 'N/A'
   }

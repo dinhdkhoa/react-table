@@ -44,8 +44,8 @@ const generateRandomPersons = (count: number): PersonEntity[] => {
   return persons
 }
 
-const randomPersons = generateRandomPersons(10000)
-console.log(randomPersons)
+const randomPersons = generateRandomPersons(50000)
+// console.log(randomPersons)
 
 const defaultData: PersonEntity[] = [
   {

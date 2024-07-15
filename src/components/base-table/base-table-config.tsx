@@ -283,7 +283,7 @@ export class BaseTableConfig<T extends IBaseData<T>> {
           }
           if ([FormatColumnType.StaticCombobox].includes(col.meta!.formatColumnType)) {
             col.filterFn = filterStaticCombobox;
-            col.enableGlobalFilter = false;
+            // col.enableGlobalFilter = false;
           }
         }
         if (!col.sortingFn) {
