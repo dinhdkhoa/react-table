@@ -103,24 +103,10 @@ export default function ENodeLog({ data }: { data: Array<EnodeLogEntity> }) {
       config.columnHelper.accessor('response', {}),
       config.columnHelper.accessor('messageId', {}),
     )
-
-    // config.editButton.visibleFn = (data) => true;
-    // config.detailButton
-    // config.isShowActionColumn = false;
-    // config.editButton.visibleFn = (data) => true;
-    // config.addNewAction.visibleFn = (data) => true;
     config.filterAction.visibleFn = (data) => true;
-
-
     config.showChildButton.visibleFn = (data) => true;
     config.showChildButton.children = (data) => <JsonChild data={data.originJsonData}></JsonChild>
     config.isShowChild = true
-
-    // config.detailButton.visibleFn = (data) => true;
-    // config.detailButton.action = (data) => {
-    //   setEntitySheet(data);
-    //   setSheetIsOpen(true);
-    // }
     config.isActionColumListType = false;
     config.isShowSelectionColumn = true;
 
