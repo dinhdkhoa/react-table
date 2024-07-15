@@ -108,7 +108,7 @@ export default function ENodeLog({ data }: { data: Array<EnodeLogEntity> }) {
     // config.detailButton
     // config.isShowActionColumn = false;
     // config.editButton.visibleFn = (data) => true;
-    config.addNewAction.visibleFn = (data) => true;
+    // config.addNewAction.visibleFn = (data) => true;
     config.filterAction.visibleFn = (data) => true;
 
 

@@ -83,8 +83,8 @@ export function BaseTableHeader<T extends IBaseData<T>>(props: {
 
 
             )}
-            {header.column.getCanFilter() && showFilterRow ? (
-              <div>
+            {header.column.getCanFilter() ? (
+              <div hidden={!showFilterRow}>
                 <Filter column={header.column} />
               </div>
             ) : null}
