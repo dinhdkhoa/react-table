@@ -9,6 +9,7 @@ import { ReactNode } from 'react'
 import tableEventEmitter from './events'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { FieldNames } from '@/core/helper/type-helpers'
+import { cn } from '@/lib/utils'
 
 export const showChildButtonId = '_row_action_show_child'
 export const saveButtonId = '_row_action_save'
@@ -116,7 +117,7 @@ export class BaseTableConfig<T extends IBaseData<T>> {
   saveButton: BaseRowAction<T> = {
     id: '_row_action_save',
     name: 'Save',
-    iconChild: <Save className={BaseTableConfig.defaultIconSize} fontSize='inherit' />,
+    iconChild: <Save className={cn(BaseTableConfig.defaultIconSize, 'text-primary')} fontSize='inherit' />,
     action: (data, form) => {
       if (form) {
         this.setAfterSaveRow(getId(data, this.getKeys(data, this.keys), data.__id__) || '', data, form)
@@ -126,7 +127,7 @@ export class BaseTableConfig<T extends IBaseData<T>> {
   cancelButton: BaseRowAction<T> = {
     id: '_row_action_cancel',
     name: 'Cancel',
-    iconChild: <X className={BaseTableConfig.defaultIconSize} fontSize='inherit' />,
+    iconChild: <X className={cn(BaseTableConfig.defaultIconSize, ' text-red-500')} fontSize='inherit' />,
     action: (data, form) => {
       if (form) {
         this.removeRowEditing(getId(data, this.getKeys(data, this.keys), data.__id__) || '', data, false, form)

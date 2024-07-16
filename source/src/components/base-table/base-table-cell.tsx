@@ -47,6 +47,11 @@ export function BaseTableCell<T extends IBaseData<T>>(props: { cell: Cell<T, unk
       );
     }
 
+    const { formatColumnType } = props.cell.column.columnDef.meta ?? {};
+    if (formatColumnType === FormatColumnType.Boolean) {
+      return flexRender(props.cell.column.columnDef.cell, props.cell.getContext());
+    }
+
     return (<TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
@@ -155,7 +160,7 @@ export function BooleanCell<TData extends IBaseData<TData>>(
 
   return (
     <div style={{ textAlign: 'center' }}>
-      <Checkbox checked={value || false} disabled />
+      <Checkbox checked={value || false} aria-readonly={true} />
     </div>
   )
 }
