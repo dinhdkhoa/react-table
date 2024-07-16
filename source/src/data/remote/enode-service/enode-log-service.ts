@@ -5,6 +5,7 @@ import { getEnodeLogRequestCode } from './common/request-code'
 import { GetEnodeLogRequestModel } from './models/requests/get-enode-log-request.model'
 import { EnodeLogResponseModel } from './models/responses/enode-log-response.model'
 import { convertEnodeLogEntityFn, EnodeLogEntity } from '@/domain/entities/enode-log-entity'
+import { error } from 'console'
 
 
 type GetList<TEntity, TResModel extends BaseResponse<TEntity>> = (request: GetEnodeLogRequestModel) => Promise<HandleStateType<TEntity, TResModel>>;
@@ -14,11 +15,22 @@ type EnodeLogServiceType = {
 
 export const EnodeLogService: EnodeLogServiceType = {
   getList: async function (request: GetEnodeLogRequestModel): Promise<HandleStateType<EnodeLogEntity[], EnodeLogResponseModel[]>> {
-    const response = await getFn<Array<EnodeLogResponseModel>>({
-      path: 'enode',
-      request: { data: request, ...getEnodeLogRequestCode }
-    })
-    const state = handleByResponseFn(response, convertEnodeLogEntityFn)
-    return state
+    let state: HandleStateType<EnodeLogEntity[], EnodeLogResponseModel[]> = {
+      isError: false,
+      message: ''
+    };
+    try {
+      const response = await getFn<Array<EnodeLogResponseModel>>({
+        path: 'enode',
+        request: { data: request, ...getEnodeLogRequestCode }
+      })
+      state = handleByResponseFn(response, convertEnodeLogEntityFn);
+    } catch (error) {
+      state.isError = true;
+      state.message = error?.toString() ?? 'Have an error!'
+    }
+    finally {
+      return state;
+    }
   }
 }

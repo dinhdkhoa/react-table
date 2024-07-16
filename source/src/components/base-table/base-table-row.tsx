@@ -55,7 +55,7 @@ export function BaseTableHeader<T extends IBaseData<T>>(props: {
           <TableHead
             key={header.id}
             style={{ ...getCommonPinningStyles(column) }}
-            className={cn('border-r last:border-r-0', 'bg-background')}
+            className={cn('border-r last:border-r-0', 'bg-background', 'text-center')}
             colSpan={header.colSpan}
           >
             {header.isPlaceholder ? null : (

@@ -1,6 +1,6 @@
 'use client'
 
-import { CirclePlus, Download, Filter, AlignJustify, Columns3, Search, X, EyeOff, Eye } from 'lucide-react'
+import { CirclePlus, Download, Filter, AlignJustify, Columns3, Search, X, EyeOff, Eye, Settings2 } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Badge } from '@/components/ui/badge'
 
@@ -31,7 +31,7 @@ export default function TableHeaderActions<T extends IBaseData<T>>({ tableConfig
               setDropDownShowHideColumnOpen(true)
             }}
           >
-            <Columns3 className='h-4 w-4' />
+            <Settings2 className='h-4 w-4' />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align='end' onPointerDownOutside={() => setDropDownShowHideColumnOpen(false)}>
