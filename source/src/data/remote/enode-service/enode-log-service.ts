@@ -5,8 +5,6 @@ import { getEnodeLogRequestCode } from './common/request-code'
 import { GetEnodeLogRequestModel } from './models/requests/get-enode-log-request.model'
 import { EnodeLogResponseModel } from './models/responses/enode-log-response.model'
 import { convertEnodeLogEntityFn, EnodeLogEntity } from '@/domain/entities/enode-log-entity'
-import { error } from 'console'
-
 
 type GetList<TEntity, TResModel extends BaseResponse<TEntity>> = (request: GetEnodeLogRequestModel) => Promise<HandleStateType<TEntity, TResModel>>;
 type EnodeLogServiceType = {
