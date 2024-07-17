@@ -6,19 +6,13 @@ import { BaseTable } from '@/components/base-table/base-table'
 import { EnodeLogEntity } from '@/domain/entities/enode-log-entity'
 import { FormatColumnType } from '@/components/base-table/enums'
 import { useState } from 'react'
-import { useTablePaginatitonParams } from '@/components/base-table/paginatiton-params-context'
 
 export default function ENodeLogLimit({ data }: { data: Array<EnodeLogEntity> }) {
-  // useEffect(() => {
-  //   setTableSearchParamsContext(tableSearchParams || defaultTablePaginationSearchParams);
-  // }, [tableSearchParams, setTableSearchParamsContext])
-
 
   const [tableConfig, setTableConfig] = useState<BaseTableConfig<EnodeLogEntity>>(() => {
     const config = new BaseTableConfig<EnodeLogEntity>();
     config.tableName = '';
     config.isShowQuickSearch = true;
-    // config.pageSizeDefault = tableSearchParams?.pageSize ?? pageSizeDefault;
     config.pageOnServer = true;
 
     config.cols.push(

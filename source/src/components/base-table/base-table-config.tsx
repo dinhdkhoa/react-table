@@ -20,6 +20,8 @@ export const addNewButtonId = '_header_action_add_new'
 export const rowIdsEditingChangeEvent = 'rowsIdsEditingChange'
 export const pageSizeDefault = 10
 export const pageIndexDefault = 0
+export const pageSizeOptionsDefault = [10, 25, 50, 100];
+
 
 export const defaultTablePaginatitonParams: PaginationParams = {
   page: pageIndexDefault + 1,
@@ -88,7 +90,7 @@ export class BaseTableConfig<T extends IBaseData<T>> {
   //Pagination
   pageIndexDefault = 0
   pageSizeDefault = pageSizeDefault
-  pageSizeOptionsDefault = [10, 25, 50, 100]
+  pageSizeOptionsDefault = pageSizeOptionsDefault
 
   //Selection
   isShowSelectionColumn = false

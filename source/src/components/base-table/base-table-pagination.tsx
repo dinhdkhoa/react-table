@@ -3,9 +3,9 @@
 import { ChevronLeftIcon, ChevronRightIcon, DoubleArrowLeftIcon, DoubleArrowRightIcon } from '@radix-ui/react-icons'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
-import { BaseTableConfig, defaultTablePaginatitonParams } from './base-table-config'
+import { BaseTableConfig, defaultTablePaginatitonParams, pageSizeDefault } from './base-table-config'
 import { IBaseData } from '@/core/classes/base-data'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useTablePaginatitonParams } from './paginatiton-params-context'
 import { useEffect } from 'react'
 
@@ -104,6 +104,15 @@ function BaseTableServerPagination<TData extends IBaseData<TData>>(props: DataTa
   const pageSize = Number(tablePaginatitonParamsContext?.paginationParamsContext?.pageSize ?? defaultTablePaginatitonParams.pageSize);
   const page = Number(tablePaginatitonParamsContext?.paginationParamsContext?.page ?? defaultTablePaginatitonParams.page);
 
+  useEffect(() => {
+    if (tablePaginatitonParamsContext) {
+      if (!tableConfig.pageSizeOptionsDefault.includes(pageSize)) {
+        tablePaginatitonParamsContext.setPaginationParamsContext!({ pageSize: pageSizeDefault, page: page });
+        router.push(`?page=${page}`);
+      }
+    }
+  }, [tablePaginatitonParamsContext])
+
   const handlePreviousPage = () => {
     if (page > 1 && tablePaginatitonParamsContext?.setPaginationParamsContext) {
       const previousPage = page - 1;
@@ -160,7 +169,7 @@ function BaseTableServerPagination<TData extends IBaseData<TData>>(props: DataTa
   function handlePageSizeChanged(value: string): void {
     const _pageSize = Number(value);
     if (!isNaN(_pageSize)) {
-      tablePaginatitonParamsContext?.setPaginationParamsContext({page: page, pageSize: _pageSize})
+      tablePaginatitonParamsContext?.setPaginationParamsContext({ page: page, pageSize: _pageSize })
       tableConfig.table?.setPageSize(_pageSize);
       router.push(`?page=${page}&pageSize=${_pageSize}`);
     }

@@ -145,8 +145,8 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
 
 
   const [pagination, setPagination] = useState<PaginationState>(() => {
-    const value: PaginationState = {pageIndex: props.tableConfig.pageIndexDefault, pageSize: props.tableConfig.pageSizeDefault}
-    if(tablePaginationParams?.paginationParamsContext?.pageSize !== undefined){
+    const value: PaginationState = { pageIndex: props.tableConfig.pageIndexDefault, pageSize: props.tableConfig.pageSizeDefault }
+    if (tablePaginationParams?.paginationParamsContext?.pageSize !== undefined) {
       value.pageSize = tablePaginationParams?.paginationParamsContext?.pageSize;
     }
     return value;
