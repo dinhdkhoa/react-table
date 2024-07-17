@@ -38,6 +38,7 @@ import BaseTablePagination from './base-table-pagination'
 import { BaseTableNodata } from './base-table-nodata'
 import TableHeaderActions from './base-table-header-action'
 import { fuzzyFilter } from './base-table-filter'
+import { useTablePaginatitonParams } from './paginatiton-params-context'
 // import { rankItem, compareItems } from '@tanstack/match-sorter-utils'
 
 export const rowActionId = 'rowAction'
@@ -131,7 +132,9 @@ function handleSelection<T extends IBaseData<T>>(
   }
 }
 
-export function BaseTable<T extends IBaseData<T>>(props: { loading: boolean, data: Array<T>, tableConfig: BaseTableConfig<T> }) {
+export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boolean, data: Array<T>, tableConfig: BaseTableConfig<T> }) {
+  props.tableConfig.setData(props.data);
+  const tablePaginationParams = useTablePaginatitonParams();
   const [rowsEditing, setRowsEditing] = useState<Record<string, T>>({ ...props.tableConfig.rowsEditing })
   const [columnPinningState, setColumnPinningState] = useState<ColumnPinningState>({})
   // const [data] = useState(() => [...props.data])
@@ -139,10 +142,16 @@ export function BaseTable<T extends IBaseData<T>>(props: { loading: boolean, dat
   const [rowSelectionForHandle, setRowSelectionForHandle] = useState(rowSelection)
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnResizeMode, setColumnResizeMode] = useState<ColumnResizeMode>('onChange')
-  const [pagination, setPagination] = React.useState<PaginationState>({
-    pageIndex: props.tableConfig.pageIndexDefault,
-    pageSize: props.tableConfig.pageSizeDefault
+
+
+  const [pagination, setPagination] = useState<PaginationState>(() => {
+    const value: PaginationState = {pageIndex: props.tableConfig.pageIndexDefault, pageSize: props.tableConfig.pageSizeDefault}
+    if(tablePaginationParams?.paginationParamsContext?.pageSize !== undefined){
+      value.pageSize = tablePaginationParams?.paginationParamsContext?.pageSize;
+    }
+    return value;
   })
+
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [globalFilter, setGlobalFilter] = React.useState('')
 
@@ -237,6 +246,7 @@ export function BaseTable<T extends IBaseData<T>>(props: { loading: boolean, dat
     })
   }, [])
 
+
   const handleRowsIdEditingChange = (newValue: Record<string, T>) => {
     setRowsEditing({ ...newValue })
   }
@@ -302,7 +312,7 @@ export function BaseTable<T extends IBaseData<T>>(props: { loading: boolean, dat
   return (
     <div className='mx-auto mb-5 mt-5'>
       <div className='rounded-md border mb-4'>
-        <TableHeaderActions<T> tableConfig={props.tableConfig} searchGlobal={globalFilter}/>
+        <TableHeaderActions<T> tableConfig={props.tableConfig} searchGlobal={globalFilter} />
         <ShadcnTable
           {...{
             style: {
@@ -336,7 +346,7 @@ export function BaseTable<T extends IBaseData<T>>(props: { loading: boolean, dat
           </TableFooter>
         </ShadcnTable>
         <div className='p-4'>
-          <BaseTablePagination table={props.tableConfig.table} />
+          <BaseTablePagination tableConfig={props.tableConfig} />
         </div>
       </div>
     </div>

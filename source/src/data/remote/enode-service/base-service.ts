@@ -50,14 +50,18 @@ export async function callGateWay<T>({
   if (extRoute) {
     url += `?route=${extRoute}`
   }
+  console.log(url);
+  console.log('body: ' + JSON.stringify(objReq));
   try {
     const res = await fetch(url, {
       headers: baseHeader,
       body: JSON.stringify(objReq),
       method: 'POST'
     })
+   
     if (res.ok) {
       const payload: GatewayResponseModel<T> = await res.json()
+      // console.log('res: ' + payload)
       return payload
     } else {
       return Promise.reject(res)

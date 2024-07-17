@@ -236,6 +236,7 @@ export default function ENode() {
   }
 
   tableConfig.setData(randomPersons)
+  tableConfig.isActionColumListType = false
 
   return (
     <>

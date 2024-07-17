@@ -63,7 +63,6 @@ export default function TableHeaderActions<T extends IBaseData<T>>({ tableConfig
   }
   function handleOnClearFilter(event: Event): void {
     setDropDownFilter(false);
-    console.log('Clear Filter')
   }
 
   const filter = () => {

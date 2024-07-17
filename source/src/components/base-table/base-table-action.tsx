@@ -37,7 +37,7 @@ function ExpandChildIcon<T extends IBaseData<T>>(
 
   return (
 
-    <TooltipProvider>
+    <TooltipProvider key={button.id}>
       <Tooltip>
         <TooltipTrigger asChild>
           <Toggle onClick={handleExpandClick} aria-expanded={expanded} aria-label='show more' className='h-8 w-8 p-0'>

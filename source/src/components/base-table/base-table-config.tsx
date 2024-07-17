@@ -10,7 +10,7 @@ import tableEventEmitter from './events'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { FieldNames } from '@/core/helper/type-helpers'
 import { cn } from '@/lib/utils'
-
+import { PaginationParams } from './paginatiton-params-context'
 export const showChildButtonId = '_row_action_show_child'
 export const saveButtonId = '_row_action_save'
 export const cancelButtonId = '_row_action_cancel'
@@ -18,6 +18,13 @@ export const filterButtonId = '_header_action_filter'
 export const showHideColumnsButtonId = '_header_action_show_hide_columns'
 export const addNewButtonId = '_header_action_add_new'
 export const rowIdsEditingChangeEvent = 'rowsIdsEditingChange'
+export const pageSizeDefault = 10
+export const pageIndexDefault = 0
+
+export const defaultTablePaginatitonParams: PaginationParams = {
+  page: pageIndexDefault + 1,
+  pageSize: pageSizeDefault
+}
 
 export interface BaseRowAction<IBaseData extends FieldValues = FieldValues> {
   id: string
@@ -52,6 +59,7 @@ export class BaseTableConfig<T extends IBaseData<T>> {
   data: T[] = []
   tableName?: string
   rowsEditing: Record<string, T> = {}
+  pageOnServer = false;
 
   constructor(keys?: FieldNames<T>[]) {
     if (keys && keys.length > 0) {
@@ -79,8 +87,8 @@ export class BaseTableConfig<T extends IBaseData<T>> {
 
   //Pagination
   pageIndexDefault = 0
-  pageSizeDefault = 10
-  rowsPerPageOptionsDefault = [10, 25, 50, 100]
+  pageSizeDefault = pageSizeDefault
+  pageSizeOptionsDefault = [10, 25, 50, 100]
 
   //Selection
   isShowSelectionColumn = false
