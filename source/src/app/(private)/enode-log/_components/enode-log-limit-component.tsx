@@ -6,6 +6,7 @@ import { BaseTable } from '@/components/base-table/base-table'
 import { EnodeLogEntity } from '@/domain/entities/enode-log-entity'
 import { FormatColumnType } from '@/components/base-table/enums'
 import { useState } from 'react'
+import { TableConfigProvider } from '@/components/base-table/table-config-context'
 
 export default function ENodeLogLimit({ data }: { data: Array<EnodeLogEntity> }) {
 
@@ -67,7 +68,9 @@ export default function ENodeLogLimit({ data }: { data: Array<EnodeLogEntity> })
     return config;
   });
 
-  return <BaseTable<EnodeLogEntity> loading={false} data={data} tableConfig={tableConfig} />
+  return (<TableConfigProvider<EnodeLogEntity> initValue={tableConfig} >
+    <BaseTable<EnodeLogEntity> loading={false} data={data}/>
+  </TableConfigProvider>)
 }
 
 

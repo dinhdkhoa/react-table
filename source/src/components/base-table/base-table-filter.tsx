@@ -18,7 +18,6 @@ import useDebounce from '@/core/hooks/useDebound'
 import {
   RankingInfo,
   rankItem,
-  compareItems,
 } from '@tanstack/match-sorter-utils'
 import { StaticComboboxCell } from './base-table-cell'
 

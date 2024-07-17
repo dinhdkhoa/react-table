@@ -9,6 +9,7 @@ import { FormatColumnType } from '@/components/base-table/enums'
 import { Guid } from 'guid-typescript'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
+import { TableConfigProvider } from '@/components/base-table/table-config-context'
 
 function generateRandomString(length: number) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -129,7 +130,9 @@ export default function ENodeLog({ data }: { data: Array<EnodeLogEntity> }) {
   // }, []);
 
   return <>
-    <BaseTable<EnodeLogEntity> loading={loading} data={tableConfig.getData} tableConfig={tableConfig} />
+    <TableConfigProvider<EnodeLogEntity> initValue={tableConfig} >
+      <BaseTable<EnodeLogEntity> loading={false} data={data} tableConfig={tableConfig} />
+    </TableConfigProvider>
     {/* <Sheet open={sheetIsOpen} onOpenChange={setSheetIsOpen}>
       <SheetContent>
         <SheetHeader>

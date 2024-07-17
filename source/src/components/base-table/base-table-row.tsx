@@ -2,10 +2,9 @@
 
 import { Cell, ColumnResizeMode, HeaderGroup, Row, SortDirection, flexRender } from '@tanstack/react-table'
 import { TableCell, TableHead, TableRow } from '@/components/ui/table'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { ArrowDownNarrowWide, ArrowUpDown, ArrowUpNarrowWide } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { BaseTableConfig } from './base-table-config'
 import { IBaseData } from '@/core/classes/base-data'
 import { getCommonPinningStyles } from './styles'
 import { Filter } from './base-table-filter'
@@ -15,6 +14,7 @@ import useBaseForm from '@/core/hooks/useBaseForm'
 import { IBaseEntityForm } from '@/core/classes/base-entity-form'
 import { rowSelectionId } from './base-table'
 import { BaseTableCell } from './base-table-cell'
+import { useTableConfig } from './table-config-context'
 
 
 function TableSortLabel(props: { active: boolean; direction: SortDirection }) {
@@ -36,12 +36,12 @@ function TableSortLabel(props: { active: boolean; direction: SortDirection }) {
 export function BaseTableHeader<T extends IBaseData<T>>(props: {
   headerGroup: HeaderGroup<T>
   columnResizeMode: ColumnResizeMode
-  tableConfig: BaseTableConfig<T>
 }) {
-  const [showFilterRow, setShowFilterRow] = useState(props.tableConfig.showFilterRow);
+  const { tableConfigContext } = useTableConfig<T>();
+  const [showFilterRow, setShowFilterRow] = useState(tableConfigContext.showFilterRow);
 
-  props.tableConfig.filterAction.onChangeShowHideFilter = (value: boolean) => {
-    props.tableConfig.showFilterRow = value;
+  tableConfigContext.filterAction.onChangeShowHideFilter = (value: boolean) => {
+    tableConfigContext.showFilterRow = value;
     setShowFilterRow(value)
   }
 
@@ -97,15 +97,15 @@ export function BaseTableHeader<T extends IBaseData<T>>(props: {
 
 export function BaseTableFormRow<T extends IBaseEntityForm<T>>(props: {
   row: Row<T>
-  tableConfig: BaseTableConfig<T>
 }) {
+  const { tableConfigContext } = useTableConfig<T>();
   const [entity] = useState<T>(
-    () => props.tableConfig.getEntityByRow(props.row.original, props.row.index, props.row.getParentRow())!
+    () => tableConfigContext.getEntityByRow(props.row.original, props.row.index, props.row.getParentRow())!
   )
   const { ...baseFormProps } = useBaseForm<T>(entity, false)
   const buildCell = (cell: Cell<T, unknown>) => {
     const formField = baseFormProps.rhf && baseFormProps.rhf[cell.column.id]
-    return <BaseTableCell key={cell.id} cell={cell} row={props.row} tableConfig={props.tableConfig} formField={formField} />
+    return <BaseTableCell key={cell.id} cell={cell} row={props.row} formField={formField} />
   }
 
   return (
@@ -119,17 +119,18 @@ export function BaseTableFormRow<T extends IBaseEntityForm<T>>(props: {
   )
 }
 
-export function BaseTableRow<T extends IBaseData<T>>(props: { row: Row<T>; tableConfig: BaseTableConfig<T> }) {
-  const rowEditing = props.tableConfig.rowsEditing[props.row.id]
+export function BaseTableRow<T extends IBaseData<T>>(props: { row: Row<T> }) {
+  const { tableConfigContext } = useTableConfig<T>();
+  const rowEditing = tableConfigContext.rowsEditing[props.row.id]
 
   const buildRow = () => {
     if (rowEditing) {
-      return <BaseTableFormRow key={props.row.id} row={props.row as any} tableConfig={props.tableConfig as any} />
+      return <BaseTableFormRow key={props.row.id} row={props.row as any} />
     }
     return (
       <TableRow>
         {props.row.getVisibleCells().map((cell) => (
-          <BaseTableCell key={cell.id} cell={cell} row={props.row} tableConfig={props.tableConfig} />
+          <BaseTableCell key={cell.id} cell={cell} row={props.row} />
         ))}
       </TableRow>
     )
@@ -138,9 +139,9 @@ export function BaseTableRow<T extends IBaseData<T>>(props: { row: Row<T>; table
   return (
     <>
       {buildRow()}
-      {props.row.getIsExpanded() && props.tableConfig.showChildButton.children != undefined && (
+      {props.row.getIsExpanded() && tableConfigContext.showChildButton.children != undefined && (
         <TableRow>
-          <TableCell colSpan={props.row.getVisibleCells().length}>{props.tableConfig.showChildButton.children(props.row.original)}</TableCell>
+          <TableCell colSpan={props.row.getVisibleCells().length}>{tableConfigContext.showChildButton.children(props.row.original)}</TableCell>
         </TableRow>
       )}
     </>
@@ -149,7 +150,6 @@ export function BaseTableRow<T extends IBaseData<T>>(props: { row: Row<T>; table
 
 export function BaseTableFooter<T extends IBaseData<T>>(props: {
   footerGroup: HeaderGroup<T>
-  tableConfig: BaseTableConfig<T>
 }) {
   return (
     <TableRow>

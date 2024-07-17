@@ -13,6 +13,7 @@ import {
   PersonEntityOnChange,
   statusSelectOption
 } from '@/domain/entities/person-entity'
+import { TableConfigProvider } from '@/components/base-table/table-config-context'
 
 const firstNames = ['John', 'Jane', 'Alice', 'Bob', 'Chris', 'Ella', 'Tom', 'Sophia', 'Mike', 'Olivia']
 const lastNames = ['Smith', 'Johnson', 'Williams', 'Jones', 'Brown', 'Davis', 'Miller', 'Wilson', 'Moore', 'Taylor']
@@ -196,14 +197,14 @@ export default function ENode() {
     id: '_row_action_hehe',
     name: 'Hehe',
     iconChild: <Delete className='h-4 w-4' fontSize='inherit' />,
-    action: (data) => {}
+    action: (data) => { }
   })
 
   // gridConfig.isSelectAllPages = true;
   tableConfig.allowSelectRow = (data) => {
     return data.lastName != 'dirte'
   }
-  
+
   tableConfig.addNewAction.visibleFn = (data) => true;
   tableConfig.filterAction.visibleFn = (data) => true;
 
@@ -239,8 +240,8 @@ export default function ENode() {
   tableConfig.isActionColumListType = false
 
   return (
-    <>
-      <BaseTable<PersonEntity> data={tableConfig.getData} tableConfig={tableConfig} loading={false} />
-    </>
+    <TableConfigProvider<PersonEntity> initValue={tableConfig} >
+      <BaseTable<PersonEntity> data={tableConfig.getData} loading={false} />
+    </TableConfigProvider>
   )
 }

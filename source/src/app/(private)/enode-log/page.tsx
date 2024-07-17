@@ -2,7 +2,7 @@ import { EnodeLogUsecase } from '@/domain/use-cases/enode-log-usecase'
 import { Suspense } from 'react'
 import { Skeleton } from '@/components/ui/skeleton';
 import ENodeLogLimit from './_components/enode-log-limit-component';
-import { PaginationParams, TablePaginationParamsProvider } from '@/components/base-table/paginatiton-params-context';
+import { PaginationParams, TablePaginationParamsProvider } from '@/components/base-table/pagination-params-context';
 import { defaultTablePaginatitonParams, pageSizeOptionsDefault } from '@/components/base-table/base-table-config';
 import ENodeLog from './_components/enode-log-component';
 

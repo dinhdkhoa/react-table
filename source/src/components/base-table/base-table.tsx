@@ -39,6 +39,7 @@ import { BaseTableNodata } from './base-table-nodata'
 import TableHeaderActions from './base-table-header-action'
 import { fuzzyFilter } from './base-table-filter'
 import { useTablePaginatitonParams } from './pagination-params-context'
+import { useTableConfig } from './table-config-context'
 // import { rankItem, compareItems } from '@tanstack/match-sorter-utils'
 
 export const rowActionId = 'rowAction'
@@ -56,6 +57,7 @@ type TableProps<T extends IBaseData<T>> = {
   data: Array<T>
   tableConfig: BaseTableConfig<T>
 }
+
 function handleRowsSelectionChange<T extends IBaseData<T>>(
   oldState: RowSelectionState,
   newState: RowSelectionState,
@@ -132,10 +134,13 @@ function handleSelection<T extends IBaseData<T>>(
   }
 }
 
-export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boolean, data: Array<T>, tableConfig: BaseTableConfig<T> }) {
-  props.tableConfig.setData(props.data);
+export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boolean, data: Array<T> }) {
+  ///
+  const { tableConfigContext, setTableConfigContext } = useTableConfig<T>();
+  tableConfigContext.setData(props.data);
+  ///
   const tablePaginationParams = useTablePaginatitonParams();
-  const [rowsEditing, setRowsEditing] = useState<Record<string, T>>({ ...props.tableConfig.rowsEditing })
+  const [rowsEditing, setRowsEditing] = useState<Record<string, T>>({ ...tableConfigContext.rowsEditing })
   const [columnPinningState, setColumnPinningState] = useState<ColumnPinningState>({})
   // const [data] = useState(() => [...props.data])
   const [rowSelection, setRowSelection] = useState({})
@@ -145,7 +150,7 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
 
 
   const [pagination, setPagination] = useState<PaginationState>(() => {
-    const value: PaginationState = { pageIndex: props.tableConfig.pageIndexDefault, pageSize: props.tableConfig.pageSizeDefault }
+    const value: PaginationState = { pageIndex: tableConfigContext.pageIndexDefault, pageSize: tableConfigContext.pageSizeDefault }
     if (tablePaginationParams?.paginationParamsContext?.pageSize !== undefined) {
       value.pageSize = tablePaginationParams?.paginationParamsContext?.pageSize;
     }
@@ -156,7 +161,7 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
   const [globalFilter, setGlobalFilter] = React.useState('')
 
   const columns = useMemo<ColumnDef<T, any>[]>(() => {
-    if (props.tableConfig.isShowSelectionColumn) {
+    if (tableConfigContext.isShowSelectionColumn) {
       const selectionColumn: ColumnDef<T, any> = {
         id: rowSelectionId,
         accessorKey: rowSelectionId,
@@ -173,14 +178,14 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
         header: ({ table }) => (
           <div className='text-center px-0'>
             <Checkbox
-              {...(props.tableConfig.isSelectAllPages
+              {...(tableConfigContext.isSelectAllPages
                 ? {
                   checked: table.getIsAllRowsSelected() || (table.getIsSomeRowsSelected() && 'indeterminate'),
-                  onCheckedChange: (value) => handleSelection(value, RowSelectType.AllPages, undefined, table, props)
+                  onCheckedChange: (value) => handleSelection(value, RowSelectType.AllPages, undefined, table, { data: props.data, tableConfig: tableConfigContext })
                 }
                 : {
                   checked: table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate'),
-                  onCheckedChange: (value) => handleSelection(value, RowSelectType.OnePage, undefined, table, props)
+                  onCheckedChange: (value) => handleSelection(value, RowSelectType.OnePage, undefined, table, { data: props.data, tableConfig: tableConfigContext })
                 })}
             />
           </div>
@@ -191,21 +196,21 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
               {...{
                 checked: row.getIsSelected(),
                 disabled: !row.getCanSelect(),
-                onCheckedChange: (value) => handleSelection(value, RowSelectType.Row, row, undefined, props)
+                onCheckedChange: (value) => handleSelection(value, RowSelectType.Row, row, undefined, { data: props.data, tableConfig: tableConfigContext })
               }}
             />
           </div>
         )
       }
       setColumnPinningState((old) => {
-        old.left = [rowSelectionId, ...props.tableConfig.colsFixLeft]
+        old.left = [rowSelectionId, ...tableConfigContext.colsFixLeft]
 
         return old
       })
-      columnPinningState.left = [rowSelectionId, ...props.tableConfig.colsFixLeft]
-      props.tableConfig.cols = [selectionColumn, ...props.tableConfig.cols]
+      columnPinningState.left = [rowSelectionId, ...tableConfigContext.colsFixLeft]
+      tableConfigContext.cols = [selectionColumn, ...tableConfigContext.cols]
     }
-    if (props.tableConfig.isShowActionColumn) {
+    if (tableConfigContext.isShowActionColumn) {
       const actionColumn: ColumnDef<T, any> = {
         id: rowActionId,
         accessorKey: rowActionId,
@@ -221,27 +226,27 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
         },
         header: () => 'action',
         cell: ({ row }) => {
-          const mode = props.tableConfig.rowsEditing[row.id] !== undefined ? ModeType.Edit : ModeType.View
-          return GetActions(row, props, mode)
+          const mode = tableConfigContext.rowsEditing[row.id] !== undefined ? ModeType.Edit : ModeType.View
+          return GetActions(row, { data: props.data, tableConfig: tableConfigContext }, mode)
         }
       }
-      columnPinningState.right = [...props.tableConfig.colsFixRight, rowActionId]
+      columnPinningState.right = [...tableConfigContext.colsFixRight, rowActionId]
 
       setColumnPinningState((old) => {
-        old.right = [...props.tableConfig.colsFixRight, rowActionId]
+        old.right = [...tableConfigContext.colsFixRight, rowActionId]
 
         return old
       })
-      props.tableConfig.cols.push(actionColumn)
+      tableConfigContext.cols.push(actionColumn)
     }
 
-    return props.tableConfig.cols
+    return tableConfigContext.cols
   }, [])
 
   useEffect(() => {
     setRowSelectionForHandle((old) => {
-      handleRowsSelectionChange(old, rowSelection, props)
-      handleRowsSelectionChange(old, rowSelection, props)
+      handleRowsSelectionChange(old, rowSelection, { data: props.data, tableConfig: tableConfigContext })
+      handleRowsSelectionChange(old, rowSelection, { data: props.data, tableConfig: tableConfigContext })
       return rowSelection
     })
   }, [])
@@ -259,11 +264,11 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
   }, [])
 
   function getRowId(originalRow: T, index: number, parent?: Row<T>): string {
-    let keys = props.tableConfig.getKeys(originalRow, props.tableConfig.keys)
+    let keys = tableConfigContext.getKeys(originalRow, tableConfigContext.keys)
     return getId(originalRow, keys, originalRow.__id__)
   }
 
-  props.tableConfig.table = useReactTable({
+  tableConfigContext.table = useReactTable({
     data: props.data,
     state: {
       rowSelection,
@@ -286,7 +291,7 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
     columns,
     columnResizeMode,
     enableRowSelection: (row) => {
-      return props.tableConfig.allowSelectRow(row.original)
+      return tableConfigContext.allowSelectRow(row.original)
     },
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -305,14 +310,10 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
     globalFilterFn: 'fuzzy'
   })
 
-  // props.tableConfig.filterAction.onClearFilter = () =>{
-  //   setColumnFilters([])
-  // }
-
   return (
     <div className='mx-auto mb-5 mt-5'>
       <div className='rounded-md border mb-4'>
-        <TableHeaderActions<T> tableConfig={props.tableConfig} searchGlobal={globalFilter} />
+        <TableHeaderActions<T> searchGlobal={globalFilter} />
         <ShadcnTable
           {...{
             style: {
@@ -321,32 +322,31 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
           }}
         >
           <TableHeader className='b primary'>
-            {props.tableConfig.table.getHeaderGroups().map((headerGroup) => (
+            {tableConfigContext.table.getHeaderGroups().map((headerGroup) => (
               <BaseTableHeader
                 key={headerGroup.id}
                 headerGroup={headerGroup}
-                tableConfig={props.tableConfig}
                 columnResizeMode={columnResizeMode}
               />
             ))}
           </TableHeader>
           <TableBody className='border-r-0'>
-            {props.tableConfig.table.getRowModel().rows.length === 0 ? (
-              <BaseTableNodata colSpan={props.tableConfig.table.getHeaderGroups.length} />
+            {tableConfigContext.table.getRowModel().rows.length === 0 ? (
+              <BaseTableNodata colSpan={tableConfigContext.table.getHeaderGroups.length} />
             ) : (
-              props.tableConfig.table
+              tableConfigContext.table
                 .getRowModel()
-                .rows.map((row) => <BaseTableRow key={row.id} row={row} tableConfig={props.tableConfig} />)
+                .rows.map((row) => <BaseTableRow key={row.id} row={row}/>)
             )}
           </TableBody>
           <TableFooter>
-            {props.tableConfig.table.getFooterGroups().map((footerGroup) => (
-              <BaseTableFooter key={footerGroup.id} footerGroup={footerGroup} tableConfig={props.tableConfig} />
+            {tableConfigContext.table.getFooterGroups().map((footerGroup) => (
+              <BaseTableFooter key={footerGroup.id} footerGroup={footerGroup}/>
             ))}
           </TableFooter>
         </ShadcnTable>
         <div className='p-4'>
-          <BaseTablePagination tableConfig={props.tableConfig} />
+          <BaseTablePagination />
         </div>
       </div>
     </div>

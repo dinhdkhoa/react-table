@@ -9,12 +9,13 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/
 import { rowActionId, rowSelectionId } from './base-table'
 import BaseDynamicControl from '../base-form/form-controls/base-dynamic-control-form'
 import { cn } from '@/lib/utils'
-import { BaseTableConfig } from './base-table-config'
 import { getCommonPinningStyles } from './styles'
 import { useState } from 'react'
 import { RHFOptions } from '@/core/anotations/rhf-field'
+import { useTableConfig } from './table-config-context'
 
-export function BaseTableCell<T extends IBaseData<T>>(props: { cell: Cell<T, unknown>; row: Row<T>; tableConfig: BaseTableConfig<T>; formField?: RHFOptions<T> }) {
+export function BaseTableCell<T extends IBaseData<T>>(props: { cell: Cell<T, unknown>, row: Row<T>, formField?: RHFOptions<T> }) {
+  const { tableConfigContext } = useTableConfig<T>();
   const { editable, breakAll } = props.cell.column.columnDef.meta ?? {};
 
   const className = useState(() => {
@@ -39,7 +40,7 @@ export function BaseTableCell<T extends IBaseData<T>>(props: { cell: Cell<T, unk
       return flexRender(props.cell.column.columnDef.cell, props.cell.getContext());
     }
 
-    if (props.tableConfig.rowsEditing[props.row.id] !== undefined && (editable ?? false) && props.formField) {
+    if (tableConfigContext.rowsEditing[props.row.id] !== undefined && (editable ?? false) && props.formField) {
       return (
         <div className='items-center'>
           <BaseDynamicControl name={props.cell.column.id} showLabel={'hidden'} />

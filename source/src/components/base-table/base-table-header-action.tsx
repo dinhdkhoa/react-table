@@ -1,8 +1,7 @@
 'use client'
 
-import { CirclePlus, Download, Filter, AlignJustify, Columns3, Search, X, EyeOff, Eye, Settings2, FilterX } from 'lucide-react'
+import { CirclePlus, Filter, Search, X, EyeOff, Eye, Settings2, FilterX } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { Badge } from '@/components/ui/badge'
 
 import {
   DropdownMenu,
@@ -11,17 +10,18 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { ChangeEvent, useEffect, useState } from 'react'
-import { BaseTableConfig } from './base-table-config'
+import { useEffect, useState } from 'react'
 import { IBaseData } from '@/core/classes/base-data'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
-export default function TableHeaderActions<T extends IBaseData<T>>({ tableConfig, searchGlobal }: { tableConfig: BaseTableConfig<T>; searchGlobal: string | number }) {
+import { useTableConfig } from './table-config-context'
+export default function TableHeaderActions<T extends IBaseData<T>>({ searchGlobal }: { searchGlobal: string | number }) {
+  const { tableConfigContext } = useTableConfig<T>();
   const [dropDownShowHideColumnOpen, setDropDownShowHideColumnOpen] = useState(false)
   const [dropDownFilter, setDropDownFilter] = useState(false)
 
   const showHideColumns = () => {
-    return tableConfig.showHideColumnsAction.visibleFn && tableConfig.showHideColumnsAction.visibleFn({} as any) && (
+    return tableConfigContext.showHideColumnsAction.visibleFn && tableConfigContext.showHideColumnsAction.visibleFn({} as any) && (
       <DropdownMenu open={dropDownShowHideColumnOpen}>
         <DropdownMenuTrigger asChild>
           <Button
@@ -35,7 +35,7 @@ export default function TableHeaderActions<T extends IBaseData<T>>({ tableConfig
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align='end' onPointerDownOutside={() => setDropDownShowHideColumnOpen(false)}>
-          {tableConfig.table!
+          {tableConfigContext.table!
             .getAllColumns()
             .filter((column) => column.getCanHide())
             .map((column) => {
@@ -57,8 +57,8 @@ export default function TableHeaderActions<T extends IBaseData<T>>({ tableConfig
 
   function handleOnSelectShowHideFilter(event: Event): void {
     setDropDownFilter(false);
-    if (tableConfig.filterAction.onChangeShowHideFilter) {
-      tableConfig.filterAction.onChangeShowHideFilter(!tableConfig.showFilterRow);
+    if (tableConfigContext.filterAction.onChangeShowHideFilter) {
+      tableConfigContext.filterAction.onChangeShowHideFilter(!tableConfigContext.showFilterRow);
     }
   }
   function handleOnClearFilter(event: Event): void {
@@ -66,7 +66,7 @@ export default function TableHeaderActions<T extends IBaseData<T>>({ tableConfig
   }
 
   const filter = () => {
-    return tableConfig.filterAction.visibleFn && tableConfig.filterAction.visibleFn({} as any) &&
+    return tableConfigContext.filterAction.visibleFn && tableConfigContext.filterAction.visibleFn({} as any) &&
       <DropdownMenu open={dropDownFilter}>
         <DropdownMenuTrigger asChild>
           <Button
@@ -76,7 +76,7 @@ export default function TableHeaderActions<T extends IBaseData<T>>({ tableConfig
               setDropDownFilter(true)
             }}
           >
-           {tableConfig.showFilterRow ? <Filter className='h-4 w-4' /> : <FilterX className='h-4 w-4' />} 
+           {tableConfigContext.showFilterRow ? <Filter className='h-4 w-4' /> : <FilterX className='h-4 w-4' />} 
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align='end' onPointerDownOutside={() => setDropDownFilter(false)}>
@@ -92,19 +92,19 @@ export default function TableHeaderActions<T extends IBaseData<T>>({ tableConfig
             key={'show_hide_filter'}
             onSelect={handleOnSelectShowHideFilter}
           >
-            {tableConfig.showFilterRow ? <EyeOff
+            {tableConfigContext.showFilterRow ? <EyeOff
               className={'mr-2 min-h-4 min-w-4 h-4 w-4'}
             /> : <Eye
               className={'mr-2 min-h-4 min-w-4 h-4 w-4'}
             />}
-            {tableConfig.showFilterRow ? 'Hide filter' : 'Show filter'}
+            {tableConfigContext.showFilterRow ? 'Hide filter' : 'Show filter'}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu >
   }
 
   const addNew = () => {
-    return tableConfig.addNewAction.visibleFn && tableConfig.addNewAction.visibleFn({} as any) &&
+    return tableConfigContext.addNewAction.visibleFn && tableConfigContext.addNewAction.visibleFn({} as any) &&
       (<TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -113,30 +113,30 @@ export default function TableHeaderActions<T extends IBaseData<T>>({ tableConfig
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>{tableConfig.addNewAction.name}</p>
+            <p>{tableConfigContext.addNewAction.name}</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>)
   }
 
   const quickSearch = () => {
-    return tableConfig.isShowQuickSearch && <div className="relative flex items-center max-w-2xl ">
+    return tableConfigContext.isShowQuickSearch && <div className="relative flex items-center max-w-2xl ">
       <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 transform opacity-60" />
       <QuickSearchInput
         value={searchGlobal}
-        onChange={value => tableConfig.table!.setGlobalFilter(String(value))}
+        onChange={value => tableConfigContext.table!.setGlobalFilter(String(value))}
       />
 
     </div>
   }
 
-  if (!tableConfig.table)
+  if (!tableConfigContext.table)
     return null;
 
   return (
     <div className='flex justify-between p-2'>
       <div className='flex gap-2 items-center'>
-        <h4 className='font-bold'>{tableConfig.tableName || ''}</h4>
+        <h4 className='font-bold'>{tableConfigContext.tableName || ''}</h4>
       </div>
       <div className='flex justify-end gap-2 items-center'>
         {quickSearch()}

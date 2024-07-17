@@ -1,10 +1,12 @@
-import { TableSearchParamsProvider } from '../enode-log/_components/enode-log-limit-component'
+
+import { TablePaginationParamsProvider } from '@/components/base-table/pagination-params-context'
 import ENode from './_components/enode'
+import { defaultTablePaginatitonParams } from '@/components/base-table/base-table-config'
 
 export default function DemoPage() {
   return (
-    <TableSearchParamsProvider>
+    <TablePaginationParamsProvider initValue={defaultTablePaginatitonParams}>
       <ENode />
-    </TableSearchParamsProvider>
+    </TablePaginationParamsProvider>
   )
 }
