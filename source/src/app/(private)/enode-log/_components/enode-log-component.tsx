@@ -131,7 +131,7 @@ export default function ENodeLog({ data }: { data: Array<EnodeLogEntity> }) {
 
   return <>
     <TableConfigProvider<EnodeLogEntity> initValue={tableConfig} >
-      <BaseTable<EnodeLogEntity> loading={false} data={data} tableConfig={tableConfig} />
+      <BaseTable<EnodeLogEntity> loading={false} data={data}/>
     </TableConfigProvider>
     {/* <Sheet open={sheetIsOpen} onOpenChange={setSheetIsOpen}>
       <SheetContent>

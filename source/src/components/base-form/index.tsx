@@ -61,9 +61,9 @@ const BaseForm = <TEntity extends FieldValues = FieldValues>({ ...props }: BaseF
   )
 }
 
-const withEntity = <TEntity extends FieldValues,>(Component: React.ComponentType<{ form: UseFormReturn<TEntity> }>) => {
-  return (props: { form: UseFormReturn<TEntity> }) => <Component {...props} />;
-};
+// const withEntity = <TEntity extends FieldValues,>(Component: React.ComponentType<{ form: UseFormReturn<TEntity> }>) => {
+//   return (props: { form: UseFormReturn<TEntity> }) => <Component {...props} />;
+// };
 
 BaseForm.Checkbox =  BaseCheckbox
 BaseForm.TextInput = BaseTextInput
