@@ -11,7 +11,7 @@ export default function ENodeLogLimit({ data }: { data: Array<EnodeLogEntity> })
 
   const [tableConfig, setTableConfig] = useState<BaseTableConfig<EnodeLogEntity>>(() => {
     const config = new BaseTableConfig<EnodeLogEntity>();
-    config.tableName = '';
+    config.tableName = 'Page On Server';
     config.isShowQuickSearch = true;
     config.pageOnServer = true;
 

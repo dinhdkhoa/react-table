@@ -12,23 +12,27 @@ export default function EnodeLogPage({
   searchParams?: PaginationParams;
 }) {
   console.log('searchParams', searchParams)
-  return <Suspense fallback={<MySkeleton />}>
-    <EnodeLogLimitTable searchParams={searchParams} />
-    {/* <EnodeLogTable searchParams={searchParams} /> */}
-  </Suspense>
+  return <>
+    <Suspense fallback={<MySkeleton />}>
+      <EnodeLogLimitTable searchParams={searchParams} />
+    </Suspense>
+    <Suspense fallback={<MySkeleton />}>
+      <EnodeLogTable searchParams={searchParams} />
+    </Suspense>
+  </>
 }
 
 
-// async function EnodeLogTable({
-//   searchParams,
-// }: {
-//   searchParams?: PaginationParams;
-// }) {
-//   const state = await EnodeLogUsecase.getList({ postPerPage: 100, pageNumber: 0 })
+async function EnodeLogTable({
+  searchParams,
+}: {
+  searchParams?: PaginationParams;
+}) {
+  const state = await EnodeLogUsecase.getList({ postPerPage: 100, pageNumber: 0 })
 
 
-//   return <ENodeLog data={state.value || []} />
-// }
+  return <ENodeLog data={state.value || []} />
+}
 
 async function EnodeLogLimitTable({
   searchParams,
