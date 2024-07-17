@@ -38,7 +38,7 @@ import BaseTablePagination from './base-table-pagination'
 import { BaseTableNodata } from './base-table-nodata'
 import TableHeaderActions from './base-table-header-action'
 import { fuzzyFilter } from './base-table-filter'
-import { useTablePaginatitonParams } from './paginatiton-params-context'
+import { useTablePaginatitonParams } from './pagination-params-context'
 // import { rankItem, compareItems } from '@tanstack/match-sorter-utils'
 
 export const rowActionId = 'rowAction'

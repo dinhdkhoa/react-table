@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { BaseTableConfig, defaultTablePaginatitonParams, pageSizeDefault } from './base-table-config'
 import { IBaseData } from '@/core/classes/base-data'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useTablePaginatitonParams } from './paginatiton-params-context'
+import { useTablePaginatitonParams } from './pagination-params-context'
 import { useEffect } from 'react'
 
 interface DataTablePaginationProps<TData extends IBaseData<TData>> {
