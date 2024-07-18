@@ -237,7 +237,7 @@ export default function ENode() {
   }
 
   tableConfig.setData(randomPersons)
-  tableConfig.isActionColumListType = false
+  // tableConfig.isActionColumListType = false
 
   return (
     <TableConfigProvider<PersonEntity> initValue={tableConfig} >

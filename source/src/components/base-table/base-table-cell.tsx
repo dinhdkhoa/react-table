@@ -24,6 +24,10 @@ export function BaseTableCell<T extends IBaseData<T>>(props: { cell: Cell<T, unk
     if (props.cell.column.getIsPinned()) result.push('bg-background');
     if ([rowActionId, rowSelectionId].includes(props.cell.column.id)) {
       result.push('text-center');
+      if (props.cell.column.id == rowSelectionId) {
+        result.push('[&:has([role=checkbox])]:pr-2')
+      }
+
     }
     else if (breakAll) {
       result.push('break-all');
