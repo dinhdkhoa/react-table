@@ -169,12 +169,13 @@ const BaseComboboxItem = <
 
   return (
     <FormItem>
-      <FormLabel className={cn(SharedVariants({ showLabel }))}>{label}</FormLabel>
+      <FormLabel htmlFor={field.name} className={cn(SharedVariants({ showLabel }))}>{label}</FormLabel>
       <FormControl>
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
               disabled={disabled}
+              id={field.name}
               variant='outline'
               role='combobox'
               className={cn(

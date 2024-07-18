@@ -124,11 +124,12 @@ const BaseDateTimeInputItem = <
 
   return (
     <FormItem>
-      <FormLabel className={cn(SharedVariants({ showLabel }))}>{label}</FormLabel>
+      <FormLabel htmlFor={field.name} className={cn(SharedVariants({ showLabel }))}>{label}</FormLabel>
       <FormControl>
         <Popover>
           <PopoverTrigger asChild>
             <Button
+              id={field.name}
               disabled={disabled}
               variant='outline'
               className={cn(

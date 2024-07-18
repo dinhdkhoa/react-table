@@ -176,6 +176,7 @@ function QuickSearchInput({
     <Input
       {...props}
       value={value}
+      name='quick_search'
       placeholder="Quick search"
       className="max-w-sm pl-8"
       onChange={e => setValue(e.currentTarget.value)}

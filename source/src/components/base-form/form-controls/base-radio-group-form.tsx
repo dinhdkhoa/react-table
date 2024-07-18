@@ -134,9 +134,10 @@ const BaseRadioGroupItem = <
 
   return (
     <FormItem>
-      <FormLabel className={cn(SharedVariants({ showLabel }))}>{label}</FormLabel>
+      <FormLabel htmlFor={field.name} className={cn(SharedVariants({ showLabel }))}>{label}</FormLabel>
       <FormControl>
         <RadioGroup
+          id={field.name}
           disabled={disabled}
           onValueChange={handleChange}
           defaultValue={form.getValues(field.name)?.toString()}

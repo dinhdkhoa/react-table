@@ -114,9 +114,9 @@ const BaseTextInputItem = <TEntity extends FieldValues = FieldValues, TControlTy
 
   return (
     <FormItem>
-      <FormLabel className={cn(SharedVariants({ showLabel }))}>{label}</FormLabel>
+      <FormLabel htmlFor={field.name} className={cn(SharedVariants({ showLabel }))}>{label}</FormLabel>
       <FormControl>
-        <Input {...field} placeholder={placeholder} disabled={disabled} minLength={minLength} maxLength={maxLength} />
+        <Input {...field} id={field.name} placeholder={placeholder} disabled={disabled} minLength={minLength} maxLength={maxLength} />
       </FormControl>
       <FormMessage />
     </FormItem>

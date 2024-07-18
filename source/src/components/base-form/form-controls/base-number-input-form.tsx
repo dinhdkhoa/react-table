@@ -113,7 +113,7 @@ const BaseNumberInputItem = <
 
   return (
     <FormItem>
-      <FormLabel className={cn(SharedVariants({ showLabel }))}>{label}</FormLabel>
+      <FormLabel htmlFor={field.name} className={cn(SharedVariants({ showLabel }))}>{label}</FormLabel>
       <FormControl>
         <Input
           {...field}
@@ -123,6 +123,7 @@ const BaseNumberInputItem = <
             onChange: handleChange,
             onBlur: handleBlur
           })}
+          id={field.name}
           disabled={disabled}
           placeholder={placeholder}
           type='number'

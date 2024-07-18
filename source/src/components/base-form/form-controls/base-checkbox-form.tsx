@@ -131,7 +131,7 @@ const BaseCheckboxItem = <
   return (
     <FormItem>
       {showTopLabel && (
-        <FormLabel className={cn(SharedVariants({ showLabel }), BaseCheckboxVariants({ topLabel }))}>{label}</FormLabel>
+        <FormLabel htmlFor={field.name} className={cn(SharedVariants({ showLabel }), BaseCheckboxVariants({ topLabel }))}>{label}</FormLabel>
       )}
       <FormControl>
         <div className={cn('flex items-center space-x-2', BaseCheckboxVariants({ checkBoxVariants }))}>

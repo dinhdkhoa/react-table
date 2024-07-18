@@ -129,10 +129,11 @@ const BaseTextAreaItem = <
 
   return (
     <FormItem>
-      <FormLabel className={cn(SharedVariants({ showLabel }))}>{label}</FormLabel>
+      <FormLabel htmlFor={field.name} className={cn(SharedVariants({ showLabel }))}>{label}</FormLabel>
       <FormControl>
         <Textarea
           {...field}
+          id={field.name}
           className={cn(baseTextAreaVariants({ resizeable }))}
           disabled={disabled}
           placeholder={placeholder}

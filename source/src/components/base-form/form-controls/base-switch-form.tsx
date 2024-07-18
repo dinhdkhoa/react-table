@@ -127,7 +127,7 @@ const BaseSwitchItem = <TEntity extends FieldValues = FieldValues, TControlType 
   return (
     <FormItem>
       {showTopLabel && (
-        <FormLabel className={cn(SharedVariants({ showLabel }), BaseSwitchVariants({ topLabel }))}>{label}</FormLabel>
+        <FormLabel htmlFor={field.name} className={cn(SharedVariants({ showLabel }), BaseSwitchVariants({ topLabel }))}>{label}</FormLabel>
       )}
       <FormControl>
         <div className={cn('flex items-center space-x-2', BaseSwitchVariants({ switchVariants }))}>
@@ -141,8 +141,8 @@ const BaseSwitchItem = <TEntity extends FieldValues = FieldValues, TControlType 
               </label>
             )}
             <Switch
-              id={field.name}
               {...field}
+              id={field.name}
               onCheckedChange={handleChange}
               disabled={disabled}
               checked={form.getValues(field.name)}

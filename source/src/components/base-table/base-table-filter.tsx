@@ -171,7 +171,7 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
     return `w-[${column.getSize()}px] max-w-[${column.columnDef.maxSize}px] min-w-[${column.columnDef.minSize}px]`
   }, [column])
 
-  
+
   const sortedUniqueValues = useMemo(
     () => filterVariant === 'unique' ? Array.from(column.getFacetedUniqueValues().keys()) : []
       .sort()
@@ -524,6 +524,7 @@ function FilterInput({ placeholder, column, isNumberCol }: { placeholder: string
 
   return (
     <Input
+      name={column.id}
       placeholder={placeholder}
       onChange={handleChange}
       type={isNumberCol ? 'number' : 'text'}
