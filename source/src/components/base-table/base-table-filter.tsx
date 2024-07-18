@@ -184,6 +184,7 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
   if (!formatColumnType) {
     return (
       <FilterInput
+        initValue={columnFilterValue as string | number | undefined}
         placeholder='Filter'
         column={column}
         isNumberCol={isNumberCol ?? false}
@@ -195,6 +196,7 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
     if (filterVariant === 'unique') {
       return (
         <FilterAutocomplete
+          initValue={columnFilterValue}
           popOverContentWidth={buildWidthPopOver}
           options={sortedUniqueValues}
           onChange={value => {
@@ -205,6 +207,7 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
     }
     return (
       <FilterInput
+        initValue={columnFilterValue as string | number | undefined}
         placeholder='Filter'
         column={column}
         isNumberCol={isNumberCol ?? false}
@@ -217,7 +220,7 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
     if (staticSelectOption) {
       return (
         <FilterStaticCombobox
-          value={columnFilterValue as StaticComboboxFilterType}
+          initValue={columnFilterValue as StaticComboboxFilterType}
           selectOption={staticSelectOption}
           onChange={(value) => {
             column.setFilterValue(value)
@@ -230,20 +233,20 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
   }
 
   if ([FormatColumnType.Boolean].includes(formatColumnType)) {
-    return <FilterCheckbox onChange={(value) => column.setFilterValue(value)} />
+    return <FilterCheckbox initValue={columnFilterValue === undefined ? 'any' : columnFilterValue as string} onChange={(value) => column.setFilterValue(value)} />
   }
 
   if ([FormatColumnType.Date, FormatColumnType.DateTime].includes(formatColumnType)) {
     return (
       <FilterDate
-        value={(columnFilterValue ?? null) as DateFilterType}
+        initValue={(columnFilterValue) as DateFilterType}
         onChange={(value) => column.setFilterValue(value)}
       />
     )
   }
 }
 
-function FilterCheckbox({ onChange }: { onChange: (value: CheckBoxFilterType) => void }) {
+function FilterCheckbox({ initValue, onChange }: { initValue: string, onChange: (value: CheckBoxFilterType) => void }) {
   const allValue = 'any'
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState<CheckBoxFilterType>(allValue)
@@ -251,6 +254,12 @@ function FilterCheckbox({ onChange }: { onChange: (value: CheckBoxFilterType) =>
   useEffect(() => {
     onChange(value)
   }, [value])
+
+  useEffect(() => {
+    if ((initValue === 'any')) {
+      setValue(allValue);
+    }
+  }, [initValue])
 
   const checkState = [
     { value: allValue, label: 'Any' },
@@ -302,20 +311,26 @@ function FilterCheckbox({ onChange }: { onChange: (value: CheckBoxFilterType) =>
   )
 }
 
-function FilterDate({ value, onChange }: { value: DateFilterType; onChange: (value: DateFilterType) => void }) {
-  const [date, setDate] = useState<DateFilterType>(value)
+function FilterDate({ initValue, onChange }: { initValue: DateFilterType; onChange: (value: DateFilterType) => void }) {
+  const [date, setDate] = useState<DateFilterType>(initValue)
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
     onChange(date)
   }, [date])
 
+  useEffect(() => {
+    if ((initValue === undefined)) {
+      setDate(undefined);
+    }
+  }, [initValue])
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant='outline' className='w-full justify-between bg-transparent'>
           <span className='truncate'>{date ? date.toLocaleDateString() : 'Filter'}</span>
-          {value ? clearFilter(() => setDate(null)) : <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />}
+          {initValue ? clearFilter(() => setDate(null)) : <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />}
         </Button>
       </PopoverTrigger>
       <PopoverContent className='w-auto p-0'>
@@ -349,17 +364,19 @@ type OptionAutoComplete = {
 }
 
 function FilterAutocomplete({
+  initValue,
   options,
   onChange,
   popOverContentWidth
 }: {
+  initValue: any
   options: any[]
   onChange: (value: any) => void
   popOverContentWidth: string
 }) {
   const [values, setValues] = useState<OptionAutoComplete[]>([])
   const [open, setOpen] = useState(false)
-  const [value, setValue] = useState<any>(undefined)
+  const [value, setValue] = useState<any>(initValue)
 
   useEffect(() => {
     onChange(value)
@@ -369,6 +386,12 @@ function FilterAutocomplete({
     const map = options.map<OptionAutoComplete>((option) => ({ value: option, label: option }));
     setValues(map);
   }, [options])
+
+  useEffect(() => {
+    if ((initValue === undefined)) {
+      setValue(undefined);
+    }
+  }, [initValue])
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -414,19 +437,19 @@ function FilterAutocomplete({
 }
 
 function FilterStaticCombobox({
-  value,
+  initValue,
   selectOption,
   onChange,
   popOverContentWidth
 }: {
-  value: StaticComboboxFilterType
+  initValue: StaticComboboxFilterType
   selectOption: SelectOption<any, any>
   onChange: (value: any) => void
   popOverContentWidth: string
 }) {
   const placeholder = 'Filter'
   const [open, setOpen] = useState(false)
-  const [currentValue, setCurrentValue] = useState(value)
+  const [currentValue, setCurrentValue] = useState(initValue)
 
   const display = useMemo(() => {
     const _value = currentValue
@@ -459,6 +482,12 @@ function FilterStaticCombobox({
     setCurrentValue(e)
     onChange(e)
   }
+
+  useEffect(() => {
+    if ((initValue === undefined)) {
+      setCurrentValue(undefined);
+    }
+  }, [initValue])
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -508,14 +537,20 @@ function FilterStaticCombobox({
 }
 
 
-function FilterInput({ placeholder, column, isNumberCol }: { placeholder: string, column: Column<any, unknown>, isNumberCol: boolean }) {
-  const [searchText, setSearchText] = useState<string>('');
+function FilterInput({ initValue, placeholder, column, isNumberCol }: { initValue: string | number | undefined, placeholder: string, column: Column<any, unknown>, isNumberCol: boolean }) {
+  const [searchText, setSearchText] = useState(initValue || '');
   const debounceValue = useDebounce(searchText);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setSearchText(value);
   }
+
+  useEffect(() => {
+    if ((initValue === undefined)) {
+      setSearchText('');
+    }
+  }, [initValue])
 
 
   useEffect(() => {
@@ -524,6 +559,7 @@ function FilterInput({ placeholder, column, isNumberCol }: { placeholder: string
 
   return (
     <Input
+      value={searchText}
       name={column.id}
       placeholder={placeholder}
       onChange={handleChange}

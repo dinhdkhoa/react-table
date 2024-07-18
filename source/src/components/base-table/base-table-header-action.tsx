@@ -63,6 +63,7 @@ export default function TableHeaderActions<T extends IBaseData<T>>({ searchGloba
   }
   function handleOnClearFilter(event: Event): void {
     setDropDownFilter(false);
+    tableConfigContext.table?.setColumnFilters([])
   }
 
   const filter = () => {

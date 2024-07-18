@@ -13,9 +13,9 @@ export default function EnodeLogPage({
 }) {
   console.log('searchParams', searchParams)
   return <>
-    <Suspense fallback={<MySkeleton />}>
+    {/* <Suspense fallback={<MySkeleton />}>
       <EnodeLogLimitTable searchParams={searchParams} />
-    </Suspense>
+    </Suspense> */}
     <Suspense fallback={<MySkeleton />}>
       <EnodeLogTable searchParams={searchParams} />
     </Suspense>
@@ -29,8 +29,6 @@ async function EnodeLogTable({
   searchParams?: PaginationParams;
 }) {
   const state = await EnodeLogUsecase.getList({ postPerPage: 100, pageNumber: 0 })
-
-
   return <ENodeLog data={state.value || []} />
 }
 
