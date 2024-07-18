@@ -13,12 +13,12 @@ export default function EnodeLogPage({
 }) {
   console.log('searchParams', searchParams)
   return <>
-    {/* <Suspense fallback={<MySkeleton />}>
-      <EnodeLogLimitTable searchParams={searchParams} />
-    </Suspense> */}
     <Suspense fallback={<MySkeleton />}>
-      <EnodeLogTable searchParams={searchParams} />
+      <EnodeLogLimitTable searchParams={searchParams} />
     </Suspense>
+    {/* <Suspense fallback={<MySkeleton />}>
+      <EnodeLogTable searchParams={searchParams} />
+    </Suspense> */}
   </>
 }
 
