@@ -246,10 +246,9 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
   useEffect(() => {
     setRowSelectionForHandle((old) => {
       handleRowsSelectionChange(old, rowSelection, { data: props.data, tableConfig: tableConfigContext })
-      handleRowsSelectionChange(old, rowSelection, { data: props.data, tableConfig: tableConfigContext })
       return rowSelection
     })
-  }, [])
+  }, [props.data, rowSelection, tableConfigContext])
 
 
   const handleRowsIdEditingChange = (newValue: Record<string, T>) => {

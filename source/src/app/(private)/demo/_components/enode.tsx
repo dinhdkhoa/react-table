@@ -231,9 +231,9 @@ export default function ENode() {
   }
 
   tableConfig.handleRowsSelectionChange = (checked, rows, arrData) => {
-    // console.log(checked)
-    // console.log(rows);
-    // console.log(arrData);
+    console.log(checked)
+    console.log(rows);
+    console.log(arrData);
   }
 
   tableConfig.setData(randomPersons)
