@@ -161,7 +161,7 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
   const [globalFilter, setGlobalFilter] = React.useState('')
 
   const columns = useMemo<ColumnDef<T, any>[]>(() => {
-    if (tableConfigContext.isShowSelectionColumn) {
+    if (tableConfigContext.isShowSelectionColumn && tableConfigContext.cols.findIndex(w => w.id == rowSelection) == -1) {
       const selectionColumn: ColumnDef<T, any> = {
         id: rowSelectionId,
         accessorKey: rowSelectionId,
@@ -210,7 +210,7 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
       columnPinningState.left = [rowSelectionId, ...tableConfigContext.colsFixLeft]
       tableConfigContext.cols = [selectionColumn, ...tableConfigContext.cols]
     }
-    if (tableConfigContext.isShowActionColumn) {
+    if (tableConfigContext.isShowActionColumn && tableConfigContext.cols.findIndex(w => w.id == rowActionId) == -1) {
       const actionColumn: ColumnDef<T, any> = {
         id: rowActionId,
         accessorKey: rowActionId,
@@ -241,7 +241,7 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
     }
 
     return tableConfigContext.cols
-  }, [])
+  }, [tableConfigContext.isShowSelectionColumn, tableConfigContext.isShowActionColumn])
 
   useEffect(() => {
     setRowSelectionForHandle((old) => {
@@ -332,16 +332,16 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
           </TableHeader>
           <TableBody className='border-r-0'>
             {tableConfigContext.table.getRowModel().rows.length === 0 ? (
-              <BaseTableNodata colSpan={tableConfigContext.table.getHeaderGroups.length} />
+              <BaseTableNodata colSpan={tableConfigContext.table.getAllColumns().length} />
             ) : (
               tableConfigContext.table
                 .getRowModel()
-                .rows.map((row) => <BaseTableRow key={row.id} row={row}/>)
+                .rows.map((row) => <BaseTableRow key={row.id} row={row} />)
             )}
           </TableBody>
           <TableFooter>
             {tableConfigContext.table.getFooterGroups().map((footerGroup) => (
-              <BaseTableFooter key={footerGroup.id} footerGroup={footerGroup}/>
+              <BaseTableFooter key={footerGroup.id} footerGroup={footerGroup} />
             ))}
           </TableFooter>
         </ShadcnTable>
