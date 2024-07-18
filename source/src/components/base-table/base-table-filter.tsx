@@ -171,6 +171,7 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
     return `w-[${column.getSize()}px] max-w-[${column.columnDef.maxSize}px] min-w-[${column.columnDef.minSize}px]`
   }, [column])
 
+  
   const sortedUniqueValues = useMemo(
     () => filterVariant === 'unique' ? Array.from(column.getFacetedUniqueValues().keys()) : []
       .sort()
@@ -342,6 +343,11 @@ const clearFilter = (onClick: () => void) => (
   />
 )
 
+type OptionAutoComplete = {
+  value: any,
+  label: any
+}
+
 function FilterAutocomplete({
   options,
   onChange,
@@ -351,13 +357,18 @@ function FilterAutocomplete({
   onChange: (value: any) => void
   popOverContentWidth: string
 }) {
-  const [values] = useState(() => options.map((option) => ({ value: option, label: option })))
+  const [values, setValues] = useState<OptionAutoComplete[]>([])
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState<any>(undefined)
 
   useEffect(() => {
     onChange(value)
   }, [value])
+
+  useEffect(() => {
+    const map = options.map<OptionAutoComplete>((option) => ({ value: option, label: option }));
+    setValues(map);
+  }, [options])
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
