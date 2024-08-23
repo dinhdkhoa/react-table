@@ -1,12 +1,11 @@
 import { Suspense } from 'react'
 import { Skeleton } from '@/components/ui/skeleton';
-import { PaginationParams } from '@/components/base-table/pagination-params-context';
 import { EnodeLogLimitTable, EnodeLogTable } from './_components/enode-log-table';
 
 export default function EnodeLogPage({
   searchParams,
 }: {
-  searchParams?: PaginationParams;
+  searchParams?: any;
 }) {
   console.log('searchParams', searchParams)
   return <>

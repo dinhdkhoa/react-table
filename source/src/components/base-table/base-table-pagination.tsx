@@ -9,6 +9,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useTableConfig } from './table-config-context'
 import { useCustomSearchParams } from '@/core/hooks/useCustomSearchParams'
+import { usePageSearchParams } from './context/search-params-context'
 
 
 export default function BaseTablePagination<T extends IBaseData<T>>() {
@@ -97,11 +98,15 @@ function BaseTableServerPagination<T extends IBaseData<T>>() {
   const { tableConfigContext } = useTableConfig<T>();
   const router = useRouter();
   const pathname = usePathname();
-  const { updateSearchParams, urlSearchParams, page, pageSize } = useCustomSearchParams();
+  const { paginationParams, setPaginationParams, urlSearchParams, setUrlSearchParams, updateSearchParams } = usePageSearchParams();
+  // const { updateSearchParams, urlSearchParams, page, pageSize } = useCustomSearchParams();
+
+  const page = (paginationParams.page ?? 0);
+  const pageSize = (paginationParams.pageSize ?? 0)
 
   useEffect(() => {
     router.push(`${pathname}?${urlSearchParams.toString()}`);
-  }, [page, pageSize])
+  }, [paginationParams])
 
 
   const handlePreviousPage = () => {

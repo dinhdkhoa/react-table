@@ -2,13 +2,16 @@ import { defaultTablePaginatitonParams, pageIndexDefault, pageSizeDefault, pageS
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export const useCustomSearchParams = () => {
+export const useCustomSearchParams = (name: string) => {
     const searchParams = useSearchParams();
     const [urlSearchParams, setUrlSearchParams] = useState(new URLSearchParams(searchParams));
     const [page, setPage] = useState<number>(pageIndexDefault);
     const [pageSize, setPageSize] = useState<number>(pageSizeDefault);
 
     useEffect(() => {
+        console.log(`useCustomSearchParams: ${name}`);
+        console.log(`searchParams :${searchParams.toString()}`)
+        console.log(`page: ${page}`)
         if (urlSearchParams.size == 0) {
             setPage(pageIndexDefault + 1);
             setPageSize(pageSizeDefault);
@@ -18,6 +21,7 @@ export const useCustomSearchParams = () => {
                 if (currentKey.toLowerCase() == 'page'.toLowerCase()) {
                     const num = Number(currentValue);
                     if (currentValue && !isNaN(num)) {
+                        console.log(`page_2: ${num}`)
                         setPage(num);
                     }
                 } else if (currentKey.toLowerCase() == 'pageSize'.toLowerCase()) {
@@ -33,7 +37,7 @@ export const useCustomSearchParams = () => {
                 }
             });
         }
-    }, [urlSearchParams]);
+    });
 
     const updateSearchParams = (values: { key: string, value: string }[]) => {
         const _searchParams = new URLSearchParams(urlSearchParams)

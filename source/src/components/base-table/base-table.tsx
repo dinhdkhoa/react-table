@@ -32,15 +32,14 @@ import { CheckedState } from '@radix-ui/react-checkbox'
 import { IBaseData, getId } from '@/core/classes/base-data'
 import { FormatColumnType, ModeType, RowSelectType } from './enums'
 import TableActionColumn from './base-table-action'
-import { BaseTableConfig, rowIdsEditingChangeEvent } from './base-table-config'
+import { BaseTableConfig, defaultTablePaginatitonParams, pageSizeDefault, rowIdsEditingChangeEvent } from './base-table-config'
 import { BaseTableFooter, BaseTableHeader, BaseTableRow } from './base-table-row'
 import BaseTablePagination from './base-table-pagination'
 import { BaseTableNodata } from './base-table-nodata'
 import TableHeaderActions from './base-table-header-action'
 import { fuzzyFilter } from './base-table-filter'
-// import { useTablePaginatitonParams } from './pagination-params-context'
 import { useTableConfig } from './table-config-context'
-import { useCustomSearchParams } from '@/core/hooks/useCustomSearchParams'
+import { usePageSearchParams } from './context/search-params-context'
 // import { rankItem, compareItems } from '@tanstack/match-sorter-utils'
 
 export const rowActionId = 'rowAction'
@@ -140,7 +139,7 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
   const { tableConfigContext, setTableConfigContext } = useTableConfig<T>();
   tableConfigContext.setData(props.data);
   ///
-  // const tablePaginationParams = useTablePaginatitonParams();
+  const { paginationParams } = usePageSearchParams();
   const [rowsEditing, setRowsEditing] = useState<Record<string, T>>({ ...tableConfigContext.rowsEditing })
   const [columnPinningState, setColumnPinningState] = useState<ColumnPinningState>({})
   // const [data] = useState(() => [...props.data])
@@ -148,14 +147,18 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
   const [rowSelectionForHandle, setRowSelectionForHandle] = useState(rowSelection)
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnResizeMode, setColumnResizeMode] = useState<ColumnResizeMode>('onChange')
-  const { page: pageOnServer, pageSize: pageSizeOnServer } = useCustomSearchParams();
+
+
   const [pagination, setPagination] = useState<PaginationState>(() => {
-    const value: PaginationState = { pageIndex: tableConfigContext.pageIndexDefault, pageSize: tableConfigContext.pageSizeDefault };
-    if (tableConfigContext.pageOnServer) {
-      value.pageSize = pageSizeOnServer;
-    }
+    const value: PaginationState = { pageIndex: tableConfigContext.pageIndexDefault, pageSize: tableConfigContext.pageSizeDefault }
     return value;
   })
+
+  useEffect(() => {
+    if (tableConfigContext.pageOnServer) {
+      setPagination({ ...pagination, pageSize: paginationParams.pageSize ?? pageSizeDefault })
+    }
+  }, [tableConfigContext.pageOnServer, paginationParams])
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [globalFilter, setGlobalFilter] = React.useState('')
@@ -308,13 +311,6 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
     onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: 'fuzzy'
   })
-
-
-  useEffect(() => {
-    if (tableConfigContext.pageOnServer) {
-      tableConfigContext.table?.setPageSize(pageSizeOnServer);
-    }
-  }, [pageOnServer, pageSizeOnServer])
 
   return (
     <div className='mx-auto mb-5 mt-5'>

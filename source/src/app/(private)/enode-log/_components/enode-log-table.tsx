@@ -1,14 +1,15 @@
 import { EnodeLogUsecase } from '@/domain/use-cases/enode-log-usecase'
-import { PaginationParams } from '@/components/base-table/pagination-params-context';
 import { defaultTablePaginatitonParams, pageSizeOptionsDefault } from '@/components/base-table/base-table-config';
 import ENodeLogLimit from './enode-log-limit-component';
 import ENodeLog from './enode-log-component';
+import { PageSearchParamsProvider } from '@/components/base-table/context/search-params-context';
 
 export async function EnodeLogLimitTable({
     searchParams,
 }: {
-    searchParams?: PaginationParams;
+    searchParams?: any;
 }) {
+    console.log(`searchParams: ${JSON.stringify(searchParams)}`)
     if (searchParams === undefined) {
         searchParams = {}
     }
@@ -19,7 +20,11 @@ export async function EnodeLogLimitTable({
     }
     const state = await EnodeLogUsecase.getListLimit({ postPerPage: searchParams.pageSize, pageNumber: searchParams.page, totalPage: 10 })
 
-    return (<ENodeLogLimit data={state.value || []} />);
+    return (
+        <PageSearchParamsProvider initValue={searchParams}>
+            <ENodeLogLimit data={state.value || []} />
+        </PageSearchParamsProvider>
+    );
 }
 
 
@@ -44,7 +49,7 @@ export async function EnodeLogLimitTable({
 export async function EnodeLogTable({
     searchParams,
 }: {
-    searchParams?: PaginationParams;
+    searchParams?: any;
 }) {
     const state = await EnodeLogUsecase.getList({ postPerPage: 100, pageNumber: 0 })
     return <ENodeLog data={state.value || []} />

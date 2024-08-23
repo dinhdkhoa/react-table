@@ -5,10 +5,10 @@ import { pageIndexDefault, pageSizeDefault } from "./base-table-config";
 import { useSearchParams } from "next/navigation";
 
 
-export type PaginationParams = {
-    page?: number,
-    pageSize?: number,
-}
+// export type PaginationParams = {
+//     page?: number,
+//     pageSize?: number,
+// }
 
 // interface PaginatitonParamsContextProps {
 //     paginationParamsContext: PaginationParams;

@@ -10,7 +10,7 @@ import tableEventEmitter from './events'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { FieldNames } from '@/core/helper/type-helpers'
 import { cn } from '@/lib/utils'
-import { PaginationParams } from './pagination-params-context'
+import { PaginationParams } from './context/search-params-context'
 export const showChildButtonId = '_row_action_show_child'
 export const saveButtonId = '_row_action_save'
 export const cancelButtonId = '_row_action_cancel'
@@ -30,7 +30,7 @@ export const defaultTablePaginatitonParams: PaginationParams = {
 
 export interface BaseRowAction<IBaseData extends FieldValues = FieldValues> {
   id: string
-  name: string
+  name: string  
   iconChild?: ReactNode
   action?: (data: IBaseData, form?: UseFormReturn<IBaseData>) => void
   disableFn?: (data: IBaseData) => boolean
