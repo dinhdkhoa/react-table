@@ -3,12 +3,12 @@
 import { ChevronLeftIcon, ChevronRightIcon, DoubleArrowLeftIcon, DoubleArrowRightIcon } from '@radix-ui/react-icons'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
-import { defaultTablePaginatitonParams, pageSizeDefault } from './base-table-config'
+import { defaultTablePaginatitonParams } from './base-table-config'
 import { IBaseData } from '@/core/classes/base-data'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { useTablePaginatitonParams } from './pagination-params-context'
+import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useTableConfig } from './table-config-context'
+import { useCustomSearchParams } from '@/core/hooks/useCustomSearchParams'
 
 
 export default function BaseTablePagination<T extends IBaseData<T>>() {
@@ -95,65 +95,50 @@ function BaseTableClientPagination<T extends IBaseData<T>>() {
 
 function BaseTableServerPagination<T extends IBaseData<T>>() {
   const { tableConfigContext } = useTableConfig<T>();
-  const tablePaginatitonParamsContext = useTablePaginatitonParams();
-
   const router = useRouter();
-  const query = useSearchParams();
-
-  const pageSize = Number(tablePaginatitonParamsContext?.paginationParamsContext?.pageSize ?? defaultTablePaginatitonParams.pageSize);
-  const page = Number(tablePaginatitonParamsContext?.paginationParamsContext?.page ?? defaultTablePaginatitonParams.page);
+  const pathname = usePathname();
+  const { updateSearchParams, urlSearchParams, page, pageSize } = useCustomSearchParams();
 
   useEffect(() => {
-    if (tablePaginatitonParamsContext) {
-      if (!tableConfigContext.pageSizeOptionsDefault.includes(pageSize)) {
-        tablePaginatitonParamsContext.setPaginationParamsContext!({ pageSize: pageSizeDefault, page: page });
-        router.push(`?page=${page}`);
-      }
-    }
-  }, [tablePaginatitonParamsContext])
+    router.push(`${pathname}?${urlSearchParams.toString()}`);
+  }, [page, pageSize])
+
 
   const handlePreviousPage = () => {
-    if (page > 1 && tablePaginatitonParamsContext?.setPaginationParamsContext) {
+    if (page > 1) {
       const previousPage = page - 1;
-      tablePaginatitonParamsContext.setPaginationParamsContext!({ pageSize: pageSize, page: previousPage });
       if (pageSize != defaultTablePaginatitonParams.pageSize) {
-        router.push(`?page=${previousPage}&pageSize=${pageSize}`);
+        updateSearchParams([{ key: 'pageSize', value: pageSize.toString() }, { key: 'page', value: previousPage.toString() }]);
       }
       else {
-        router.push(`?page=${previousPage}`);
+        updateSearchParams([{ key: 'page', value: previousPage.toString() }]);
       }
     }
   }
 
   const handleFirstPage = () => {
-    if (tablePaginatitonParamsContext?.setPaginationParamsContext) {
-      const firstPage = 1;
-      tablePaginatitonParamsContext.setPaginationParamsContext({ pageSize: pageSize, page: firstPage });
-      if (pageSize != defaultTablePaginatitonParams.pageSize) {
-        router.push(`?page=${firstPage}&pageSize=${pageSize}`);
-      }
-      else {
-        router.push(`?page=${firstPage}`);
-      }
+    const firstPage = 1;
+    if (pageSize != defaultTablePaginatitonParams.pageSize) {
+      updateSearchParams([{ key: 'pageSize', value: pageSize.toString() }, { key: 'page', value: firstPage.toString() }]);
+    }
+    else {
+      router.push(`?page=${firstPage}`);
     }
   }
 
   const handleNextPage = () => {
-    if (tablePaginatitonParamsContext?.setPaginationParamsContext) {
-      const nextPage = page + 1;
-      tablePaginatitonParamsContext.setPaginationParamsContext!({ pageSize: pageSize, page: nextPage });
-      if (pageSize != defaultTablePaginatitonParams.pageSize) {
-        router.push(`?page=${nextPage}&pageSize=${pageSize}`);
-      }
-      else {
-        router.push(`?page=${nextPage}`);
-      }
+    const nextPage = page + 1;
+    if (pageSize != defaultTablePaginatitonParams.pageSize) {
+      updateSearchParams([{ key: 'pageSize', value: pageSize.toString() }, { key: 'page', value: nextPage.toString() }]);
+    }
+    else {
+      updateSearchParams([{ key: 'page', value: nextPage.toString() }]);
     }
   }
 
   const handleNextToLastPage = () => {
     //TODO
-    router.push(`?page=${page + 1}&pageSize=${pageSize}`);
+    // router.push(`?page=${page + 1}&pageSize=${pageSize}`);
   }
 
   function getCanPreviousPage() {
@@ -168,9 +153,8 @@ function BaseTableServerPagination<T extends IBaseData<T>>() {
   function handlePageSizeChanged(value: string): void {
     const _pageSize = Number(value);
     if (!isNaN(_pageSize)) {
-      tablePaginatitonParamsContext?.setPaginationParamsContext({ page: page, pageSize: _pageSize })
       tableConfigContext.table?.setPageSize(_pageSize);
-      router.push(`?page=${page}&pageSize=${_pageSize}`);
+      updateSearchParams([{ key: 'pageSize', value: _pageSize.toString() }]);
     }
   }
 

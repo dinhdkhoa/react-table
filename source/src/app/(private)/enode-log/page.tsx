@@ -1,10 +1,7 @@
-import { EnodeLogUsecase } from '@/domain/use-cases/enode-log-usecase'
 import { Suspense } from 'react'
 import { Skeleton } from '@/components/ui/skeleton';
-import ENodeLogLimit from './_components/enode-log-limit-component';
-import { PaginationParams, TablePaginationParamsProvider } from '@/components/base-table/pagination-params-context';
-import { defaultTablePaginatitonParams, pageSizeOptionsDefault } from '@/components/base-table/base-table-config';
-import ENodeLog from './_components/enode-log-component';
+import { PaginationParams } from '@/components/base-table/pagination-params-context';
+import { EnodeLogLimitTable, EnodeLogTable } from './_components/enode-log-table';
 
 export default function EnodeLogPage({
   searchParams,
@@ -21,45 +18,6 @@ export default function EnodeLogPage({
     </Suspense> */}
   </>
 }
-
-
-async function EnodeLogTable({
-  searchParams,
-}: {
-  searchParams?: PaginationParams;
-}) {
-  const state = await EnodeLogUsecase.getList({ postPerPage: 100, pageNumber: 0 })
-  return <ENodeLog data={state.value || []} />
-}
-
-async function EnodeLogLimitTable({
-  searchParams,
-}: {
-  searchParams?: PaginationParams;
-}) {
-
-  if (searchParams === undefined) {
-    searchParams = {}
-  }
-  searchParams.pageSize = Number(searchParams?.pageSize ?? defaultTablePaginatitonParams.pageSize);
-  searchParams.page = Number(searchParams?.page ?? defaultTablePaginatitonParams.page);
-  if (!pageSizeOptionsDefault.includes(searchParams.pageSize)) {
-    searchParams.pageSize = defaultTablePaginatitonParams.pageSize;
-  }
-  const state = await EnodeLogUsecase.getListLimit({ postPerPage: searchParams.pageSize, pageNumber: searchParams.page, totalPage: 10 })
-
-  return (<TablePaginationParamsProvider initValue={{ page: searchParams.page, pageSize: searchParams.pageSize }}>
-    <ENodeLogLimit data={state.value || []} />
-  </TablePaginationParamsProvider>);
-}
-
-
-
-
-
-
-
-
 
 
 const MySkeleton = () => {

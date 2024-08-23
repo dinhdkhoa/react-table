@@ -12,7 +12,6 @@ import { IBaseData } from '@/core/classes/base-data'
 import { BaseRowAction, cancelButtonId, saveButtonId, showChildButtonId } from './base-table-config'
 import { ModeType } from './enums'
 import { useBaseFormContext } from '../base-form'
-import { useTableConfig } from './table-config-context'
 // import { ModeType } from './enums';
 
 type ActionStateType = {

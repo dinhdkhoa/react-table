@@ -38,8 +38,9 @@ import BaseTablePagination from './base-table-pagination'
 import { BaseTableNodata } from './base-table-nodata'
 import TableHeaderActions from './base-table-header-action'
 import { fuzzyFilter } from './base-table-filter'
-import { useTablePaginatitonParams } from './pagination-params-context'
+// import { useTablePaginatitonParams } from './pagination-params-context'
 import { useTableConfig } from './table-config-context'
+import { useCustomSearchParams } from '@/core/hooks/useCustomSearchParams'
 // import { rankItem, compareItems } from '@tanstack/match-sorter-utils'
 
 export const rowActionId = 'rowAction'
@@ -139,7 +140,7 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
   const { tableConfigContext, setTableConfigContext } = useTableConfig<T>();
   tableConfigContext.setData(props.data);
   ///
-  const tablePaginationParams = useTablePaginatitonParams();
+  // const tablePaginationParams = useTablePaginatitonParams();
   const [rowsEditing, setRowsEditing] = useState<Record<string, T>>({ ...tableConfigContext.rowsEditing })
   const [columnPinningState, setColumnPinningState] = useState<ColumnPinningState>({})
   // const [data] = useState(() => [...props.data])
@@ -147,13 +148,10 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
   const [rowSelectionForHandle, setRowSelectionForHandle] = useState(rowSelection)
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnResizeMode, setColumnResizeMode] = useState<ColumnResizeMode>('onChange')
-
-
+  const { page: pageOnServer, pageSize: pageSizeOnServer } = useCustomSearchParams();
   const [pagination, setPagination] = useState<PaginationState>(() => {
-    const value: PaginationState = { pageIndex: tableConfigContext.pageIndexDefault, pageSize: tableConfigContext.pageSizeDefault }
-    if (tablePaginationParams?.paginationParamsContext?.pageSize !== undefined) {
-      value.pageSize = tablePaginationParams?.paginationParamsContext?.pageSize;
-    }
+    const value: PaginationState = { pageIndex: tableConfigContext.pageIndexDefault, pageSize: tableConfigContext.pageSizeDefault };
+    value.pageSize = pageSizeOnServer;
     return value;
   })
 
@@ -308,6 +306,11 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
     onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: 'fuzzy'
   })
+
+  
+  useEffect(() => {
+    tableConfigContext.table?.setPageSize(pageSizeOnServer);
+  }, [pageOnServer, pageSizeOnServer])
 
   return (
     <div className='mx-auto mb-5 mt-5'>
