@@ -151,7 +151,9 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
   const { page: pageOnServer, pageSize: pageSizeOnServer } = useCustomSearchParams();
   const [pagination, setPagination] = useState<PaginationState>(() => {
     const value: PaginationState = { pageIndex: tableConfigContext.pageIndexDefault, pageSize: tableConfigContext.pageSizeDefault };
-    value.pageSize = pageSizeOnServer;
+    if (tableConfigContext.pageOnServer) {
+      value.pageSize = pageSizeOnServer;
+    }
     return value;
   })
 
@@ -307,9 +309,11 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
     globalFilterFn: 'fuzzy'
   })
 
-  
+
   useEffect(() => {
-    tableConfigContext.table?.setPageSize(pageSizeOnServer);
+    if (tableConfigContext.pageOnServer) {
+      tableConfigContext.table?.setPageSize(pageSizeOnServer);
+    }
   }, [pageOnServer, pageSizeOnServer])
 
   return (
