@@ -101,7 +101,7 @@ const BaseDateTimeInputItem = <
     if (disabled) {
       form.clearErrors(field.name)
     }
-  }, [disableFn, disabled, field.name, form, validate, visibled])
+  }, [disableFn, disabled, field.name, form, validate, visibled, form.formState])
 
   const handleChange = (e: Date | undefined) => {
     form.setValue(field.name, e as any)
@@ -123,7 +123,7 @@ const BaseDateTimeInputItem = <
   }
 
   return (
-    <FormItem>
+    <FormItem className={cn(!showLabel ? "" : "space-y-0")} >
       <FormLabel htmlFor={field.name} className={cn(SharedVariants({ showLabel }))}>{label}</FormLabel>
       <FormControl>
         <Popover>

@@ -116,7 +116,7 @@ const BaseSwitchItem = <TEntity extends FieldValues = FieldValues, TControlType 
     if (disabled) {
       form.clearErrors(field.name)
     }
-  }, [disableFn, disabled, field.name, form, validate, visibled])
+  }, [disableFn, disabled, field.name, form, validate, visibled, form.formState])
 
   const handleChange = (e: boolean) => {
     form.setValue(field.name, e as any)
@@ -125,7 +125,7 @@ const BaseSwitchItem = <TEntity extends FieldValues = FieldValues, TControlType 
 
   const showTopLabel = switchVariants == 'top-label'
   return (
-    <FormItem>
+    <FormItem className={cn(!showLabel ? "" : "space-y-0")} >
       {showTopLabel && (
         <FormLabel htmlFor={field.name} className={cn(SharedVariants({ showLabel }), BaseSwitchVariants({ topLabel }))}>{label}</FormLabel>
       )}

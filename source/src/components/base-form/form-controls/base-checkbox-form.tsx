@@ -120,7 +120,7 @@ const BaseCheckboxItem = <
     if (disabled) {
       form.clearErrors(field.name)
     }
-  }, [disableFn, disabled, field.name, form, validate, visibled])
+  }, [disableFn, disabled, field.name, form, validate, visibled, form.formState])
 
   const handleChange = (e: CheckedState) => {
     form.setValue(field.name, e as any)
@@ -129,7 +129,7 @@ const BaseCheckboxItem = <
   const showTopLabel = checkBoxVariants == 'top-label'
 
   return (
-    <FormItem>
+    <FormItem className={cn(!showLabel ? "" : "space-y-0")} >
       {showTopLabel && (
         <FormLabel htmlFor={field.name} className={cn(SharedVariants({ showLabel }), BaseCheckboxVariants({ topLabel }))}>{label}</FormLabel>
       )}

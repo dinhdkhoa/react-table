@@ -101,7 +101,7 @@ const BaseTextInputItem = <TEntity extends FieldValues = FieldValues, TControlTy
     if (disabled) {
       form.clearErrors(field.name)
     }
-  }, [disableFn, disabled, field.name, form, validate, visibled])
+  }, [disableFn, disabled, field.name, form, validate, visibled, form.formState])
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (setAfterDataChanged) setAfterDataChanged(form, field.name, e.target.value, form.getValues())
@@ -113,7 +113,7 @@ const BaseTextInputItem = <TEntity extends FieldValues = FieldValues, TControlTy
   }
 
   return (
-    <FormItem>
+    <FormItem className={cn(!showLabel ? "" : "space-y-0")} >
       <FormLabel htmlFor={field.name} className={cn(SharedVariants({ showLabel }))}>{label}</FormLabel>
       <FormControl>
         <Input {...field} id={field.name} placeholder={placeholder} disabled={disabled} minLength={minLength} maxLength={maxLength} />

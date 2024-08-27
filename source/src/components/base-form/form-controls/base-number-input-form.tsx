@@ -112,7 +112,7 @@ const BaseNumberInputItem = <
   }
 
   return (
-    <FormItem>
+    <FormItem className={cn(!showLabel ? "" : "space-y-0")} >
       <FormLabel htmlFor={field.name} className={cn(SharedVariants({ showLabel }))}>{label}</FormLabel>
       <FormControl>
         <Input

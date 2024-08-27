@@ -116,7 +116,7 @@ const BaseTextAreaItem = <
     if (disabled) {
       form.clearErrors(field.name)
     }
-  }, [disableFn, disabled, field.name, form, validate, visibled])
+  }, [disableFn, disabled, field.name, form, validate, visibled, form.formState])
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (setAfterDataChanged) setAfterDataChanged(form, field.name, e.target.value, form.getValues())
@@ -128,7 +128,7 @@ const BaseTextAreaItem = <
   }
 
   return (
-    <FormItem>
+    <FormItem className={cn(!showLabel ? "" : "space-y-0")} >
       <FormLabel htmlFor={field.name} className={cn(SharedVariants({ showLabel }))}>{label}</FormLabel>
       <FormControl>
         <Textarea
