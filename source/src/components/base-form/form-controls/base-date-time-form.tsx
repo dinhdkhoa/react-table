@@ -77,6 +77,7 @@ const BaseDateTimeInputItem = <
 >(
   props: BaseDateTimeInputItemsProps<TEntity>
 ) => {
+  const dateTimeNow = new Date()
   const { field, fieldState, formState, formVariant, showLabel, visibled = true } = props
   const { rhf, setAfterDataChanged, form } = useBaseFormContext<TEntity>()
   const { placeholder, label, disableFn, validate, includeTime } = rhf[field.name] as RHFOptions<TEntity, TControlType>
@@ -103,7 +104,31 @@ const BaseDateTimeInputItem = <
     }
   }, [disableFn, disabled, field.name, form, validate, visibled, form.formState])
 
-  const handleChange = (e: Date | undefined) => {
+  const handleChangeDate = (e: Date | undefined) => {
+    const previousValue = form.getValues(field.name);
+    if (previousValue === undefined || previousValue === null) {
+      if (e !== undefined) {
+        const _date = new Date(e.getFullYear(), e.getMonth(), e.getDate(), dateTimeNow.getHours(), dateTimeNow.getMinutes(), dateTimeNow.getSeconds(), dateTimeNow.getMilliseconds());
+        form.setValue(field.name, _date as any)
+      }
+      else {
+        form.setValue(field.name, undefined as any);
+      }
+    }
+    else {
+      if (e !== undefined) {
+        const _date = new Date(e.getFullYear(), e.getMonth(), e.getDate(), previousValue.getHours(), previousValue.getMinutes(), previousValue.getSeconds(), previousValue.getMilliseconds());
+        form.setValue(field.name, _date as any)
+      }
+      else {
+        form.setValue(field.name, undefined as any);
+      }
+    }
+
+    if (setAfterDataChanged) setAfterDataChanged(form, field.name, e, form.getValues())
+  }
+
+  const handleChangeTime = (e: Date | undefined) => {
     form.setValue(field.name, e as any)
     if (setAfterDataChanged) setAfterDataChanged(form, field.name, e, form.getValues())
   }
@@ -142,11 +167,11 @@ const BaseDateTimeInputItem = <
             </Button>
           </PopoverTrigger>
           <PopoverContent className='w-auto p-0'>
-            <Calendar mode='single' selected={form.getValues(field.name)} onSelect={handleChange} initialFocus />
+            <Calendar mode='single' selected={form.getValues(field.name)} onSelect={handleChangeDate} initialFocus />
 
             {includeTime && (
               <div className='p-3 border-t border-border'>
-                <TimePickerDemo setDate={handleChange} date={form.getValues(field.name)} />
+                <TimePickerDemo setDate={handleChangeTime} date={form.getValues(field.name) || dateTimeNow} />
               </div>
             )}
           </PopoverContent>
