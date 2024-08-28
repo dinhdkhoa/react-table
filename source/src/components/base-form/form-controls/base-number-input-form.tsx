@@ -81,7 +81,7 @@ const BaseNumberInputItem = <
   const { field, fieldState, formState, formVariant, baseNumberInputVariant, showLabel, visibled = true } = props
 
   const { rhf, setAfterDataChanged, form, onBlur } = useBaseFormContext<TEntity>()
-  const { placeholder, label, disableFn, validate, min, max } = rhf[field.name] as RHFOptions<TEntity, TControlType>
+  const { placeholder, label, disableFn, validate, min, max, defaultZero } = rhf[field.name] as RHFOptions<TEntity, TControlType>
 
   const [disabled, setDisabled] = useState<boolean>(() => {
     if (disableFn) {
@@ -118,7 +118,12 @@ const BaseNumberInputItem = <
         <Input
           {...field}
           {...form.register(field.name, {
-            valueAsNumber: true,
+            setValueAs: (value) => {
+              if (!value) {
+                return null;
+              }
+              return +value;
+            },
             validate: !((disableFn ? disableFn(form, form.getValues()) : false) || !visibled) ? validate : undefined,
             onChange: handleChange,
             onBlur: handleBlur
