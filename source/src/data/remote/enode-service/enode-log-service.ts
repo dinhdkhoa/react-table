@@ -40,7 +40,7 @@ export const EnodeLogService: EnodeLogServiceType = {
     }
     try {
       const response = await getFn<Array<EnodeLogResponseModel>>({
-        path: 'enode-test',
+        path: 'enode',
         request: { data: request, ...getEnodeLogRequestCode }
       })
       state = handleByResponseFn(response, convertEnodeLogEntityFn)

@@ -8,16 +8,17 @@ import { Card, CardContent } from "@/components/ui/card"
 import { setSearchParamsToBaseForm } from "@/core/helper/search-param-helper";
 import useBaseForm from "@/core/hooks/useBaseForm";
 import { defaultEnodeLogSearchEntity, EnodeLogSearchEntity, EnodeLogSearchEntityFields } from "@/domain/entities/enode-log/enode-log-search-entity";
+import { cn } from "@/lib/utils";
 import { Minus, Plus, RefreshCcw, RotateCcw } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 export const EnodeLogSearchComponent = ({ stateId }: { stateId: string }) => {
-  const [loading, setLoading] = useState(false);
-  const [showAdvance, setShowAdvance] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const { updateSearchParams, urlSearchParams } = usePageSearchParams();
+  const [loading, setLoading] = useState(false);
+  const [showAdvance, setShowAdvance] = useState(false);
   const [enodeLogSearchEntity] = useState<EnodeLogSearchEntity>(() => {
     return defaultEnodeLogSearchEntity();
   })
@@ -31,29 +32,9 @@ export const EnodeLogSearchComponent = ({ stateId }: { stateId: string }) => {
     setLoading(false);
   }, [stateId]);
 
-  function onRefresh(): void {
-    props.form.trigger().then(validate => {
-      if (validate) {
-        setLoading(true);
-        const keys = Object.keys(props.rhf);
-        const params = keys.map(w => {
-          return { key: (w || '').toString(), value: props.form.getValues(w as any) }
-        });
-        props.form.handleSubmit((data) => {
-          console.log(data);
-        })
-        const _searchParams = updateSearchParams(params);
-        if (_searchParams.toString() == urlSearchParams.toString()) {
-          router.refresh();
-        }
-        else {
-          router.push(`${pathname}?${_searchParams.toString()}`);
-        }
-      }
-    })
-  }
-
-  const onSubmit = props.form.handleSubmit((data) => {
+  const handleToggleAdvance = () => setShowAdvance((prev) => !prev);
+  const handleReset = () => { props.form.reset(); };
+  const handleSubmit = props.form.handleSubmit((data) => {
     setLoading(true);
     const keys = Object.keys(props.rhf);
 
@@ -70,20 +51,14 @@ export const EnodeLogSearchComponent = ({ stateId }: { stateId: string }) => {
     }
   });
 
-  function resetData(): void {
-    props.form.reset();
-  }
-
   return (
     <Card className="w-full mt-5 rounded-md shadow-none" >
       <CardContent className="pt-6">
         <BaseForm<EnodeLogSearchEntity> {...props}>
-          <form onSubmit={onSubmit}>
+          <form onSubmit={handleSubmit}>
             <div className="flex gap-4">
-              <Button className="min-w-9 min-h-6" type="button" onClick={() => setShowAdvance(!showAdvance)} variant="outline" size="icon">
-                {!showAdvance && <Plus className="h-4 w-4" />}
-                {showAdvance && <Minus className="h-4 w-4" />}
-
+              <Button className="min-w-9 min-h-6" type="button" onClick={handleToggleAdvance} variant="outline" size="icon">
+                {showAdvance ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
               </Button>
               <div className="grow-[6]">
                 <BaseForm.TextInput<EnodeLogSearchEntity> showLabel="hidden" name="quickSearch" />
@@ -96,17 +71,16 @@ export const EnodeLogSearchComponent = ({ stateId }: { stateId: string }) => {
               </div>
               <div className="flex gap-1">
                 <Button type="submit" disabled={loading}>
-                  {loading && <RefreshCcw className="mr-2 h-4 w-4 animate-spin" />}
-                  {!loading && <RefreshCcw className="mr-2 h-4 w-4" />}
+                  <RefreshCcw className={cn("mr-2 h-4 w-4", loading ? " animate-spin" : "")} />
                   Refresh
                 </Button>
-                <Button className="min-w-9 min-h-6" type="button" onClick={() => { resetData() }} variant="default" size="icon">
+                <Button className="min-w-9 min-h-6" type="button" onClick={handleReset} variant="default" size="icon">
                   <RotateCcw className="h-4 w-4" />
                 </Button>
               </div>
             </div>
             <div hidden={!showAdvance} className="mt-6">
-              <div className="text-lg font-semibold">Advance Search</div>
+              <div className="text-lg font-semibold">Advanced Search</div>
               <div className=" mt-2 grid gap-4 grid-cols-6">
                 <BaseForm.TextInput<EnodeLogSearchEntity> name="id" />
                 <BaseForm.TextInput<EnodeLogSearchEntity> name="serviceCode" />
@@ -115,7 +89,6 @@ export const EnodeLogSearchComponent = ({ stateId }: { stateId: string }) => {
                 <BaseForm.NumberInput<EnodeLogSearchEntity> name="httpStatusCode" />
               </div>
             </div>
-
           </form>
         </BaseForm>
       </CardContent>

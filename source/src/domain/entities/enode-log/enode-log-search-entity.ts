@@ -1,6 +1,8 @@
 import { RHFOptions } from '@/core/anotations/rhf-field'
 import { Control } from '@/core/types/control.types'
 import { IBaseEntityForm, IBaseEntityFormBehavior } from '@/core/classes/base-entity-form'
+import { FilterEnodeLogModel } from '@/data/remote/enode-service/models/requests/get-enode-log-request.model';
+import { ExcludeKeysWithUnderscoreAndUndefined } from '@/core/helper/type-helpers';
 
 
 export const EnodeLogSearchEntityFields: RHFOptions<EnodeLogSearchEntity>[] = [
@@ -16,6 +18,11 @@ export const EnodeLogSearchEntityFields: RHFOptions<EnodeLogSearchEntity>[] = [
     includeTime: true,
     validate: {
       lessThanOrEqual: (fieldValue, entity) => {
+        if (!entity.fromTime || !entity.toTime) {
+          return true;
+        }
+
+
         const result = entity.fromTime <= entity.toTime;
         if (result) {
           return true;
@@ -35,6 +42,9 @@ export const EnodeLogSearchEntityFields: RHFOptions<EnodeLogSearchEntity>[] = [
     includeTime: true,
     validate: {
       greaterThanOrEqual: (fieldValue, entity) => {
+        if (!entity.fromTime || !entity.toTime) {
+          return true;
+        }
         const result = entity.fromTime <= entity.toTime;
         if (result) {
           return true;
@@ -77,14 +87,14 @@ export const EnodeLogSearchEntityFields: RHFOptions<EnodeLogSearchEntity>[] = [
 ]
 
 export interface EnodeLogSearchEntity extends IBaseEntityForm<EnodeLogSearchEntity>, IBaseEntityFormBehavior<EnodeLogSearchEntity> {
-  quickSearch?: string
-  fromTime: Date
-  toTime: Date
-  id: string
-  serviceCode: string
-  apiCode: string
-  requestId: string
-  httpStatusCode: number | string
+  quickSearch?: string;
+  fromTime?: Date;
+  toTime?: Date;
+  id?: string;
+  serviceCode?: string;
+  apiCode?: string;
+  requestId?: string;
+  httpStatusCode?: number | string;
 }
 
 
@@ -107,4 +117,17 @@ export const defaultEnodeLogSearchEntity = (): EnodeLogSearchEntity => {
     __formfields__: EnodeLogSearchEntityFields
   }
   return _searchEntity;
+}
+
+export const mapperFilterEnodeLogModel: Record<
+  ExcludeKeysWithUnderscoreAndUndefined<EnodeLogSearchEntity>,
+  ExcludeKeysWithUnderscoreAndUndefined<FilterEnodeLogModel>> = {
+  httpStatusCode: 'http_status',
+  quickSearch: 'quick_search',
+  fromTime: 'from_date',
+  toTime: 'to_date',
+  id: 'id',
+  serviceCode: 'service_code',
+  apiCode: 'api_code',
+  requestId: 'request_id'
 }
