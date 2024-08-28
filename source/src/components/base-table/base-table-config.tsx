@@ -1,4 +1,4 @@
-import { IBaseData, assignValue, clonePropToKeepData, getId } from '@/core/classes/base-data'
+import { assignValue, clonePropToKeepData, getId, IBaseData } from '@/core/classes/base-data'
 import { CheckedState } from '@radix-ui/react-checkbox'
 import { AccessorKeyColumnDef, Row, SortingFn, Table, createColumnHelper } from '@tanstack/react-table'
 import { FormatColumnType, RowSelectType } from './enums'
@@ -28,23 +28,38 @@ export const defaultTablePaginatitonParams: PaginationParams = {
   pageSize: pageSizeDefault
 }
 
-export interface BaseRowAction<IBaseData extends FieldValues = FieldValues> {
+export interface BaseAction<T extends FieldValues = FieldValues> {
   id: string
-  name: string  
-  iconChild?: ReactNode
-  action?: (data: IBaseData, form?: UseFormReturn<IBaseData>) => void
-  disableFn?: (data: IBaseData) => boolean
-  visibleFn?: (data: IBaseData) => boolean
+  name: string
+  action?: (data: T, form?: UseFormReturn<T>) => void
 }
 
-export interface BaseHeaderAction<IBaseData extends FieldValues = FieldValues> extends BaseRowAction<IBaseData> { }
-export interface FilterHeaderAction<IBaseData extends FieldValues = FieldValues> extends BaseHeaderAction<IBaseData> {
+export interface BaseRowAction<T extends FieldValues = FieldValues> extends BaseAction<T> {
+  iconChild?: ReactNode
+  action?: (data: T, form?: UseFormReturn<T>) => void
+  disableFn?: (data: T) => boolean
+  visibleFn?: (data: T) => boolean
+}
+
+export interface BaseHeaderAction<T extends FieldValues = FieldValues> extends BaseRowAction<T> {
+  disableFn?: (data: any) => boolean
+  visibleFn?: (data: any) => boolean
+}
+
+export interface FilterHeaderAction<T extends FieldValues = FieldValues> extends BaseHeaderAction<T> {
   onChangeShowHideFilter?: (value: boolean) => void
   onClearFilter?: () => void
 }
 
-interface ShowChildRowAction<IBaseData extends FieldValues = FieldValues> extends BaseRowAction<IBaseData> {
-  children?: (data: IBaseData) => ReactNode
+export interface SearchHeaderAction<T extends FieldValues = FieldValues> extends BaseAction<T> {
+  onClear?: () => void
+  onReset?: () => void
+  onClose?: () => void
+  children?: ReactNode
+}
+
+interface ShowChildRowAction<T extends FieldValues = FieldValues> extends BaseRowAction<T> {
+  children?: (data: T) => ReactNode
 }
 
 export const isNumberColumn = (columnType: FormatColumnType | undefined) => {
@@ -184,6 +199,9 @@ export class BaseTableConfig<T extends IBaseData<T>> {
       })
     }
   }
+  ///
+  ///Search Modal
+  searchAction: SearchHeaderAction | undefined;
   ///
 
   getKeys(data?: T, keys?: FieldNames<T>[]): string[] {

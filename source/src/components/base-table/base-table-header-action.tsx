@@ -15,12 +15,13 @@ import { IBaseData } from '@/core/classes/base-data'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { useTableConfig } from './table-config-context'
+import { Separator } from '../ui/separator'
 export default function TableHeaderActions<T extends IBaseData<T>>({ searchGlobal }: { searchGlobal: string | number }) {
   const { tableConfigContext } = useTableConfig<T>();
   const [dropDownShowHideColumnOpen, setDropDownShowHideColumnOpen] = useState(false)
   const [dropDownFilter, setDropDownFilter] = useState(false)
 
-  const showHideColumns = () => {
+  const showHideColumnsButton = () => {
     return tableConfigContext.showHideColumnsAction.visibleFn && tableConfigContext.showHideColumnsAction.visibleFn({} as any) && (
       <DropdownMenu open={dropDownShowHideColumnOpen}>
         <DropdownMenuTrigger asChild>
@@ -52,6 +53,7 @@ export default function TableHeaderActions<T extends IBaseData<T>>({ searchGloba
             })}
         </DropdownMenuContent>
       </DropdownMenu>
+
     )
   }
 
@@ -66,7 +68,7 @@ export default function TableHeaderActions<T extends IBaseData<T>>({ searchGloba
     tableConfigContext.table?.setColumnFilters([])
   }
 
-  const filter = () => {
+  const filterButton = () => {
     return tableConfigContext.filterAction.visibleFn && tableConfigContext.filterAction.visibleFn({} as any) &&
       <DropdownMenu open={dropDownFilter}>
         <DropdownMenuTrigger asChild>
@@ -77,7 +79,7 @@ export default function TableHeaderActions<T extends IBaseData<T>>({ searchGloba
               setDropDownFilter(true)
             }}
           >
-           {tableConfigContext.showFilterRow ? <Filter className='h-4 w-4' /> : <FilterX className='h-4 w-4' />} 
+            {tableConfigContext.showFilterRow ? <Filter className='h-4 w-4' /> : <FilterX className='h-4 w-4' />}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align='end' onPointerDownOutside={() => setDropDownFilter(false)}>
@@ -104,7 +106,7 @@ export default function TableHeaderActions<T extends IBaseData<T>>({ searchGloba
       </DropdownMenu >
   }
 
-  const addNew = () => {
+  const addNewButton = () => {
     return tableConfigContext.addNewAction.visibleFn && tableConfigContext.addNewAction.visibleFn({} as any) &&
       (<TooltipProvider>
         <Tooltip>
@@ -121,7 +123,7 @@ export default function TableHeaderActions<T extends IBaseData<T>>({ searchGloba
   }
 
   const quickSearch = () => {
-    return tableConfigContext.isShowQuickSearch && <div className="relative flex items-center max-w-2xl ">
+    return tableConfigContext.isShowQuickSearch && (<><div className="relative flex items-center max-w-2xl ">
       <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 transform opacity-60" />
       <QuickSearchInput
         value={searchGlobal}
@@ -129,6 +131,12 @@ export default function TableHeaderActions<T extends IBaseData<T>>({ searchGloba
       />
 
     </div>
+    </>
+    )
+  }
+
+  const searchModalButton = () =>{
+    return tableConfigContext.searchAction?.children && tableConfigContext.searchAction?.children
   }
 
   if (!tableConfigContext.table)
@@ -141,9 +149,10 @@ export default function TableHeaderActions<T extends IBaseData<T>>({ searchGloba
       </div>
       <div className='flex justify-end gap-2 items-center'>
         {quickSearch()}
-        {showHideColumns()}
-        {filter()}
-        {addNew()}
+        {searchModalButton()}
+        {showHideColumnsButton()}
+        {filterButton()}
+        {addNewButton()}
       </div>
     </div>
   )

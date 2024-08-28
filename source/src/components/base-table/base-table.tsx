@@ -40,6 +40,7 @@ import TableHeaderActions from './base-table-header-action'
 import { fuzzyFilter } from './base-table-filter'
 import { useTableConfig } from './table-config-context'
 import { usePageSearchParams } from './context/search-params-context'
+import { Card } from '../ui/card'
 // import { rankItem, compareItems } from '@tanstack/match-sorter-utils'
 
 export const rowActionId = 'rowAction'
@@ -313,7 +314,7 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
   })
 
   return (
-    <div className='mx-auto mb-5 mt-5'>
+    <div className='mb-5 mt-5'>
       <div className='rounded-md border mb-4'>
         <TableHeaderActions<T> searchGlobal={globalFilter} />
         <ShadcnTable
@@ -323,7 +324,7 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
             }
           }}
         >
-          <TableHeader className='b primary'>
+          <TableHeader>
             {tableConfigContext.table.getHeaderGroups().map((headerGroup) => (
               <BaseTableHeader
                 key={headerGroup.id}
@@ -332,7 +333,7 @@ export function BaseTable<T extends IBaseData<T>>({ ...props }: { loading: boole
               />
             ))}
           </TableHeader>
-          <TableBody className='border-r-0'>
+          <TableBody>
             {tableConfigContext.table.getRowModel().rows.length === 0 ? (
               <BaseTableNodata colSpan={tableConfigContext.table.getAllColumns().length} />
             ) : (

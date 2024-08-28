@@ -16,13 +16,12 @@ interface PageSearchParamsContextProps {
     setPaginationParams: React.Dispatch<React.SetStateAction<PaginationParams>>;
     urlSearchParams: URLSearchParams;
     setUrlSearchParams: React.Dispatch<SetStateAction<URLSearchParams>>;
-    updateSearchParams: (values: { key: string, value: string }[]) => void
+    updateSearchParams: (values: { key: string, value: string }[]) => URLSearchParams;
 }
 
 const PageSearchParamsContext = createContext<PageSearchParamsContextProps | undefined>(undefined);
 
-export const PageSearchParamsProvider = ({ initValue, children }: { initValue: (Record<string, string> | undefined); children: ReactNode }) => {
-    const _value = initValue || {};
+export const PageSearchParamsProvider = ({ children }: { children: ReactNode }) => {
     const { page, pageSize, urlSearchParams, setUrlSearchParams, updateSearchParams } = useCustomSearchParams('PageSearchParamsProvider');
     const [paginationParams, setPaginationParams] = useState<PaginationParams>({ page: page, pageSize: pageSize });
     useEffect(() => {

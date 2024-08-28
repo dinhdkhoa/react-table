@@ -127,6 +127,7 @@ function BaseTableServerPagination<T extends IBaseData<T>>() {
       updateSearchParams([{ key: 'pageSize', value: pageSize.toString() }, { key: 'page', value: firstPage.toString() }]);
     }
     else {
+      updateSearchParams([{ key: 'page', value: firstPage.toString() }]);
       router.push(`?page=${firstPage}`);
     }
   }
