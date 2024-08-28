@@ -1,27 +1,31 @@
+
+
+
 import { EnodeLogUsecase } from '@/domain/use-cases/enode-log-usecase'
-import { defaultTablePaginatitonParams, pageSizeOptionsDefault } from '@/components/base-table/base-table-config';
 import ENodeLogLimit from './enode-log-limit-component';
 import ENodeLog from './enode-log-component';
 import { PageSearchParamsProvider } from '@/components/base-table/context/search-params-context';
+import { EnodeLogSearchComponent } from './enode-log-search-component';
+import { Guid } from 'guid-typescript';
+import { searchParamsPaginationPipe } from '@/core/helper/search-param-helper';
+import { EnodeLogChartDateComponent } from './enode-log-chart-date';
+import { EnodeLogChartServiceCodeComponent } from './enode-log-chart-service-code';
 
 export async function EnodeLogLimitTable({
     searchParams,
 }: {
     searchParams?: any;
 }) {
-    console.log(`searchParams: ${JSON.stringify(searchParams)}`)
-    if (searchParams === undefined) {
-        searchParams = {}
-    }
-    searchParams.pageSize = Number(searchParams?.pageSize ?? defaultTablePaginatitonParams.pageSize);
-    searchParams.page = Number(searchParams?.page ?? defaultTablePaginatitonParams.page);
-    if (!pageSizeOptionsDefault.includes(searchParams.pageSize)) {
-        searchParams.pageSize = defaultTablePaginatitonParams.pageSize;
-    }
-    const state = await EnodeLogUsecase.getListLimit({ postPerPage: searchParams.pageSize, pageNumber: searchParams.page, totalPage: 10 })
+    searchParamsPaginationPipe(searchParams);
+    console.log('searchParams', searchParams);
 
+    const state = await EnodeLogUsecase.getListLimit({ postPerPage: searchParams.pageSize, pageNumber: searchParams.page, totalPage: 10 })
+    const stateId = Guid.create().toString();
     return (
-        <PageSearchParamsProvider initValue={searchParams}>
+        <PageSearchParamsProvider>
+            <EnodeLogSearchComponent stateId={stateId} />
+            {/* <EnodeLogChartDateComponent data={state.value || []} /> */}
+            <EnodeLogChartServiceCodeComponent data={state.value || []}/>
             <ENodeLogLimit data={state.value || []} />
         </PageSearchParamsProvider>
     );

@@ -1,12 +1,16 @@
 
-import { TablePaginationParamsProvider } from '@/components/base-table/pagination-params-context'
+
+import { PageSearchParamsProvider } from '@/components/base-table/context/search-params-context'
 import ENode from './_components/enode'
-import { defaultTablePaginatitonParams } from '@/components/base-table/base-table-config'
+import { EnodeLogSearchComponent } from '../enode-log/_components/enode-log-search-component'
 
 export default function DemoPage() {
   return (
-    <TablePaginationParamsProvider initValue={defaultTablePaginatitonParams}>
+    // <TablePaginationParamsProvider initValue={defaultTablePaginatitonParams}>
+    <PageSearchParamsProvider>
+      <EnodeLogSearchComponent stateId={''}/>
       <ENode />
-    </TablePaginationParamsProvider>
+      </PageSearchParamsProvider>
+    // </TablePaginationParamsProvider>
   )
 }

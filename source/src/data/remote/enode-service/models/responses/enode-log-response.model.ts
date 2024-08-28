@@ -1,5 +1,5 @@
 import { BaseResponse } from './base-response.model'
-import { EnodeLogEntity } from '@/domain/entities/enode-log-entity'
+import { EnodeLogEntity } from '@/domain/entities/enode-log/enode-log-entity'
 
 export interface EnodeLogResponseModel extends BaseResponse<EnodeLogEntity> {
   id?: string

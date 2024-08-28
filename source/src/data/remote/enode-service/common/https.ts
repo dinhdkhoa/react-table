@@ -1,7 +1,4 @@
 import { FileRequestModel } from '../models/requests/file-request.model'
-import { GatewayResponseModel, createGateWayRequestModel } from './gateway.model'
-import { HttpMethodType } from './types'
-import { ApiPath } from './api-path'
 
 class SessionToken {
   private token = ''

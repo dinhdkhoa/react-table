@@ -4,7 +4,7 @@ import { BaseResponse } from './models/responses/base-response.model'
 import { getEnodeLogRequestCode } from './common/request-code'
 import { GetEnodeLogLimitRequestModel, GetEnodeLogRequestModel } from './models/requests/get-enode-log-request.model'
 import { EnodeLogResponseModel } from './models/responses/enode-log-response.model'
-import { convertEnodeLogEntityFn, EnodeLogEntity } from '@/domain/entities/enode-log-entity'
+import { convertEnodeLogEntityFn, EnodeLogEntity } from '@/domain/entities/enode-log/enode-log-entity'
 
 type GetList<TEntity, TResModel extends BaseResponse<TEntity>> = (request: GetEnodeLogRequestModel) => Promise<HandleStateType<TEntity, TResModel>>;
 type GetListLimit<TEntity, TResModel extends BaseResponse<TEntity>> = (request: GetEnodeLogLimitRequestModel) => Promise<HandleStateType<TEntity, TResModel>>;
@@ -28,7 +28,6 @@ export const EnodeLogService: EnodeLogServiceType = {
     } catch (error) {
       state.isError = true
       state.message = error?.toString() ?? 'Have an error!'
-      // console.log(error)
     }
     finally {
       return state

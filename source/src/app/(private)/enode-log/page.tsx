@@ -1,13 +1,14 @@
 import { Suspense } from 'react'
 import { Skeleton } from '@/components/ui/skeleton';
 import { EnodeLogLimitTable, EnodeLogTable } from './_components/enode-log-table';
+import { defaultTablePaginatitonParams } from '@/components/base-table/base-table-config';
 
 export default function EnodeLogPage({
   searchParams,
 }: {
   searchParams?: any;
 }) {
-  console.log('searchParams', searchParams)
+  const _key = searchParams.page;
   return <>
     <Suspense fallback={<MySkeleton />}>
       <EnodeLogLimitTable searchParams={searchParams} />

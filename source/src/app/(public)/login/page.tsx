@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { LoginForm } from './login-form'
+import { LoginForm3 } from './login-form-refactored'
 
 export default function Login() {
   return (
@@ -9,7 +10,7 @@ export default function Login() {
         <CardDescription>Enter your infomation below to login your account</CardDescription>
       </CardHeader>
       <CardContent>
-        <LoginForm />
+        <LoginForm3 />
       </CardContent>
     </Card>
   )

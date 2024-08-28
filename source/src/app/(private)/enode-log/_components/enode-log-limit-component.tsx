@@ -3,17 +3,24 @@
 import { BaseTableConfig } from '@/components/base-table/base-table-config'
 
 import { BaseTable } from '@/components/base-table/base-table'
-import { EnodeLogEntity } from '@/domain/entities/enode-log-entity'
+import { EnodeLogEntity } from '@/domain/entities/enode-log/enode-log-entity'
 import { FormatColumnType } from '@/components/base-table/enums'
 import { useState } from 'react'
 import { TableConfigProvider } from '@/components/base-table/table-config-context'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { IBaseData } from '@/core/classes/base-data'
+import { UseFormReturn } from 'react-hook-form'
 
 export default function ENodeLogLimit({ data }: { data: Array<EnodeLogEntity> }) {
 
   const [tableConfig, setTableConfig] = useState<BaseTableConfig<EnodeLogEntity>>(() => {
     const config = new BaseTableConfig<EnodeLogEntity>();
-    config.tableName = 'Page On Server';
-    config.isShowQuickSearch = true;
+    config.tableName = 'Enode Log';
+    config.isShowQuickSearch = false;
+    config.showFilterRow = false;
     config.pageOnServer = true;
 
     config.cols.push(
@@ -60,16 +67,14 @@ export default function ENodeLogLimit({ data }: { data: Array<EnodeLogEntity> })
     config.showChildButton.children = (data) => <JsonChild data={data.originJsonData}></JsonChild>
     config.isShowChild = true
     config.isActionColumListType = false;
-    config.isShowSelectionColumn = true;
-
-
     config.init();
     config.setData(data);
     return config;
   });
 
   return (<TableConfigProvider<EnodeLogEntity> initValue={tableConfig} >
-    <BaseTable<EnodeLogEntity> loading={false} data={data}/>
+    <BaseTable<EnodeLogEntity> loading={false} data={data} />
+      
   </TableConfigProvider>)
 }
 

@@ -29,6 +29,7 @@ export type TextAreaControl = {
 }
 export type NumberControl = {
   type: Control.Number
+  defaultZero?: boolean
   min?: number
   max?: number
 }

@@ -4,7 +4,7 @@ import { BaseTableConfig } from '@/components/base-table/base-table-config'
 
 import { BaseTable } from '@/components/base-table/base-table'
 import { } from '@/domain/entities/person-entity'
-import { EnodeLogEntity } from '@/domain/entities/enode-log-entity'
+import { EnodeLogEntity } from '@/domain/entities/enode-log/enode-log-entity'
 import { FormatColumnType } from '@/components/base-table/enums'
 import { Guid } from 'guid-typescript'
 import { useState } from 'react'

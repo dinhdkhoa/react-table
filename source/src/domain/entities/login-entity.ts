@@ -6,6 +6,7 @@ import { convertToSHA1 } from '@/core/utils/encryption'
 export interface LoginEntity extends IBaseEntityForm<LoginEntity>, LoginEntityBehavior {
   username: string
   password: string
+  age?: number | null
 }
 
 export interface LoginEntityBehavior extends IBaseEntityFormBehavior<LoginEntity> {
@@ -34,7 +35,18 @@ export const Loginfields: RHFOptions<LoginEntity>[] = [
         return true
       }
     }
-  }
+  },
+  {
+    fieldName: 'age',
+    label: 'age',
+    type: Control.Number,
+    validate: {
+      required: (fieldValue, entity) => {
+        if ((entity.age ?? 0) < 10) return 'This field is required'
+        return true
+      }
+    }
+  },
 ]
 
 export const defaultLoginEntity: LoginEntity = {

@@ -29,7 +29,7 @@ const generateRandomPerson = (id: number): PersonEntity => ({
   __onChange__: PersonEntityOnChange,
   firstName: getRandomElement(firstNames),
   lastName: getRandomElement(lastNames),
-  age: getRandomNumber(18, 80),
+  age: undefined,
   visits: getRandomNumber(0, 9999),
   status: getRandomElement(statuses),
   progress: getRandomNumber(0, 9999),
@@ -45,7 +45,7 @@ const generateRandomPersons = (count: number): PersonEntity[] => {
   return persons
 }
 
-const randomPersons = generateRandomPersons(10)
+const randomPersons = generateRandomPersons(100)
 // console.log(randomPersons)
 
 const defaultData: PersonEntity[] = [
