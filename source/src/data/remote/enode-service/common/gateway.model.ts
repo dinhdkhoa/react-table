@@ -35,24 +35,24 @@ export const createGateWayRequestModel = (
 
   const obj: GateWayRequestModel = {
     credentials: {
-      TenantId: 1,
-      TennantKey: '',
-      Token: ''
+      tenantId: 1,
+      tennantKey: '',
+      token: ''
     },
     requestInfo: {
       channel: "Web",
-        serviceCode: serviceCode,
-        requestDate: new Date(),
-        userRequest: "",
-        requestId: Guid.create().toString(),
-        userLanguage: "vi-VN",
-        timeLocal: "GMT+07:00",
-        apiCode: endPointCode,
-        httpMethod: method,
-        partnerId: "",
-        extRoute: "",
-        version: apiVersion,
-        requestQuery: {}
+      serviceCode: serviceCode,
+      requestDate: new Date(),
+      userRequest: "",
+      requestId: Guid.create().toString(),
+      userLanguage: "vi-VN",
+      timeLocal: "GMT+07:00",
+      apiCode: endPointCode,
+      httpMethod: method,
+      partnerId: "",
+      extRoute: "",
+      version: apiVersion,
+      requestQuery: {}
     },
     requestData: requestData || {},
     requestQuery: requestQuery || {}

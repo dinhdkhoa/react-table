@@ -39,7 +39,7 @@ import { BaseTableNodata } from './base-table-nodata'
 import TableHeaderActions from './base-table-header-action'
 import { fuzzyFilter } from './base-table-filter'
 import { useTableConfig } from './table-config-context'
-import { usePageSearchParams } from './context/search-params-context'
+import { usePageSearchParams } from './context/search-params-provider'
 import { Card } from '../ui/card'
 // import { rankItem, compareItems } from '@tanstack/match-sorter-utils'
 

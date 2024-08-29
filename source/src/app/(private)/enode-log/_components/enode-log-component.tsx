@@ -8,7 +8,6 @@ import { EnodeLogEntity } from '@/domain/entities/enode-log/enode-log-entity'
 import { FormatColumnType } from '@/components/base-table/enums'
 import { Guid } from 'guid-typescript'
 import { useState } from 'react'
-import { useRouter } from 'next/router'
 import { TableConfigProvider } from '@/components/base-table/table-config-context'
 
 function generateRandomString(length: number) {

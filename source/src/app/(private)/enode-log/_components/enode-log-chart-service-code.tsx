@@ -1,12 +1,15 @@
 'use client'
 
+import { usePagePreventAction } from "@/components/page-prevent-action-provider";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import {convertToEnodeLogBarChartServiceCodeInteractiveEntityFn, EnodeLogBarChartServiceCodeInteractiveEntity, EnodeLogEntity } from "@/domain/entities/enode-log/enode-log-entity";
+import { convertToEnodeLogBarChartServiceCodeInteractiveEntityFn, EnodeLogBarChartServiceCodeInteractiveEntity, EnodeLogEntity } from "@/domain/entities/enode-log/enode-log-entity";
 import { useEffect, useState } from "react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import { EnodeLogSearchComponentSearchButtonName } from "./enode-log-search-component";
 
 export const EnodeLogChartServiceCodeComponent = ({ data }: { data: Array<EnodeLogEntity> }) => {
+    const { normalAction } = usePagePreventAction();
     const [barChartInteractiveData, setBarChartInteractiveData] = useState<EnodeLogBarChartServiceCodeInteractiveEntity[]>();
     const chartConfig = {
         serviceCode: {
@@ -22,6 +25,7 @@ export const EnodeLogChartServiceCodeComponent = ({ data }: { data: Array<EnodeL
     useEffect(() => {
         const _result = convertToEnodeLogBarChartServiceCodeInteractiveEntityFn({ data: data });
         setBarChartInteractiveData(_result);
+        normalAction(EnodeLogSearchComponentSearchButtonName);
     }, [data])
 
     return (
@@ -46,23 +50,23 @@ export const EnodeLogChartServiceCodeComponent = ({ data }: { data: Array<EnodeL
                             axisLine={false}
                             tickMargin={8}
                             minTickGap={32}
-                            // tickFormatter={(value) => {
-                            //     return new Date(value).toLocaleDateString("en-US", {
-                            //         month: "short",
-                            //         day: "numeric",
-                            //     })
-                            // }}
+                        // tickFormatter={(value) => {
+                        //     return new Date(value).toLocaleDateString("en-US", {
+                        //         month: "short",
+                        //         day: "numeric",
+                        //     })
+                        // }}
                         />
                         <ChartTooltip
                             content={
                                 <ChartTooltipContent
                                     className="w-[150px]"
-                                    // labelFormatter={(value) => {
-                                    //     return new Date(value).toLocaleDateString("en-US", {
-                                    //         month: "short",
-                                    //         day: "numeric",
-                                    //     })
-                                    // }}
+                                // labelFormatter={(value) => {
+                                //     return new Date(value).toLocaleDateString("en-US", {
+                                //         month: "short",
+                                //         day: "numeric",
+                                //     })
+                                // }}
                                 />
                             }
                         />

@@ -1,7 +1,7 @@
 import { RHFOptions } from '@/core/anotations/rhf-field'
 import { Control } from '@/core/types/control.types'
 import { IBaseEntityForm, IBaseEntityFormBehavior } from '@/core/classes/base-entity-form'
-import { FilterEnodeLogModel } from '@/data/remote/enode-service/models/requests/get-enode-log-request.model';
+import { FilterEnodeLogRequestModel } from '@/data/remote/enode-service/models/requests/get-enode-log-request.model';
 import { ExcludeKeysWithUnderscoreAndUndefined } from '@/core/helper/type-helpers';
 
 
@@ -121,13 +121,13 @@ export const defaultEnodeLogSearchEntity = (): EnodeLogSearchEntity => {
 
 export const mapperFilterEnodeLogModel: Record<
   ExcludeKeysWithUnderscoreAndUndefined<EnodeLogSearchEntity>,
-  ExcludeKeysWithUnderscoreAndUndefined<FilterEnodeLogModel>> = {
-  httpStatusCode: 'http_status',
-  quickSearch: 'quick_search',
-  fromTime: 'from_date',
-  toTime: 'to_date',
+  ExcludeKeysWithUnderscoreAndUndefined<FilterEnodeLogRequestModel>> = {
+  httpStatusCode: 'httpStatus',
+  quickSearch: 'quickSearch',
+  fromTime: 'fromDate',
+  toTime: 'toDate',
   id: 'id',
-  serviceCode: 'service_code',
-  apiCode: 'api_code',
-  requestId: 'request_id'
+  serviceCode: 'serviceCode',
+  apiCode: 'apiCode',
+  requestId: 'requestId'
 }

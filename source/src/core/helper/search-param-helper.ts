@@ -69,10 +69,6 @@ export function searchParamsMergeDefaultEntityPipe<E extends FieldValues = Field
     return searchParams;
 }
 
-export function searchParamsToRequestModel<R>(searchParams?: any) {
-
-}
-
 export const convertSearchParamsToFilterModel = <FM>(mapper: Record<string, string>, searchParams?: any,): FM => {
     const filterModel = {};
     if (searchParams) {

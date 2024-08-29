@@ -1,10 +1,7 @@
 'use client'
 
 import { createContext, ReactNode, SetStateAction, useContext, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { defaultTablePaginatitonParams, pageSizeDefault } from "../base-table-config";
 import { useCustomSearchParams } from "@/core/hooks/useCustomSearchParams";
-
 
 export type PaginationParams = {
     page?: number,
@@ -27,31 +24,6 @@ export const PageSearchParamsProvider = ({ children }: { children: ReactNode }) 
     useEffect(() => {
         setPaginationParams({ page: page, pageSize: pageSize });
     }, [page, pageSize])
-
-
-    // const [paginationParams, setPaginationParams] = useState<PaginationParams>(() => {
-    //     let _paginationParams = defaultTablePaginatitonParams;
-    //     const _searchKeys = Object.keys(_value);
-    //     _searchKeys.forEach(k => {
-    //         switch (k.toLowerCase()) {
-    //             case 'pagesize':
-    //                 const _pageSize = Number(_value[k]);
-    //                 if (!isNaN(_pageSize)) {
-    //                     _paginationParams.pageSize = _pageSize;
-    //                 }
-    //                 break;
-    //             case 'page':
-    //                 const _page = Number(_value[k]);
-    //                 if (!isNaN(_page)) {
-    //                     _paginationParams.pageSize = _page;
-    //                 }
-    //                 break;
-    //             default:
-    //                 break;
-    //         }
-    //     })
-    //     return _paginationParams;
-    // });
 
     return (
         <PageSearchParamsContext.Provider value={{ paginationParams: paginationParams, setPaginationParams: setPaginationParams, urlSearchParams: urlSearchParams, setUrlSearchParams: setUrlSearchParams, updateSearchParams: updateSearchParams }}>

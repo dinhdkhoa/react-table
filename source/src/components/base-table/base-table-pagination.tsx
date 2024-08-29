@@ -9,7 +9,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useTableConfig } from './table-config-context'
 import { useCustomSearchParams } from '@/core/hooks/useCustomSearchParams'
-import { usePageSearchParams } from './context/search-params-context'
+import { usePageSearchParams } from './context/search-params-provider'
 
 
 export default function BaseTablePagination<T extends IBaseData<T>>() {

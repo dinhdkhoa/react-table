@@ -1,18 +1,36 @@
 import { Suspense } from 'react'
 import { Skeleton } from '@/components/ui/skeleton';
-import { EnodeLogLimitTable, EnodeLogTable } from './_components/enode-log-table';
-import { defaultTablePaginatitonParams } from '@/components/base-table/base-table-config';
+import { EnodeLogLimitTable } from './_components/enode-log-table';
+import { searchParamsMergeDefaultEntityPipe, searchParamsPaginationPipe } from '@/core/helper/search-param-helper';
+import { defaultEnodeLogSearchEntity } from '@/domain/entities/enode-log/enode-log-search-entity';
+import { PageSearchParamsProvider } from '@/components/base-table/context/search-params-provider';
+import { EnodeLogSearchComponent } from './_components/enode-log-search-component';
+import { PagePreventActionProvider } from '@/components/page-prevent-action-provider';
 
 export default function EnodeLogPage({
   searchParams,
 }: {
   searchParams?: any;
 }) {
-  const _key = searchParams.page;
+
+  searchParamsPaginationPipe(searchParams);
+  searchParamsMergeDefaultEntityPipe(defaultEnodeLogSearchEntity(), searchParams);
+  console.log('searchParams', searchParams);
+
   return <>
-    <Suspense fallback={<MySkeleton />}>
-      <EnodeLogLimitTable searchParams={searchParams} />
-    </Suspense>
+    <PagePreventActionProvider>
+      <PageSearchParamsProvider>
+        <EnodeLogSearchComponent>
+          <Suspense fallback={<MySkeleton />}>
+            <EnodeLogLimitTable searchParams={searchParams} />
+          </Suspense>
+          {/* <Suspense fallback={<MySkeleton />}>
+            <EnodeLogLimitChartTable searchParams={searchParams} />
+          </Suspense> */}
+        </EnodeLogSearchComponent>
+      </PageSearchParamsProvider>
+    </PagePreventActionProvider>
+
     {/* <Suspense fallback={<MySkeleton />}>
       <EnodeLogTable searchParams={searchParams} />
     </Suspense> */}

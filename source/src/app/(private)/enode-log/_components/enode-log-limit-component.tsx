@@ -7,12 +7,6 @@ import { EnodeLogEntity } from '@/domain/entities/enode-log/enode-log-entity'
 import { FormatColumnType } from '@/components/base-table/enums'
 import { useState } from 'react'
 import { TableConfigProvider } from '@/components/base-table/table-config-context'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
-import { IBaseData } from '@/core/classes/base-data'
-import { UseFormReturn } from 'react-hook-form'
 
 export default function ENodeLogLimit({ data }: { data: Array<EnodeLogEntity> }) {
 
