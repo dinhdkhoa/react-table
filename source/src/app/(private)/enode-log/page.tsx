@@ -20,14 +20,10 @@ export default function EnodeLogPage({
   return <>
     <PagePreventActionProvider>
       <PageSearchParamsProvider>
-        <EnodeLogSearchComponent>
-          <Suspense fallback={<MySkeleton />}>
-            <EnodeLogLimitTable searchParams={searchParams} />
-          </Suspense>
-          {/* <Suspense fallback={<MySkeleton />}>
-            <EnodeLogLimitChartTable searchParams={searchParams} />
-          </Suspense> */}
-        </EnodeLogSearchComponent>
+        <EnodeLogSearchComponent />
+        <Suspense fallback={<MySkeleton />}>
+          <EnodeLogLimitTable searchParams={searchParams} />
+        </Suspense>
       </PageSearchParamsProvider>
     </PagePreventActionProvider>
 

@@ -1,4 +1,5 @@
 import { defaultTablePaginatitonParams, pageIndexDefault, pageSizeDefault, pageSizeOptionsDefault } from "@/components/base-table/base-table-config";
+import { Guid } from "guid-typescript";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -36,14 +37,13 @@ export const useCustomSearchParams = (name: string) => {
     }, [urlSearchParams]);
 
     const updateSearchParams = (values: { key: string, value: string }[]): URLSearchParams => {
-        const _searchParams = new URLSearchParams(urlSearchParams)
+        const newParams = new URLSearchParams(urlSearchParams);
         let copyValues = [...values];
         if (values && values.length > 0) {
-            const newParams = new URLSearchParams('');
             if (urlSearchParams.size == 0) {
                 values.forEach(p => {
                     if (p.key) {
-                        newParams.append(p.key, p.value);
+                        newParams.set(p.key, p.value);
                     }
                 });
             }
@@ -52,26 +52,23 @@ export const useCustomSearchParams = (name: string) => {
                 urlSearchParams.forEach((currentValue, currentKey, parent) => {
                     const p = copyValues.find(v => v.key.toLowerCase() == currentKey.toLowerCase());
                     if (p) {
-                        newParams.append(currentKey, p.value);
+                        newParams.set(currentKey, p.value);
                         copyValues = copyValues.filter(w => w.key.toLowerCase() != p.key.toLowerCase());
                     }
                     else {
-                        newParams.append(currentKey, currentValue)
+                        newParams.set(currentKey, currentValue)
                     }
                 });
-
                 copyValues.forEach(p => {
                     if (p.key) {
-                        newParams.append(p.key, p.value);
+                        newParams.set(p.key, p.value);
                     }
                 })
             }
-
-            setUrlSearchParams(newParams);
-            return newParams;
         }
-        setUrlSearchParams(_searchParams);
-        return _searchParams;
+        newParams.set('__rid__', Guid.create().toString())
+        setUrlSearchParams(newParams);
+        return newParams;
     }
     return ({ updateSearchParams, urlSearchParams, setUrlSearchParams, page, pageSize });
 }

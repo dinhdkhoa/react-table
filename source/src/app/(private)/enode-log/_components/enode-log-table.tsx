@@ -26,31 +26,6 @@ export async function EnodeLogLimitTable({
 }
 
 
-function delay(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-export async function EnodeLogLimitChartTable({
-    searchParams,
-}: {
-    searchParams?: any;
-}) {
-    const filterModel = convertSearchParamsToFilterModel<FilterEnodeLogRequestModel>(mapperFilterEnodeLogModel, searchParams);
-    // await delay(10000); // 10,000 milliseconds = 10 seconds
-    const state = await EnodeLogUsecase.getListLimit({ postPerPage: searchParams.pageSize, pageNumber: searchParams.page, totalPage: 10, filter: filterModel })
-    const stateId = Guid.create().toString();
-    console.log('state', state.isError, state.message)
-    console.log('stateId: ', stateId)
-    return (
-        <>
-            <EnodeLogChartServiceCodeComponent data={state.value || []} />
-        </>
-    );
-}
-
-
-
-
 
 
 

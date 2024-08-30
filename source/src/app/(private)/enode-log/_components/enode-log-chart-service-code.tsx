@@ -6,10 +6,8 @@ import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "
 import { convertToEnodeLogBarChartServiceCodeInteractiveEntityFn, EnodeLogBarChartServiceCodeInteractiveEntity, EnodeLogEntity } from "@/domain/entities/enode-log/enode-log-entity";
 import { useEffect, useState } from "react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
-import { EnodeLogSearchComponentSearchButtonName } from "./enode-log-search-component";
 
 export const EnodeLogChartServiceCodeComponent = ({ data }: { data: Array<EnodeLogEntity> }) => {
-    const { normalAction } = usePagePreventAction();
     const [barChartInteractiveData, setBarChartInteractiveData] = useState<EnodeLogBarChartServiceCodeInteractiveEntity[]>();
     const chartConfig = {
         serviceCode: {
@@ -25,7 +23,6 @@ export const EnodeLogChartServiceCodeComponent = ({ data }: { data: Array<EnodeL
     useEffect(() => {
         const _result = convertToEnodeLogBarChartServiceCodeInteractiveEntityFn({ data: data });
         setBarChartInteractiveData(_result);
-        normalAction(EnodeLogSearchComponentSearchButtonName);
     }, [data])
 
     return (
