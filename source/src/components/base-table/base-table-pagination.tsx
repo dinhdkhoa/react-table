@@ -98,11 +98,10 @@ function BaseTableServerPagination<T extends IBaseData<T>>() {
   const { tableConfigContext } = useTableConfig<T>();
   const router = useRouter();
   const pathname = usePathname();
-  const { paginationParams, setPaginationParams, urlSearchParams, setUrlSearchParams, updateSearchParams } = usePageSearchParams();
-  // const { updateSearchParams, urlSearchParams, page, pageSize } = useCustomSearchParams();
-
+  const { paginationParams, urlSearchParams, updateSearchParams } = usePageSearchParams();
   const page = (paginationParams.page ?? 0);
   const pageSize = (paginationParams.pageSize ?? 0)
+  const totalPage = tableConfigContext.totalPageOnServer;
 
   useEffect(() => {
     router.push(`${pathname}?${urlSearchParams.toString()}`);
@@ -143,8 +142,14 @@ function BaseTableServerPagination<T extends IBaseData<T>>() {
   }
 
   const handleNextToLastPage = () => {
-    //TODO
     // router.push(`?page=${page + 1}&pageSize=${pageSize}`);
+    const lastPage = totalPage;
+    if (pageSize != defaultTablePaginatitonParams.pageSize) {
+      updateSearchParams([{ key: 'pageSize', value: pageSize.toString() }, { key: 'page', value: lastPage.toString() }]);
+    }
+    else {
+      updateSearchParams([{ key: 'page', value: lastPage.toString() }]);
+    }
   }
 
   function getCanPreviousPage() {
@@ -152,8 +157,7 @@ function BaseTableServerPagination<T extends IBaseData<T>>() {
   }
 
   function getCanNextPage() {
-    //TODO
-    return true;
+    return page < totalPage;
   }
 
   function handlePageSizeChanged(value: string): void {
@@ -189,7 +193,7 @@ function BaseTableServerPagination<T extends IBaseData<T>>() {
           </Select>
         </div>
         <div className='flex w-[100px] items-center justify-center text-sm font-medium'>
-          Page {page} of //TODO
+          Page {page} of {totalPage}
         </div>
         <div className='flex items-center space-x-2'>
           <Button

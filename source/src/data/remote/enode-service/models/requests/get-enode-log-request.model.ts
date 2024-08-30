@@ -6,7 +6,6 @@ export interface GetEnodeLogRequestModel {
 export interface GetEnodeLogLimitRequestModel {
   postPerPage?: number;
   pageNumber?: number;
-  totalPage?: number;
   filter?: FilterEnodeLogRequestModel;
 }
 

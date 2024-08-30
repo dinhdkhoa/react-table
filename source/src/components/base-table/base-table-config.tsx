@@ -25,7 +25,7 @@ export const pageSizeOptionsDefault = [10, 25, 50, 100];
 
 export const defaultTablePaginatitonParams: PaginationParams = {
   page: pageIndexDefault + 1,
-  pageSize: pageSizeDefault
+  pageSize: pageSizeDefault,
 }
 
 export interface BaseAction<T extends FieldValues = FieldValues> {
@@ -77,6 +77,7 @@ export class BaseTableConfig<T extends IBaseData<T>> {
   tableName?: string
   rowsEditing: Record<string, T> = {}
   pageOnServer = false;
+  totalPageOnServer = 1;
 
   constructor(keys?: FieldNames<T>[]) {
     if (keys && keys.length > 0) {

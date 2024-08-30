@@ -3,14 +3,14 @@
 import { BaseTableConfig } from '@/components/base-table/base-table-config'
 
 import { BaseTable } from '@/components/base-table/base-table'
-import { EnodeLogEntity } from '@/domain/entities/enode-log/enode-log-entity'
+import { EnodeLogEntity, EnodeLogPaginationEntity } from '@/domain/entities/enode-log/enode-log-entity'
 import { FormatColumnType } from '@/components/base-table/enums'
 import { useState } from 'react'
 import { TableConfigProvider } from '@/components/base-table/table-config-context'
 
-export default function ENodeLogLimit({ data }: { data: Array<EnodeLogEntity> }) {
+export default function ENodeLogLimit({ entity }: { entity: EnodeLogPaginationEntity | undefined }) {
 
-  const [tableConfig, setTableConfig] = useState<BaseTableConfig<EnodeLogEntity>>(() => {
+  const [tableConfig] = useState<BaseTableConfig<EnodeLogEntity>>(() => {
     const config = new BaseTableConfig<EnodeLogEntity>();
     config.tableName = 'Enode Log';
     config.isShowQuickSearch = false;
@@ -62,13 +62,12 @@ export default function ENodeLogLimit({ data }: { data: Array<EnodeLogEntity> })
     config.isShowChild = true
     config.isActionColumListType = false;
     config.init();
-    config.setData(data);
+    config.setData(entity?.data || []);
     return config;
   });
-
+  tableConfig.totalPageOnServer = entity?.totalPage ?? 1;
   return (<TableConfigProvider<EnodeLogEntity> initValue={tableConfig} >
-    <BaseTable<EnodeLogEntity> loading={false} data={data} />
-      
+    <BaseTable<EnodeLogEntity> loading={false} data={entity?.data || []} />
   </TableConfigProvider>)
 }
 

@@ -5,7 +5,7 @@ import { useCustomSearchParams } from "@/core/hooks/useCustomSearchParams";
 
 export type PaginationParams = {
     page?: number,
-    pageSize?: number,
+    pageSize?: number
 }
 
 interface PageSearchParamsContextProps {
@@ -20,9 +20,9 @@ const PageSearchParamsContext = createContext<PageSearchParamsContextProps | und
 
 export const PageSearchParamsProvider = ({ children }: { children: ReactNode }) => {
     const { page, pageSize, urlSearchParams, setUrlSearchParams, updateSearchParams } = useCustomSearchParams('PageSearchParamsProvider');
-    const [paginationParams, setPaginationParams] = useState<PaginationParams>({ page: page, pageSize: pageSize });
+    const [paginationParams, setPaginationParams] = useState<PaginationParams>({ page: page, pageSize: pageSize});
     useEffect(() => {
-        setPaginationParams({ page: page, pageSize: pageSize });
+        setPaginationParams({ ...paginationParams, page: page, pageSize: pageSize });
     }, [page, pageSize])
 
     return (

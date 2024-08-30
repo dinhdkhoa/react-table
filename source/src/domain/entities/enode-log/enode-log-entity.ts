@@ -1,8 +1,11 @@
 import { IBaseData } from '@/core/classes/base-data'
-import { ConvertResponseModelToEntityFieldsFunc, EntityFields } from '@/core/helper/type-helpers'
-import { EnodeLogResponseModel } from '@/data/remote/enode-service/models/responses/enode-log-response.model'
+import { ConvertResponseModelToEntityFieldsFunc } from '@/core/helper/type-helpers'
+import { EnodeLogPaginationResponseModel } from '@/data/remote/enode-service/models/responses/enode-log-response.model'
 import { Guid } from 'guid-typescript'
+import { PaginationEntity } from '../pagination-entity'
+import { pageIndexDefault, pageSizeDefault } from '@/components/base-table/base-table-config'
 
+export interface EnodeLogPaginationEntity extends PaginationEntity<EnodeLogEntity> { }
 export interface EnodeLogEntity extends IBaseData<EnodeLogEntity> {
   id?: string
   url?: string
@@ -23,13 +26,19 @@ export interface EnodeLogEntity extends IBaseData<EnodeLogEntity> {
   originJsonData?: object
 }
 
-export const convertEnodeLogEntityFn: ConvertResponseModelToEntityFieldsFunc<Array<EnodeLogResponseModel>, Array<EnodeLogEntity>> = (
+export const convertEnodeLogPaginationEntityFn: ConvertResponseModelToEntityFieldsFunc<EnodeLogPaginationResponseModel, EnodeLogPaginationEntity> = (
   res
 ) => {
-  const result: Array<EnodeLogEntity> = [];
-  if (res && res.length > 0) {
-    res.forEach(_res => {
-      result.push({
+  const result: EnodeLogPaginationEntity = {
+    page: res.pageNumber ?? (pageIndexDefault + 1),
+    pageSize: res.postPerPage ?? pageSizeDefault,
+    totalPage: res.totalPage ?? 1,
+    data: []
+  };
+
+  if (res.data && res.data.length > 0) {
+    res.data.forEach(_res => {
+      result.data.push({
         __id__: Guid.create().toString(),
         id: _res.id,
         url: _res.url,

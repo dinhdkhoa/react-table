@@ -13,39 +13,14 @@ export async function EnodeLogLimitTable({
     searchParams?: any;
 }) {
     const filterModel = convertSearchParamsToFilterModel<FilterEnodeLogRequestModel>(mapperFilterEnodeLogModel, searchParams);
-    const state = await EnodeLogUsecase.getListLimit({ postPerPage: searchParams.pageSize, pageNumber: searchParams.page, totalPage: 10, filter: filterModel })
+    const state = await EnodeLogUsecase.getListLimit({ postPerPage: searchParams.pageSize, pageNumber: searchParams.page, filter: filterModel })
     const stateId = Guid.create().toString();
     console.log('state', state.isError, state.message)
     console.log('stateId: ', stateId)
     return (
         <>
-            <EnodeLogChartServiceCodeComponent data={state.value || []} />
-            <ENodeLogLimit data={state.value || []} />
+            <EnodeLogChartServiceCodeComponent entity={state.value} />
+            <ENodeLogLimit entity={state.value} />
         </>
     );
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-export async function EnodeLogTable({
-    searchParams,
-}: {
-    searchParams?: any;
-}) {
-    const state = await EnodeLogUsecase.getList({ postPerPage: 100, pageNumber: 0 })
-    return <ENodeLog data={state.value || []} />
 }

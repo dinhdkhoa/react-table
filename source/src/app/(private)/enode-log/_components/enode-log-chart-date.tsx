@@ -2,11 +2,11 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { convertToEnodeLogBarChartDateInteractiveEntityFn, EnodeLogBarChartDateInteractiveEntity, EnodeLogEntity } from "@/domain/entities/enode-log/enode-log-entity";
+import { convertToEnodeLogBarChartDateInteractiveEntityFn, EnodeLogBarChartDateInteractiveEntity, EnodeLogEntity, EnodeLogPaginationEntity } from "@/domain/entities/enode-log/enode-log-entity";
 import { useEffect, useState } from "react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
-export const EnodeLogChartDateComponent = ({ data }: { data: Array<EnodeLogEntity> }) => {
+export const EnodeLogChartDateComponent = ({ entity }: { entity: EnodeLogPaginationEntity | undefined }) => {
     const [barChartInteractiveData, setBarChartInteractiveData] = useState<EnodeLogBarChartDateInteractiveEntity[]>();
     const chartConfig = {
         date: {
@@ -20,9 +20,9 @@ export const EnodeLogChartDateComponent = ({ data }: { data: Array<EnodeLogEntit
     } satisfies ChartConfig
 
     useEffect(() => {
-        const _result = convertToEnodeLogBarChartDateInteractiveEntityFn({ data: data });
+        const _result = convertToEnodeLogBarChartDateInteractiveEntityFn({ data: entity?.data || [] });
         setBarChartInteractiveData(_result);
-    }, [data])
+    }, [entity])
 
     return (
         <Card className="w-full mt-5 rounded-md" >

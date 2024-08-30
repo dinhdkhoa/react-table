@@ -1,13 +1,12 @@
 'use client'
 
-import { usePagePreventAction } from "@/components/page-prevent-action-provider";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { convertToEnodeLogBarChartServiceCodeInteractiveEntityFn, EnodeLogBarChartServiceCodeInteractiveEntity, EnodeLogEntity } from "@/domain/entities/enode-log/enode-log-entity";
+import { convertToEnodeLogBarChartServiceCodeInteractiveEntityFn, EnodeLogBarChartServiceCodeInteractiveEntity, EnodeLogEntity, EnodeLogPaginationEntity } from "@/domain/entities/enode-log/enode-log-entity";
 import { useEffect, useState } from "react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
-export const EnodeLogChartServiceCodeComponent = ({ data }: { data: Array<EnodeLogEntity> }) => {
+export const EnodeLogChartServiceCodeComponent = ({ entity }: { entity: EnodeLogPaginationEntity | undefined }) => {
     const [barChartInteractiveData, setBarChartInteractiveData] = useState<EnodeLogBarChartServiceCodeInteractiveEntity[]>();
     const chartConfig = {
         serviceCode: {
@@ -21,9 +20,9 @@ export const EnodeLogChartServiceCodeComponent = ({ data }: { data: Array<EnodeL
     } satisfies ChartConfig
 
     useEffect(() => {
-        const _result = convertToEnodeLogBarChartServiceCodeInteractiveEntityFn({ data: data });
+        const _result = convertToEnodeLogBarChartServiceCodeInteractiveEntityFn({ data: entity?.data || [] });
         setBarChartInteractiveData(_result);
-    }, [data])
+    }, [entity])
 
     return (
         <Card className="w-full mt-5 rounded-md shadow-none" >
