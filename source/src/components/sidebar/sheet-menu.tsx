@@ -21,7 +21,7 @@ export function SheetMenu() {
               <Image
                 src='/logo.png'
                 className={`overflow-hidden transition-all`}
-                alt='ITL Logo'
+                alt='Logtechub Logo'
                 width={40}
                 height={40}
               />

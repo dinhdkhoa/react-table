@@ -31,15 +31,15 @@ export function Sidebar() {
           asChild
         >
           <Link href='/dashboard' className='flex items-center gap-2'>
-            <Image src='/logo.png' className={`overflow-hidden transition-all`} alt='ITL Logo' width={40} height={40} />
-            <h1
+            <Image src='/logo.png' className={`overflow-hidden transition-all`} alt='Logtechub Logo' width={277} height={57} />
+            {/* <h1
               className={cn(
                 'font-bold text-lg whitespace-nowrap transition-[transform,opacity,display] ease-in-out duration-300 overflow-hidden',
                 sidebar?.isOpen === false ? '-translate-x-96 opacity-0 hidden' : 'translate-x-0 opacity-100'
               )}
             >
               Enode
-            </h1>
+            </h1> */}
           </Link>
         </Button>
         <Menu isOpen={sidebar?.isOpen} />
