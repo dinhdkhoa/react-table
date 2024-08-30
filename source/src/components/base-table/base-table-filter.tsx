@@ -196,6 +196,7 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
     if (filterVariant === 'unique') {
       return (
         <FilterAutocomplete
+          
           initValue={columnFilterValue}
           popOverContentWidth={buildWidthPopOver}
           options={sortedUniqueValues}
@@ -274,7 +275,7 @@ function FilterCheckbox({ initValue, onChange }: { initValue: string, onChange: 
           variant='outline'
           role='combobox'
           aria-expanded={open}
-          className='w-full justify-between bg-transparent'
+          className='w-full justify-between bg-transparent border-x-0 rounded-none border-b-0'
         >
           <span className='truncate'>
             {value ? checkState.find((state) => state.value === value)?.label : 'Filter'}
@@ -328,7 +329,7 @@ function FilterDate({ initValue, onChange }: { initValue: DateFilterType; onChan
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant='outline' className='w-full justify-between bg-transparent'>
+        <Button variant='outline' className='w-full justify-between bg-transparent border-x-0 rounded-none border-b-0'>
           <span className='truncate'>{date ? date.toLocaleDateString() : 'Filter'}</span>
           {initValue ? clearFilter(() => setDate(null)) : <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />}
         </Button>
@@ -396,7 +397,7 @@ function FilterAutocomplete({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant='outline' role='combobox' aria-expanded={open} className='w-full justify-between'>
+        <Button variant='outline' role='combobox' aria-expanded={open} className='w-full justify-between border-x-0 rounded-none border-b-0'>
           <span className='truncate'>
             {value ? values.find((option) => option.value == value)?.label?.toString() : 'Filter'}
           </span>
@@ -492,7 +493,7 @@ function FilterStaticCombobox({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant='outline' role='combobox' className={cn('justify-between w-full bg-transparent')}>
+        <Button variant='outline' role='combobox' className={cn('justify-between w-full bg-transparent border-x-0 rounded-none border-b-0')}>
           <span className='truncate'>{currentValue ? display : placeholder}</span>
           {currentValue ? (
             clearFilter(() => {
@@ -560,6 +561,7 @@ function FilterInput({ initValue, placeholder, column, isNumberCol }: { initValu
   return (
     <Input
       value={searchText}
+      className='border-x-0 rounded-none border-b-0'
       name={column.id}
       placeholder={placeholder}
       onChange={handleChange}
