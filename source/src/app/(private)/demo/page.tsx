@@ -21,10 +21,8 @@ export default function DemoPage({
   return (
     <PagePreventActionProvider>
       <PageSearchParamsProvider>
-        <EnodeLogSearchComponent>
-          <ENode />
-        </EnodeLogSearchComponent>
-
+        <EnodeLogSearchComponent />
+        <ENode />
       </PageSearchParamsProvider>
     </PagePreventActionProvider>
   )
