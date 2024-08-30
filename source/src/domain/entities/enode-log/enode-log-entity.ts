@@ -35,16 +35,16 @@ export const convertEnodeLogEntityFn: ConvertResponseModelToEntityFieldsFunc<Arr
         url: _res.url,
         method: _res.method,
         timestamp: _res.timestamp ? new Date(_res.timestamp) : undefined,
-        serviceCode: _res.service_code,
-        apiCode: _res.api_code,
+        serviceCode: _res.serviceCode,
+        apiCode: _res.apiCode,
         request: _res.request,
         payload: _res.payload,
         response: _res.response,
         originJsonData: _res,
         destination: _res.desc,
-        httpStatus: _res.http_status,
-        messageId: _res.msg_id,
-        requestId: _res.request_id
+        httpStatus: _res.httpStatus,
+        messageId: _res.msgId,
+        requestId: _res.requestId
       })
     })
   }
