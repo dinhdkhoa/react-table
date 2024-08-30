@@ -10,7 +10,7 @@ import { setSearchParamsToBaseForm } from "@/core/helper/search-param-helper";
 import useBaseForm from "@/core/hooks/useBaseForm";
 import { defaultEnodeLogSearchEntity, EnodeLogSearchEntity } from "@/domain/entities/enode-log/enode-log-search-entity";
 import { cn } from "@/lib/utils";
-import { Minus, Plus, RefreshCcw, RotateCcw } from "lucide-react";
+import { Minus, Plus, RefreshCw, RotateCcw } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -76,7 +76,7 @@ export const EnodeLogSearchComponent = () => {
               </div>
               <div className="flex gap-1">
                 <Button type="submit" disabled={isProcessing(EnodeLogSearchComponentSearchButtonName)}>
-                  <RefreshCcw className={cn("mr-2 h-4 w-4", isProcessing(EnodeLogSearchComponentSearchButtonName) ? " animate-spin" : "")} />
+                  <RefreshCw className={cn("mr-2 h-4 w-4", isProcessing(EnodeLogSearchComponentSearchButtonName) ? " animate-spin" : "")} />
                   Refresh
                 </Button>
                 <Button className="min-w-9 min-h-6" type="button" onClick={handleReset} variant="default" size="icon">
